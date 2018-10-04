@@ -4,14 +4,14 @@ var safeBox = {
 
     saveSecret: function(secret, password) {
         if (password === undefined) throw Error ('invalid password')
+        if (password.trim() === '') throw Error ('invalid password')
         data = []
-        data.push = [{secret: secret, password: password}];
+        data.push ({secret: secret, password: password});
     },
 
     retrieveSecret: function(password) {
-        myData = data.forEach(function(item) {
-            if (item.password = password);
-            return item
+        myData = data.find(function(item) {
+            return item.password === password;
         });
         if (password ===  myData.password) {
             return myData.secret;
