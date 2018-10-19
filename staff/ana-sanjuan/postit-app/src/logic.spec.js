@@ -18,7 +18,7 @@ describe('logic', () =>{
     describe('users', () => {
         describe('register', () => {
             it('should succeed on correct data', () =>
-                logic.registerUser('John', 'Doe', `jd-${Math.random()}`, '123')
+                logic.registerUser('John', 'Doe', `jd-${Math.random()}`, '123') //implicit return for asyncronous register
                     .then(id => expect(id).to.be.a('string'))
             )
 
@@ -38,6 +38,17 @@ describe('logic', () =>{
                     })
 
             })
-        })
-    }) 
+
+            it('should fail on undefined name', () => {
+                expect(()=>
+                    logic.registerUser(undefined, 'Doe', 'jd', '123')
+                ).to.throw(TypeError, 'undefined is not a string') 
+            })
+
+            //TODO more cases
+        }) 
+    })
+
+
+
 })

@@ -46,6 +46,7 @@ class App extends Component {
 
     handleLogoutClick = () => {
         logic.deleteUserId()
+         
         this.setState({ userId: null })
         
     }
