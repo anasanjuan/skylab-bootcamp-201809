@@ -1,7 +1,9 @@
+
 class Postit {
-    constructor(text) {
+    constructor(text, userId) {
         this.text = text
         this.id = Date.now()
+        this.userId = userId
     }
 }
 
@@ -10,7 +12,7 @@ class User {
         this.name = name
         this.surname = surname
         this.username = username
-        this.password = password
+        this.password =password
         this.id = Date.now()
     }
 }
