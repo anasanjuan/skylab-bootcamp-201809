@@ -1,12 +1,11 @@
-var index = 0
 
-function forEach(nums, callback) {
+function forEach(nums, callback, index = 0) {
     if (index < nums.length) {
-        callback(nums[index])
+        callback(nums[index], index)
 
         index++
 
-        forEach(nums, callback)
+        forEach(nums, callback, index)
     }
 }
 
