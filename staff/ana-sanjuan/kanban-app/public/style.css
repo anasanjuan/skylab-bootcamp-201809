@@ -1,0 +1,118 @@
+body {
+    background-color: black;
+}
+
+.title {
+    color: white;
+}
+
+.post {
+    background-color:#F5F6F7;
+    width: 150px;
+    height: 100px;
+    margin: 10px;
+}
+
+.post textarea {
+    background: transparent;
+    border: none;
+    width: inherit;
+    height: inherit;
+    resize: none;
+}
+
+.error {
+    color: red;
+    margin-left: 8px;
+}
+
+.kanbanContainer {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
+    height: 100vh;
+}
+
+.post__dropdown {
+    position: relative;
+    bottom: 30px;
+}
+.post__trash {
+    position: relative;
+    bottom: 30px;
+}
+
+.column1 {
+    background-color: #DFE3E6;
+    width: 200px;
+    border-radius: 8px;
+    padding: 3px 5px;
+}
+
+.column2 {
+    background-color: #DFE3E6;
+    width: 200px;
+    border-radius: 8px;
+    padding: 3px 5px;
+}
+
+.column3 {
+    background-color: #DFE3E6;
+    width: 200px;
+    border-radius: 8px;
+    padding: 3px 5px;
+}
+
+.column4 {
+    background-color: #DFE3E6;
+    width: 200px;
+    border-radius: 8px;
+    padding: 3px 5px;
+}
+
+.form {
+    padding: 3px 8px;
+}
+
+.basic__button {
+    background-color: #02AECB;
+    border: none;
+    height: 2em;
+    width: 5em;
+    border-radius: 3px;
+    font-size: 15px;
+    display: block;
+    margin: 8px;
+}
+
+.back__button {
+    text-decoration: none;
+    color: #02AECB;
+    margin: 8px;
+}
+
+input {
+    display: block;
+    height: 2em;
+    width: 150px;
+    margin-bottom: 8px;
+    margin-left: 8px;
+    padding: 0px;
+}
+
+.input__postit {
+    padding: 3px 8px;
+    display: inline-block;
+    height: 1.5em;    
+    width: 140px;
+    margin: 0px;
+    padding: 0px;
+}
+
+.form__container {
+    margin: 10px;
+    padding: 10px;
+    background-color: #DFE3E6;
+    width: 200px;
+    border-radius: 5px;
+}
