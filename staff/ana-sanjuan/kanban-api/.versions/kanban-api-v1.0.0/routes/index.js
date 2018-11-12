@@ -127,10 +127,6 @@ router.put('/users/:id/postits/:postitId/status', [bearerTokenParser, jwtVerifie
                 res.json({
                 message: 'status modified'
             })})
-            .then(() => {
-                debugger
-                console.log('hola')
-            })
             
     }, res)
 })
