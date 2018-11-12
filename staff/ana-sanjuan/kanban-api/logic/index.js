@@ -21,6 +21,7 @@ const logic = {
                 
                 return user.save()
             })
+            .then(() => undefined)
     },
 
     authenticateUser(username, password) {
@@ -108,6 +109,7 @@ const logic = {
                     return user.save()
                 }
             })
+            .then(() => undefined)
     },
 
     /**
@@ -138,6 +140,7 @@ const logic = {
 
                 return user.save()
             })
+            .then(() => undefined)
     },
 
     listPostits(id) {
@@ -200,6 +203,7 @@ const logic = {
 
                 return user.save()
             })
+            .then(() => undefined)
 
     },
 
@@ -227,6 +231,7 @@ const logic = {
 
                 return user.save()
             })
+            .then(() => undefined)
     },
 
     modifyPostitStatus(id, postitId, status) {
@@ -253,6 +258,7 @@ const logic = {
 
                 return user.save()       
             })
+            .then(() => undefined)
     }
 }
 
