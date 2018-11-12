@@ -148,7 +148,13 @@ const logic = {
             .then(user => {
                 if (!user) throw new NotFoundError(`user with id ${id} not found`)
 
-                return user.postits.map(({_id, text}) => {id: _id.toString(), text})
+                return user.postits.map(postit => {
+                    postit.id = postit._id.toString()
+
+                    delete postit._id
+
+                    return postit
+                })
             })
     },
 
