@@ -13,12 +13,12 @@ const logic = {
         if (!username.trim()) throw new ValueError('username is empty or blank')
         if (!password.trim()) throw new ValueError('password is empty or blank')
 
-        return User.findOne({username})
+        return User.findOne({ username })
             .then(user => {
                 if (user) throw new AlreadyExistsError(`username ${username} already registered`)
 
                 user = new User({ name, surname, username, password })
-                
+
                 return user.save()
             })
             .then(() => undefined)
@@ -31,7 +31,7 @@ const logic = {
         if (!username.trim()) throw new ValueError('username is empty or blank')
         if (!password.trim()) throw new ValueError('password is empty or blank')
 
-        return User.findOne({username})
+        return User.findOne({ username })
             .then(user => {
                 if (!user || user.password !== password) throw new AuthError('invalid username or password')
 
@@ -49,7 +49,7 @@ const logic = {
         //         if (!user) throw new NotFoundError(`user with id ${id} not found`)
 
         //         const _user = user.toObject()
-                
+
         //         _user.id = id
 
         //         delete _user.password
@@ -58,10 +58,10 @@ const logic = {
         //         return _user
         //     })
 
-        return User.findById(id, {'_id': 0, password: 0, postits: 0, __v: 0}).lean()
+        return User.findById(id, { '_id': 0, password: 0, postits: 0, __v: 0 }).lean()
             .then(user => {
                 if (!user) throw new NotFoundError(`user with id ${id} not found`)
-                
+
                 user.id = id
 
                 return user
@@ -90,7 +90,7 @@ const logic = {
                 if (user.password !== password) throw new AuthError('invalid password')
 
                 if (username) {
-                    return User.findOne({username})
+                    return User.findOne({ username })
                         .then(_user => {
                             if (_user) throw new AlreadyExistsError(`username ${username} already exists`)
 
@@ -105,7 +105,7 @@ const logic = {
                     name != null && (user.name = name)
                     surname != null && (user.surname = surname)
                     newPassword != null && (user.password = newPassword)
-    
+
                     return user.save()
                 }
             })
@@ -134,11 +134,9 @@ const logic = {
             .then(user => {
                 if (!user) throw new NotFoundError(`user with id ${id} not found`)
 
-                const postit = new Postit({ text , status })
+                const postit = new Postit({ text, status, user: id })
 
-                user.postits.push(postit)
-
-                return user.save()
+                return postit.save()
             })
             .then(() => undefined)
     },
@@ -151,14 +149,21 @@ const logic = {
             .then(user => {
                 if (!user) throw new NotFoundError(`user with id ${id} not found`)
 
-                return user.postits.map(postit => {
-                    postit.id = postit._id.toString()
+                return Postit.find({ user: user._id })
+                    .lean()
+                    .then(postits =>
+                        postits.map(postit => {
+                            postit.id = postit._id.toString()
 
-                    delete postit._id
+                            delete postit._id
 
-                    return postit
-                })
+                            postit.user = postit.user.toString()
+
+                            return postit
+                        })
+                    )
             })
+
     },
 
     /**
@@ -182,27 +187,9 @@ const logic = {
         return User.findById(id)
             .then(user => {
                 if (!user) throw new NotFoundError(`user with id ${id} not found`)
-
-                const { postits } = user
-
-                // by filtering
-
-                // const _postits = postits.filter(postit => postit.id !== postitId)
-
-                // if (_postits.length !== postits.length - 1) throw Error(`postit with id ${postitId} not found in user with id ${id}`)
-
-                // user.postits = _postits
-
-                // by finding index
-
-                const index = postits.findIndex(postit => postit.id === postitId)
-
-                if (index < 0) throw new NotFoundError(`postit with id ${postitId} not found in user with id ${id}`)
-
-                postits.splice(index, 1)
-
-                return user.save()
             })
+            .then(() => Postit.findById(postitId))
+            .then(postit => postit.remove())
             .then(() => undefined)
 
     },
@@ -220,16 +207,14 @@ const logic = {
         return User.findById(id)
             .then(user => {
                 if (!user) throw new NotFoundError(`user with id ${id} not found`)
-
-                const { postits } = user
-
-                const postit = postits.find(postit => postit.id === postitId)
-
+            })
+            .then(() => Postit.findById(postitId))
+            .then(postit => {
                 if (!postit) throw new NotFoundError(`postit with id ${postitId} not found in user with id ${id}`)
 
                 postit.text = text
 
-                return user.save()
+                return postit.save()
             })
             .then(() => undefined)
     },
@@ -247,16 +232,14 @@ const logic = {
         return User.findById(id)
             .then(user => {
                 if (!user) throw new NotFoundError(`user with id ${id} not found`)
-
-                const { postits } = user
-
-                const postit = postits.find(postit => postit.id === postitId)
-
+            })
+            .then(() => Postit.findById(postitId))
+            .then(postit => {
                 if (!postit) throw new NotFoundError(`postit with id ${postitId} not found in user with id ${id}`)
 
                 postit.status = status
 
-                return user.save()       
+                return postit.save()
             })
             .then(() => undefined)
     }
