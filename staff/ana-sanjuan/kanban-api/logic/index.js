@@ -35,7 +35,7 @@ const logic = {
             const user = await User.findOne({ username })
             if (!user || user.password !== password) throw new AuthError('invalid username or password')
 
-            const id = await user.id
+            const id = user.id
 
             return id
         })()
@@ -251,32 +251,36 @@ const logic = {
             await postit.save()
         })()
     },
-
-    assignBuddy(userId, buddyId, postitId) {
+    
+    assignBuddy(userId, buddyUsername, postitId) {
         if (typeof userId !== 'string') throw TypeError(`${userId} is not a string`)
         if (!userId.trim().length) throw new ValueError('userId is empty or blank')
-        
-        if (typeof buddyId !== 'string') throw TypeError(`${buddyId} is not a string`)
-        if (!buddyId.trim().length) throw new ValueError('buddyId is empty or blank')
+
+        if (typeof buddyUsername !== 'string') throw TypeError(`${buddyUsername} is not a string`)
+        if (!buddyUsername.trim().length) throw new ValueError('buddyUsername is empty or blank')
 
         if (typeof postitId !== 'string') throw TypeError(`${postitId} is not a string`)
         if (!postitId.trim().length) throw new ValueError('postit id is empty or blank')
 
-        return (async()=>{
+        return (async () => {
             const user = await User.findById(userId)
 
             if (!user) throw new NotFoundError(`user with id ${id} not found`)
 
-            const postit  = await Postit.findOne({user: userId, _id: postitId})
+            const postit = await Postit.findOne({ user: userId, _id: postitId })
 
             if (!postit) throw new NotFoundError(`postit with id ${postitId} not found in user with id ${userId}`)
 
-            postit.assignTo = buddyId
+            const buddy = await User.findOne({ username: buddyUsername })
+
+            if (!buddy) throw new NotFoundError(`user with username ${buddyUsername} not found`)
+
+            postit.assignTo = buddy.id
 
             await postit.save()
-       })()
+        })()
     }
-    
-   }
+
+}
 
 module.exports = logic

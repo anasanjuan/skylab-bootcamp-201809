@@ -77,7 +77,7 @@ router.patch('/users/:id', [bearerTokenParser, jwtVerifier, jsonBodyParser], (re
 
 router.put('/users/:id/buddy', [bearerTokenParser, jwtVerifier, jsonBodyParser], (req, res) => {
     routeHandler(() => {
-        const { params: { id }, sub, body: { username: buddyUsername } } = req
+        const { params: { id }, sub, body: { buddyUsername } } = req
 
         if (id !== sub) throw Error('token sub does not match user id')
 
@@ -159,11 +159,11 @@ router.delete('/users/:id/postits/:postitId', [bearerTokenParser, jwtVerifier, j
 
 router.put('/users/:id/postits/:postitId/assign', [bearerTokenParser, jwtVerifier, jsonBodyParser], (req, res) => {
     routeHandler(() => {
-        const { sub, params: { id, postitId }, body: { buddyId } } = req
+        const { sub, params: { id, postitId }, body: { buddyUsername } } = req
         debugger
         if (id !== sub) throw Error('token sub does not match user id')
 
-        return logic.assignBuddy(id, buddyId, postitId)
+        return logic.assignBuddy(id, buddyUsername, postitId)
             .then(() => res.json({
                 message: 'postit assigned'
             }))

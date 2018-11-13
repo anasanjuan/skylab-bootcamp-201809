@@ -427,7 +427,7 @@ describe('logic', () => {
             })
 
             it('should succed on correct data', async () => {
-                const res = await logic.assignBuddy(user.id, buddy.id, postit.id)
+                const res = await logic.assignBuddy(user.id, buddy.username, postit.id)
 
                 expect(res).to.be.undefined
 

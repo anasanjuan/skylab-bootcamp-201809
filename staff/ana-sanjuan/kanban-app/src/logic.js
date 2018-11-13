@@ -68,10 +68,26 @@ const logic = {
         sessionStorage.removeItem('userId')
         sessionStorage.removeItem('token')
     },
+    addBuddy(buddyUsername) {
+        if (typeof buddyUsername !== 'string') throw TypeError(`${buddyUsername} is not a string`)
+        if (!buddyUsername.trim()) throw Error('buddy Username is empty or blank')
+
+        return fetch(`${this.url}/users/${this._userId}/buddy`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json; charset=utf-8',
+                'Authorization': `Bearer ${this._token}`
+            },
+            body: JSON.stringify({buddyUsername})
+        })
+        .then(res => res.json())
+        .then(res => {
+            if (res.error) throw Error(res.error)
+        })
+    },
 
     addPostit(text, status) {
         if (typeof text !== 'string') throw TypeError(`${text} is not a string`)
-
         if (!text.trim()) throw Error('text is empty or blank')
 
         return fetch(`${this.url}/users/${this._userId}/postits`, {
@@ -105,7 +121,6 @@ const logic = {
 
     removePostit(id) {
         if (typeof id !== 'string') throw new TypeError(`${id} is not a string`)
-
         if (!id.trim().length) throw Error('id is empty or blank')
 
         return fetch(`${this.url}/users/${this._userId}/postits/${id}`, {
@@ -122,11 +137,9 @@ const logic = {
 
     modifyPostit(id, text) {
         if (typeof id !== 'string') throw new TypeError(`${id} is not a string`)
-
         if (!id.trim().length) throw Error('id is empty or blank')
 
         if (typeof text !== 'string') throw TypeError(`${text} is not a string`)
-
         if (!text.trim()) throw Error('text is empty or blank')
 
         return fetch(`${this.url}/users/${this._userId}/postits/${id}`, {
@@ -144,6 +157,12 @@ const logic = {
     },
     
     modifyPostitStatus(id, status) {
+        if (typeof id !== 'string') throw new TypeError(`${id} is not a string`)
+        if (!id.trim().length) throw Error('id is empty or blank')
+
+        if (typeof status !== 'string') throw TypeError(`${status} is not a string`)
+        if (!status.trim()) throw Error('status is empty or blank')
+
         return fetch(`${this.url}/users/${this._userId}/postits/${id}/status`, {
             method: 'PUT',
             headers: {
@@ -156,6 +175,13 @@ const logic = {
             .then(res => {
                 if (res.error) throw Error(res.error)
             })
+    },
+
+    assignBuddy(buddyUsername, postitId) {
+        if (typeof buddyUsername !== 'string') throw new TypeError(`${buddyUsername} is not a string`)
+        if (!buddyUsername.trim().length) throw Error('buddy Username is empty or blank')
+
+        return fetch(`${this.url}/users/${this._userId}/postits/${postitId}/assign`)
     }
 } 
 

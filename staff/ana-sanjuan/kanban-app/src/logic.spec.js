@@ -108,6 +108,34 @@ describe('logic', () => {
 
             // TODO other cases
         })
+
+        describe('should add buddy', () => {
+            let buddyUsername
+            beforeEach(() => {
+                const name = 'John', surname = 'Doe'
+
+                const username = `jd-${Math.random()}`
+                const password = `123-${Math.random()}`
+
+                return logic.registerUser(name, surname, username, password)
+                    .then(() => {
+                        const buddyName = 'John2', buddySurname = 'Doe2'
+
+                        buddyUsername = `jd2-${Math.random()}`
+
+                        const buddyPassword = `123-${Math.random()}`
+
+                        return logic.registerUser(buddyName, buddySurname, buddyUsername, buddyPassword)
+                    })
+            })
+
+            it('should succed on correct data', () => {
+                return logic.addBuddy(buddyUsername)
+                    .then(() => expect(true).to.be.true)
+
+            })
+
+        })
     })
 
     describe('postits', () => {
@@ -254,7 +282,7 @@ describe('logic', () => {
             })
         })
 
-        describe('modify status', ()=> {
+        describe('modify status', () => {
             describe('with existing user', () => {
                 let username, password, text, postitId
 
@@ -301,7 +329,43 @@ describe('logic', () => {
                             })
                     )
                 })
-             
+
+            })
+        })
+
+        describe('should assign a buddy', () => {
+            let buddyUsername, postitId
+            beforeEach(() => {
+                const name = 'John', surname = 'Doe'
+
+                const username = `jd-${Math.random()}`
+                const password = `123-${Math.random()}`
+
+                return logic.registerUser(name, surname, username, password)
+                    .then(() => {
+                        const buddyName = 'John2', buddySurname = 'Doe2'
+
+                        buddyUsername = `jd2-${Math.random()}`
+                        const buddyPassword = `123-${Math.random()}`
+
+                        return logic.registerUser(buddyName, buddySurname, buddyUsername, buddyPassword)
+
+                    })
+                    .then(() => {
+                        const text = 'hola mundo'
+
+                        const status = 'TODO'
+
+                        return logic.addPostit(text, status)
+                        .then(() => logic.listPostits())
+                        .then(([postit]) => postitId = postit.id)
+                    })
+            })
+
+            it('should succedd on correct data', () => {
+                return logic.assignBuddy(buddyUsername, postitId)
+                    .then(() => expect(true).to.be.true)
+
             })
         })
     })
