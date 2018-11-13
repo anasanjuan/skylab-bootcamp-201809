@@ -99,7 +99,7 @@ describe('logic', () => {
             })
 
             it('should succeed on valid id', async () => {
-                let _user = await logic.retrieveUser(user.id)
+                const _user = await logic.retrieveUser(user.id)
 
                 expect(_user).not.to.be.instanceof(User)
 
@@ -132,7 +132,9 @@ describe('logic', () => {
                 const newUsername = `${username}-${Math.random()}`
                 const newPassword = `${password}-${Math.random()}`
 
-                await logic.updateUser(id, newName, newSurname, newUsername, newPassword, password)
+                const res = await logic.updateUser(id, newName, newSurname, newUsername, newPassword, password)
+
+                expect(res).to.be.undefined
 
                 const _users = await User.find()
 
@@ -151,10 +153,12 @@ describe('logic', () => {
 
                 const newName = `${name}-${Math.random()}`
 
-                await logic.updateUser(id, newName, null, null, null, password)
+                const res = await logic.updateUser(id, newName, null, null, null, password)
+
+                expect(res).to.be.undefined
 
                 const _users = await User.find()
-                
+
                 const [_user] = _users
 
                 expect(_user.id).to.equal(id)
@@ -169,10 +173,12 @@ describe('logic', () => {
 
                 const newSurname = `${surname}-${Math.random()}`
 
-                await logic.updateUser(id, null, newSurname, null, null, password)
+                const res = await logic.updateUser(id, null, newSurname, null, null, password)
+
+                expect(res).to.be.undefined
 
                 const _users = await User.find()
-                
+
                 const [_user] = _users
 
                 expect(_user.id).to.equal(id)
@@ -209,9 +215,12 @@ describe('logic', () => {
 
                     try {
                         await logic.updateUser(id, null, null, newUsername, null, password)
+
+                        expect(true).to.be.false
                     } catch (err) {
                         expect(err).to.be.instanceof(AlreadyExistsError)
 
+                    } finally {
                         const _user = await User.findById(id)
                         expect(_user.id).to.equal(id)
 
@@ -224,6 +233,30 @@ describe('logic', () => {
                 })
 
             })
+
+        })
+
+        describe('add buddies', () => {
+            let user, buddy
+            beforeEach(async () => {
+                user = new User({ name: 'John', surname: 'Doe', username: 'jd', password: '123' })
+
+                buddy = new User({ name: 'John2', surname: 'Doe2', username: 'jd2', password: '123' })
+
+                await user.save()
+                await buddy.save()
+            })
+
+            it('should succedd on correct data', async () => {
+                await logic.addBuddy(user.id, buddy.username)
+
+                const _user = await User.findById(user.id)
+
+                expect(_user.buddies.length).to.equal(1)
+
+                expect(_user.buddies[0]._id.toString()).to.equal(buddy.id)
+            })
+
         })
     })
 
@@ -242,7 +275,9 @@ describe('logic', () => {
             })
 
             it('should succeed on correct data', async () => {
-                await logic.addPostit(user.id, text, status)
+                const res = await logic.addPostit(user.id, text, status)
+                
+                expect(res).to.be.undefined
 
                 const postits = await Postit.find()
 
@@ -264,7 +299,7 @@ describe('logic', () => {
                 user = new User({ name: 'John', surname: 'Doe', username: 'jd', password: '123' })
 
                 postit = new Postit({ text: 'hello text', status: "TODO", user: user.id })
-                
+
                 postit2 = new Postit({ text: 'hello text 2', status: "TODO", user: user.id })
 
                 await user.save()
@@ -309,13 +344,14 @@ describe('logic', () => {
 
                 postit = new Postit({ text: 'hello text', status: "TODO", user: user.id })
 
-                await user.save()
-                await postit.save()
+                await Promise.all([user.save(), postit.save()])
 
             })
 
             it('should succeed on correct data', async () => {
-                await logic.removePostit(user.id, postit.id)
+                const res = await logic.removePostit(user.id, postit.id)
+
+                expect(res).to.be.undefined
 
                 const postits = await Postit.find()
 
@@ -339,7 +375,9 @@ describe('logic', () => {
             })
 
             it('should succeed on correct data', async () => {
-                await logic.modifyPostit(user.id, postit.id, newText)
+                const res = await logic.modifyPostit(user.id, postit.id, newText)
+                
+                expect(res).to.be.undefined
 
                 const _postit = await Postit.findById(postit.id)
 
@@ -363,14 +401,44 @@ describe('logic', () => {
             })
 
             it('should succeed on correct data', async () => {
-                await logic.modifyPostitStatus(user.id, postit.id, newStatus)
+                const res = await logic.modifyPostitStatus(user.id, postit.id, newStatus)
+                
+                expect(res).to.be.undefined
 
                 const _postit = await Postit.findById(postit.id)
 
                 expect(_postit.status).to.equal(newStatus)
             })
         })
+
+        describe('assign postit to buddy', () => {
+            let user, buddy, postit
+            beforeEach(async () => {
+                user = new User({ name: 'John', surname: 'Doe', username: 'jd', password: '123' })
+
+                buddy = new User({ name: 'John2', surname: 'Doe2', username: 'jd2', password: '123' })
+
+                postit = new Postit({ text: 'hello text', status: 'TODO', user: user.id })
+
+
+                await user.save()
+                await buddy.save()
+                await postit.save()
+            })
+
+            it('should succed on correct data', async () => {
+                const res = await logic.assignBuddy(user.id, buddy.id, postit.id)
+
+                expect(res).to.be.undefined
+
+                const _postit = await Postit.findById(postit.id)
+
+                expect(_postit.assignTo.toString()).to.equal(buddy.id)
+
+            })
+        })
     })
+
 
     after(() => mongoose.disconnect())
 })
