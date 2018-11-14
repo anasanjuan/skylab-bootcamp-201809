@@ -42,8 +42,9 @@ class Register extends Component {
             <input type="text" placeholder="Surname" onChange={this.handleSurnameChange} />
             <input type="text" placeholder="Username" onChange={this.handleUsernameChange} />
             <input type="password" placeholder="Password" onChange={this.handlePasswordChange} />
-            <button className="basic__button" type="submit">Register</button> <a className="back__button" href="#" onClick={this.props.onGoBack}>back</a>
+            <button className="basic__button" type="submit">Register</button> 
             </form>
+            <button className="back__button" href="#" onClick={this.props.onGoBack}>back</button>
         </div>
     }
 }

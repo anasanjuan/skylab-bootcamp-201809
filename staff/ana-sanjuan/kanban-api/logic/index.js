@@ -182,7 +182,7 @@ const logic = {
             let user = await User.findById(id).lean()
             if (!user) throw new NotFoundError(`user with id ${id} not found`)
 
-            const postits = await Postit.find({ user: user._id }).lean()
+            const postits = await Postit.find( {$or :[ {user: user._id },{ assignTo: id }]}, { __v: 0 }).lean()
 
             const _postits = postits.map(postit => {
                 postit.id = postit._id.toString()
@@ -287,7 +287,7 @@ const logic = {
 
         if (typeof postitId !== 'string') throw TypeError(`${postitId} is not a string`)
         if (!postitId.trim().length) throw new ValueError('postit id is empty or blank')
-        debugger
+
         return (async () => {
             const user = await User.findById(userId)
 

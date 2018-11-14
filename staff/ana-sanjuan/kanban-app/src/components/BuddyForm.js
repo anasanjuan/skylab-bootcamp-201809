@@ -1,5 +1,4 @@
 import React, {Component} from 'react'
-import logic from '../logic'
 
 
 class BuddyForm extends  Component {

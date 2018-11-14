@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-const logic = require('../logic')
+
 class Post extends Component {
     state = { text: this.props.text, status: this.props.status, buddies: this.props.buddies, assignTo: this.props.assignTo }
 
@@ -37,8 +37,9 @@ class Post extends Component {
     render() {
         return <article className="post">
             <textarea defaultValue={this.state.text} onChange={this.handleChange} onBlur={this.handleBlur} />
-            <select className="post__dropdown" onChange={this.handleAssignToChange} defaultValue = {this.props.assignTo?this.props.assignTo: 'select buddy' } >
-                {this.props.buddies.map(buddy => <option value={buddy}>{buddy}</option>)}
+            <select className="post__dropdown" onChange={this.handleAssignToChange} defaultValue = {this.props.assignTo? this.props.assignTo: 'select buddy' } >
+                <option value="Select buddy">Select buddy</option>
+                {this.props.buddies.map(buddy => <option key={buddy} value={buddy}>{buddy}</option>)}
             </select>
             <select className="post__dropdown" onChange={this.handleStatusChange} defaultValue = {this.state.status}>
                 <option value="TODO">To Do</option>
