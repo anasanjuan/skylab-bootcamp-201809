@@ -116,3 +116,7 @@ input {
     width: 200px;
     border-radius: 5px;
 }
+
+.assignPost{
+    background-color: rgb(135, 135, 223)
+}

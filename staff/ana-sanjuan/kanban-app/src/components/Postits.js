@@ -37,6 +37,9 @@ class Postits extends Component {
 
                     this.setState({ postits, toDoPostits, doingPostits, reviewPostits, donePostits })
                 })
+                .catch (error =>
+                    this.setState({ error: error.message })
+                )
         } catch ({ message }) {
             this.setState({ error: message })
         }
@@ -58,6 +61,9 @@ class Postits extends Component {
                 .then(buddies => {
                     this.setState({ buddies })
                 })
+                .catch (error =>
+                    this.setState({ error: error.message })
+                )
         } catch (err) {
             this.setState({ error: err.message })
         }
@@ -75,6 +81,9 @@ class Postits extends Component {
 
                     this.setState({ postits, toDoPostits, doingPostits, reviewPostits, donePostits })
                 })
+                .catch (error =>
+                    this.setState({ error: error.message })
+                )
         } catch ({ message }) {
             this.setState({ error: message })
         }
@@ -92,6 +101,9 @@ class Postits extends Component {
 
                     this.setState({ postits, toDoPostits, doingPostits, reviewPostits, donePostits })
                 })
+                .catch (error =>
+                    this.setState({ error: error.message })
+                )
         } catch ({ message }) {
             this.setState({ error: message })
         }
@@ -109,6 +121,9 @@ class Postits extends Component {
 
                     this.setState({ postits, toDoPostits, doingPostits, reviewPostits, donePostits })
                 })
+                .catch (error =>
+                    this.setState({ error: error.message })
+                )
         } catch ({ message }) {
             this.setState({ error: message })
         }
@@ -116,7 +131,6 @@ class Postits extends Component {
 
     handleChangeAssignTo = (postitId, assignToUsername) => {
         try {
-            
             logic.assignBuddy(postitId, assignToUsername)
                 .then(()=> {
                     this.setState({assignToUsername})
@@ -125,6 +139,9 @@ class Postits extends Component {
                 .then(buddies => {
                     this.setState({ buddies })
                 })
+                .catch (error =>
+                    this.setState({ error: error.message })
+                )
         } catch ({ message }) {
             this.setState({ error: message })
         }
@@ -134,6 +151,7 @@ class Postits extends Component {
         return <div>
             <h1 className="title">Kanban App </h1>
             <BuddyForm OnAddBuddy={this.handleAddBuddy}  />
+            {this.state.error && <Error message={this.state.error} />}
             <div className="kanbanContainer">
                 <section className="column1">
                     <h2>To do</h2>

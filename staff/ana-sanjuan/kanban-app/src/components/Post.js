@@ -35,7 +35,9 @@ class Post extends Component {
     }
 
     render() {
-        return <article className="post">
+        return <div>
+        {!this.props.assignTo?
+        <article className="post">
             <textarea defaultValue={this.state.text} onChange={this.handleChange} onBlur={this.handleBlur} />
             <select className="post__dropdown" onChange={this.handleAssignToChange} defaultValue = {this.props.assignTo? this.props.assignTo: 'select buddy' } >
                 <option value="Select buddy">Select buddy</option>
@@ -47,9 +49,20 @@ class Post extends Component {
                 <option value="REVIEW">Review</option>
                 <option value="DONE">Done</option>
             </select>
-
             <button className="post__trash" onClick={()=> this.props.onDeletePost(this.props.postitId)}><i className="far fa-trash-alt"></i></button>
         </article>
+        :
+        <article className="post assignPost">
+        <textarea defaultValue={this.state.text} onChange={this.handleChange} onBlur={this.handleBlur} />
+        <select className="post__dropdown" onChange={this.handleStatusChange} defaultValue = {this.state.status}>
+            <option value="TODO">To Do</option>
+            <option value="DOING">Doing</option>
+            <option value="REVIEW">Review</option>
+            <option value="DONE">Done</option>
+        </select>
+    </article>}
+        
+        </div>
     }
 }
 

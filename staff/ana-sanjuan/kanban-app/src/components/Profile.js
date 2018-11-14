@@ -45,9 +45,12 @@ class Profile extends Component {
         if(newPassword !== repPassword) {
             this.setState({ error: 'new passwords do not match' })
         } else {
-            logic.updateProfile(name, surname, username, newPassword, password)
-
-            this.setState({ error: '' })
+            try {
+                logic.updateProfile(name, surname, username, newPassword, password)
+                this.setState({ error: '' })
+            } catch(error) {
+                this.setState({ error})
+            }    
         }  
     }
 

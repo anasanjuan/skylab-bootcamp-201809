@@ -181,7 +181,9 @@ const logic = {
             let user = await User.findById(id).lean()
             if (!user) throw new NotFoundError(`user with id ${id} not found`)
 
-            const postits = await Postit.find( {$or :[ {user: user._id },{ assignTo: id }]}, { __v: 0 }).lean()
+            const postits = await Postit.find( {user: user._id }, { __v: 0 }).lean()
+            
+            // const assignPostits = await Postit.find( { assignTo: id }, { __v: 0 }).lean()
 
             const _postits = postits.map(postit => {
                 postit.id = postit._id.toString()
@@ -192,6 +194,18 @@ const logic = {
 
                 return postit
             })
+
+            // const _assignPostits = assignPostits.map(postit => {
+            //     postit.id = postit._id.toString()
+
+            //     delete postit._id
+
+            //     postit.user = postit.user.toString()
+
+            //     return postit
+            // })
+            
+            // return [_postits, _assignPostits]
             return _postits
         })()
     },
@@ -267,7 +281,7 @@ const logic = {
 
             if (!user) throw new NotFoundError(`user with id ${id} not found`)
 
-            const postit = await Postit.findOne({ user: id, _id: postitId })
+            const postit = await Postit.findOne({ _id: postitId })
 
             if (!postit) throw new NotFoundError(`postit with id ${postitId} not found in user with id ${id}`)
 
