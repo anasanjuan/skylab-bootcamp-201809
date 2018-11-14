@@ -3,19 +3,25 @@ import logic from '../logic'
 import InputForm from './InputForm'
 import Post from './Post'
 import Error from './Error'
+import BuddyForm from './BuddyForm'
 
 class Postits extends Component {
-    state = { postits: [], toDoPostits: [], doingPostits: [], reviewPostits: [], donePostits: [] , error: null}
+    state = { assignToUsername: [], buddies: [], postits: [], toDoPostits: [], doingPostits: [], reviewPostits: [], donePostits: [], error: null }
 
     componentDidMount() {
         logic.listPostits()
             .then(postits => {
+
                 const toDoPostits = postits.filter(post => post.status === "TODO")
                 const doingPostits = postits.filter(post => post.status === "DOING")
                 const reviewPostits = postits.filter(post => post.status === "REVIEW")
                 const donePostits = postits.filter(post => post.status === "DONE")
 
                 this.setState({ postits, toDoPostits, doingPostits, reviewPostits, donePostits })
+            })
+            .then(() => logic.listBuddies())
+            .then(buddies => {
+                this.setState({ buddies })
             })
     }
 
@@ -32,7 +38,28 @@ class Postits extends Component {
                     this.setState({ postits, toDoPostits, doingPostits, reviewPostits, donePostits })
                 })
         } catch ({ message }) {
-            this.setState({error: message}) 
+            this.setState({ error: message })
+        }
+    }
+
+    handleAddBuddy = (buddyUsername) => {
+        try {
+            logic.addBuddy(buddyUsername)
+                .then(() => logic.listPostits())
+                .then(postits => {
+                    const toDoPostits = postits.filter(post => post.status === "TODO")
+                    const doingPostits = postits.filter(post => post.status === "DOING")
+                    const reviewPostits = postits.filter(post => post.status === "REVIEW")
+                    const donePostits = postits.filter(post => post.status === "DONE")
+
+                    this.setState({ postits, toDoPostits, doingPostits, reviewPostits, donePostits })
+                })
+                .then(() => logic.listBuddies())
+                .then(buddies => {
+                    this.setState({ buddies })
+                })
+        } catch (err) {
+            this.setState({ error: err.message })
         }
     }
 
@@ -49,13 +76,13 @@ class Postits extends Component {
                     this.setState({ postits, toDoPostits, doingPostits, reviewPostits, donePostits })
                 })
         } catch ({ message }) {
-            this.setState({error: message})  
+            this.setState({ error: message })
         }
     }
 
-    handleModifyPostit = (id, text) => {
+    handleModifyPostit = (postitId, text) => {
         try {
-            logic.modifyPostit(id, text)
+            logic.modifyPostit(postitId, text)
                 .then(() => logic.listPostits())
                 .then(postits => {
                     const toDoPostits = postits.filter(post => post.status === "TODO")
@@ -66,13 +93,13 @@ class Postits extends Component {
                     this.setState({ postits, toDoPostits, doingPostits, reviewPostits, donePostits })
                 })
         } catch ({ message }) {
-            this.setState({error: message}) 
+            this.setState({ error: message })
         }
     }
 
-    handleChangeStatus = (id, status) => {
+    handleChangeStatus = (postitId, status) => {
         try {
-            logic.modifyPostitStatus(id, status)
+            logic.modifyPostitStatus(postitId, status)
                 .then(() => logic.listPostits())
                 .then(postits => {
                     const toDoPostits = postits.filter(post => post.status === "TODO")
@@ -83,20 +110,37 @@ class Postits extends Component {
                     this.setState({ postits, toDoPostits, doingPostits, reviewPostits, donePostits })
                 })
         } catch ({ message }) {
-            this.setState({error: message}) 
+            this.setState({ error: message })
+        }
+    }
+
+    handleChangeAssignTo = (postitId, assignToUsername) => {
+        try {
+            
+            logic.assignBuddy(postitId, assignToUsername)
+                .then(()=> {
+                    this.setState({assignToUsername})
+                })
+                .then(() => logic.listBuddies())
+                .then(buddies => {
+                    this.setState({ buddies })
+                })
+        } catch ({ message }) {
+            this.setState({ error: message })
         }
     }
 
     render() {
         return <div>
             <h1 className="title">Kanban App </h1>
+            <BuddyForm OnAddBuddy={this.handleAddBuddy}  />
             <div className="kanbanContainer">
                 <section className="column1">
                     <h2>To do</h2>
                     <InputForm onSubmit={this.handleSubmit} status={"TODO"} />
                     {this.state.error && <Error message={this.state.error} />}
                     <section >
-                        {this.state.toDoPostits.map(postit => <Post status={"TODO"} key={postit.id} onChangeStatus={this.handleChangeStatus} text={postit.text} id={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} />)}
+                        {this.state.toDoPostits.map(postit => <Post assignTo={postit.assignTo} status={"TODO"} buddies={this.state.buddies} key={postit.id} onChangeStatus={this.handleChangeStatus} OnChangeAssignTo={this.handleChangeAssignTo} text={postit.text} postitId={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} />)}
                     </section>
                 </section>
 
@@ -104,7 +148,7 @@ class Postits extends Component {
                     <h2>Doing</h2>
                     <InputForm onSubmit={this.handleSubmit} status={"DOING"} />
                     <section >
-                        {this.state.doingPostits.map(postit => <Post status={"DOING"} key={postit.id} text={postit.text} onChangeStatus={this.handleChangeStatus} id={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} />)}
+                        {this.state.doingPostits.map(postit => <Post status={"DOING"} assignTo={postit.assignTo} key={postit.id} buddies={this.state.buddies} text={postit.text} onChangeStatus={this.handleChangeStatus} OnChangeAssignTo={this.handleChangeAssignTo} postitId={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} />)}
                     </section>
                 </section>
 
@@ -112,7 +156,7 @@ class Postits extends Component {
                     <h2>Review</h2>
                     <InputForm onSubmit={this.handleSubmit} status={"REVIEW"} />
                     <section >
-                        {this.state.reviewPostits.map(postit => <Post status={"REVIEW"} key={postit.id} text={postit.text} onChangeStatus={this.handleChangeStatus} id={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} />)}
+                        {this.state.reviewPostits.map(postit => <Post status={"REVIEW"} assignTo={postit.assignTo}  key={postit.id} buddies={this.state.buddies} text={postit.text} onChangeStatus={this.handleChangeStatus} postitId={postit.id} OnChangeAssignTo={this.handleChangeAssignTo} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} />)}
                     </section>
                 </section>
 
@@ -120,7 +164,7 @@ class Postits extends Component {
                     <h2>Done</h2>
                     <InputForm onSubmit={this.handleSubmit} status={"DONE"} />
                     <section >
-                        {this.state.donePostits.map(postit => <Post status={"DONE"} key={postit.id} text={postit.text} onChangeStatus={this.handleChangeStatus} id={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} />)}
+                        {this.state.donePostits.map(postit => <Post status={"DONE"} assignTo={postit.assignTo}  key={postit.id} buddies={this.state.buddies} text={postit.text} onChangeStatus={this.handleChangeStatus} postitId={postit.id} OnChangeAssignTo={this.handleChangeAssignTo} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} />)}
                     </section>
                 </section>
             </div>

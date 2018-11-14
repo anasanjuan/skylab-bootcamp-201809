@@ -90,6 +90,19 @@ router.put('/users/:id/buddy', [bearerTokenParser, jwtVerifier, jsonBodyParser],
     }, res)
 })
 
+router.get('/users/:id/buddies', [bearerTokenParser, jwtVerifier, jsonBodyParser], (req, res) => {
+    routeHandler(()=> {
+        const {params: {id}, sub } = req
+
+        if (id !== sub) throw Error('token sub does not match user id')
+
+        return logic.listBuddies(id)
+            .then(buddies => res.json({
+                data: buddies
+            }))
+    }, res)
+})
+
 router.post('/users/:id/postits', [bearerTokenParser, jwtVerifier, jsonBodyParser], (req, res) => {
     routeHandler(() => {
         const { sub, params: { id }, body: { text, status } } = req
@@ -155,11 +168,11 @@ router.delete('/users/:id/postits/:postitId', [bearerTokenParser, jwtVerifier, j
             }))
     }, res)
 
-})
+})        
 
 router.put('/users/:id/postits/:postitId/assign', [bearerTokenParser, jwtVerifier, jsonBodyParser], (req, res) => {
     routeHandler(() => {
-        const { sub, params: { id, postitId }, body: { buddyUsername } } = req
+        const { sub, params: { id, postitId }, body: { assignToUsername: buddyUsername } } = req
         debugger
         if (id !== sub) throw Error('token sub does not match user id')
 

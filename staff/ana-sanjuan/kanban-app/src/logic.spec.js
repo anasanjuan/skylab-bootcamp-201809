@@ -363,7 +363,7 @@ describe('logic', () => {
             })
 
             it('should succedd on correct data', () => {
-                return logic.assignBuddy(buddyUsername, postitId)
+                return logic.assignBuddy(postitId, buddyUsername)
                     .then(() => expect(true).to.be.true)
 
             })

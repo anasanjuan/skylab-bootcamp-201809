@@ -258,6 +258,44 @@ describe('logic', () => {
             })
 
         })
+
+        describe('list buddies', () => {
+            let user, buddy1, buddy2
+            beforeEach(async () => {
+
+                buddy1 = new User({ name: 'John2', surname: 'Doe2', username: 'buddy1', password: '123' })
+                buddy2 = new User({ name: 'John3', surname: 'Doe3', username: 'buddy2', password: '123' })
+
+                user = new User({ name: 'John', surname: 'Doe', username: 'jd', password: '123', buddies:[buddy1.id, buddy2.id] })
+                
+                await Promise.all([ buddy1.save(), buddy2.save()])
+                await user.save()
+            })
+            it('should succed on correct data', async ()=> {
+                const buddies = await logic.listBuddies(user.id)
+
+                const _user = await User.findById(user.id)
+
+                const {buddies: _buddies} = _user
+
+                expect(buddies.length).to.equal(2)
+                expect(buddies.length).to.equal(_buddies.length)
+
+                const _buddy1 = await User.findById(_buddies[0]._id.toString())
+                const _buddy2 = await User.findById(_buddies[1]._id.toString())
+                
+                expect(buddy1.username).to.equal(_buddy1.username)
+                expect(buddy2.username).to.equal(_buddy2.username)
+                
+                const [__buddy1, __buddy2] = buddies
+                debugger                
+
+                expect(_buddy1.username).to.equal(__buddy1)
+                expect(_buddy2.username).to.equal(__buddy2)
+                
+            })
+        })
+
     })
 
     describe('postits', () => {
@@ -416,7 +454,7 @@ describe('logic', () => {
             beforeEach(async () => {
                 user = new User({ name: 'John', surname: 'Doe', username: 'jd', password: '123' })
 
-                buddy = new User({ name: 'John2', surname: 'Doe2', username: 'jd2', password: '123' })
+                buddy = new User({ name: 'John2', surname: 'Doe2', username: 'buddy', password: '123' })
 
                 postit = new Postit({ text: 'hello text', status: 'TODO', user: user.id })
 

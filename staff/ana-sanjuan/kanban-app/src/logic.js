@@ -68,10 +68,11 @@ const logic = {
         sessionStorage.removeItem('userId')
         sessionStorage.removeItem('token')
     },
+
     addBuddy(buddyUsername) {
         if (typeof buddyUsername !== 'string') throw TypeError(`${buddyUsername} is not a string`)
         if (!buddyUsername.trim()) throw Error('buddy Username is empty or blank')
-
+        
         return fetch(`${this.url}/users/${this._userId}/buddy`, {
             method: 'PUT',
             headers: {
@@ -83,6 +84,21 @@ const logic = {
         .then(res => res.json())
         .then(res => {
             if (res.error) throw Error(res.error)
+        })
+    },
+
+    listBuddies() {
+        return fetch(`${this.url}/users/${this._userId}/buddies`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${this._token}`
+            }
+        })
+        .then(res => res.json())
+        .then(res => {
+            if (res.error) throw Error(res.error)
+
+            return res.data
         })
     },
 
@@ -177,11 +193,23 @@ const logic = {
             })
     },
 
-    assignBuddy(buddyUsername, postitId) {
-        if (typeof buddyUsername !== 'string') throw new TypeError(`${buddyUsername} is not a string`)
-        if (!buddyUsername.trim().length) throw Error('buddy Username is empty or blank')
-
-        return fetch(`${this.url}/users/${this._userId}/postits/${postitId}/assign`)
+    assignBuddy(postitId, assignToUsername) {
+        if (typeof assignToUsername !== 'string') throw new TypeError(`${assignToUsername} is not a string`)
+        if (!assignToUsername.trim().length) throw Error('buddy Username is empty or blank')
+        debugger
+        return fetch(`${this.url}/users/${this._userId}/postits/${postitId}/assign`, {
+            method: 'PUT', 
+            headers: {
+                'Content-Type': 'application/json; charset=utf-8',
+                'Authorization': `Bearer ${this._token}`
+            }, 
+            body: JSON.stringify({assignToUsername})
+        })
+            .then(res => res.json())
+            .then(res => {
+                debugger
+                if (res.error) throw Error(res.error)
+            })
     }
 } 
 

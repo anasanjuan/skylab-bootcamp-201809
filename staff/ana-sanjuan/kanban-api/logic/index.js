@@ -108,16 +108,42 @@ const logic = {
         if (!buddyUsername.trim().length) throw new ValueError('buddy Username is empty or blank')
 
         return (async () => {
+            debugger
             const user = await User.findById(id)
 
             const buddy = await User.findOne({ username: buddyUsername })
 
             if (!user) throw new NotFoundError(`user with id ${id} not found`)
-
+            
             user.buddies.push(buddy.id)
 
             await user.save()
         })()
+    },
+
+    listBuddies(id) {
+        if (typeof id !== 'string') throw TypeError(`${id} is not a string`)
+        if (!id.trim().length) throw new ValueError('id is empty or blank')
+
+        return (async () => {
+            const user = await User.findById(id)
+            
+            if (!user) throw new NotFoundError(`user with id ${id} not found`)
+
+            const buddies = user.buddies
+
+            if (!buddies) return []
+
+            let promises = []
+
+            for (var i = 0; i < user.buddies.length; i++) {
+                promises.push(User.findById(user.buddies[i]))
+            }
+
+            return Promise.all(promises)
+                .then(__buddies => __buddies.map(buddy=> buddy.username))
+        })()
+
     },
 
     /**
@@ -261,7 +287,7 @@ const logic = {
 
         if (typeof postitId !== 'string') throw TypeError(`${postitId} is not a string`)
         if (!postitId.trim().length) throw new ValueError('postit id is empty or blank')
-
+        debugger
         return (async () => {
             const user = await User.findById(userId)
 
