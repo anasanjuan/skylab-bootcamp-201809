@@ -108,7 +108,6 @@ const logic = {
         if (!buddyUsername.trim().length) throw new ValueError('buddy Username is empty or blank')
 
         return (async () => {
-            debugger
             const user = await User.findById(id)
 
             const buddy = await User.findOne({ username: buddyUsername })
@@ -141,7 +140,7 @@ const logic = {
             }
 
             return Promise.all(promises)
-                .then(__buddies => __buddies.map(buddy=> buddy.username))
+                .then(_buddies => _buddies.map(buddy=> buddy.username))
         })()
 
     },

@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import Register from './components/Register'
 import Login from './components/Login'
+import Profile from './components/Profile'
 import Postits from './components/Postits'
 import Error from './components/Error'
 import Landing from './components/Landing'
@@ -44,9 +45,13 @@ class App extends Component {
         this.setState({ error: null }, () => this.props.history.push('/'))
     }
 
-    
+    handleRegisterClick = () => this.setState({ error: null }, () => this.props.history.push('/register'))
 
     handleGoBack = () => this.setState({ error: null }, () => this.props.history.push('/'))
+
+    handleBackToPostits  = () => this.setState({ error: null }, () => this.props.history.push('/postits'))
+
+    handleProfile = () => this.setState({ error: null }, () => this.props.history.push('/profile'))
 
     render() {
         const { error } = this.state
@@ -59,7 +64,12 @@ class App extends Component {
 
             <Route path="/postits" render={() => logic.loggedIn ? <div>
                 <section><button className="basic__button" onClick={this.handleLogoutClick}>Logout</button></section>
+                <button onClick={this.handleProfile} className="basic__button">Profile</button>
                 <Postits />
+            </div> : <Redirect to="/" />} />
+
+            <Route path="/profile" render={() => logic.loggedIn ? <div>
+                <Profile onGoBack={this.handleBackToPostits}/>
             </div> : <Redirect to="/" />} />
 
         </div>

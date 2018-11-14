@@ -102,6 +102,20 @@ const logic = {
         })
     },
 
+    updateProfile(name, surname, username, newPassword, password){
+        return fetch(`users/:id`, {
+            method: 'PATCH',
+            headers: {
+                'Authorization': `Bearer ${this._token}`
+            },
+            body: JSON.stringify({name, surname, username, newPassword, password})
+        })
+        .then(res => res.json())
+        .then(res => {
+            if (res.error) throw Error(res.error)
+        })
+    },
+
     addPostit(text, status) {
         if (typeof text !== 'string') throw TypeError(`${text} is not a string`)
         if (!text.trim()) throw Error('text is empty or blank')
@@ -130,7 +144,6 @@ const logic = {
             .then(res => res.json())
             .then(res => {
                 if (res.error) throw Error(res.error)
-                debugger
                 return res.data
             })
     },
@@ -196,7 +209,7 @@ const logic = {
     assignBuddy(postitId, assignToUsername) {
         if (typeof assignToUsername !== 'string') throw new TypeError(`${assignToUsername} is not a string`)
         if (!assignToUsername.trim().length) throw Error('buddy Username is empty or blank')
-        debugger
+
         return fetch(`${this.url}/users/${this._userId}/postits/${postitId}/assign`, {
             method: 'PUT', 
             headers: {
@@ -207,7 +220,6 @@ const logic = {
         })
             .then(res => res.json())
             .then(res => {
-                debugger
                 if (res.error) throw Error(res.error)
             })
     }
