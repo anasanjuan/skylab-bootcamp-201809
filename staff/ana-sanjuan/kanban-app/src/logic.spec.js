@@ -126,6 +126,8 @@ describe('logic', () => {
                         const buddyPassword = `123-${Math.random()}`
 
                         return logic.registerUser(buddyName, buddySurname, buddyUsername, buddyPassword)
+                            .then(() => logic.login(username, password))
+
                     })
             })
 
@@ -349,6 +351,8 @@ describe('logic', () => {
                         const buddyPassword = `123-${Math.random()}`
 
                         return logic.registerUser(buddyName, buddySurname, buddyUsername, buddyPassword)
+                            .then(() => logic.login(username, password))
+
 
                     })
                     .then(() => {
@@ -368,5 +372,9 @@ describe('logic', () => {
 
             })
         })
+    })
+
+    afterEach(() => {
+        logic.logout()
     })
 })

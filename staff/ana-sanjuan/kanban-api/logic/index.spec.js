@@ -402,45 +402,6 @@ describe('logic', () => {
             })
         })
 
-        // describe('list postit assigned to me', () => {
-        //     let user, buddy1, postit
-        //     beforeEach(async () => {
-
-        //         buddy1 = new User({ name: 'John2', surname: 'Doe2', username: 'buddy1', password: '123' })
-        //         buddy2 = new User({ name: 'John3', surname: 'Doe3', username: 'buddy2', password: '123' })
-
-        //         user = new User({ name: 'John', surname: 'Doe', username: 'jd', password: '123', buddies:[buddy1.id, buddy2.id] })
-                
-        //         postit = new Postit({ text: 'hello text', status: "TODO", user: user.id, assignTo: buddy1.id })
-
-
-        //         await Promise.all([ buddy1.save(), buddy2.save()])
-        //         await user.save()
-        //         await postit.save()
-        //     })
-
-        //     it('should succed on correct data', async () => {
-        //         const postits = await logic.listPostits()
-
-        //         const _postits = await Postit.findOne({assignTo: buddy.id })
-
-        //         expect(_postits.length).to.equal(1)
-        //         expect(postits.length).to.equal(_postits.length)
-
-        //         const [_postit] = _postits
-
-        //         expect(_postit.id).to.equal(postit.id)
-        //         expect(_postit.text).to.equal(postit.text)
-
-        //         const [__postit] = postits
-
-        //         expect(__postit).not.to.be.instanceof(Postit)
-
-        //         expect(_postit.id).to.equal(__postit.id)
-        //         expect(_postit.text).to.equal(__postit.text)
-        //     })
-        // })
-
         describe('remove', () => {
             let user, postit
 

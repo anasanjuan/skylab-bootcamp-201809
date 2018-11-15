@@ -113,6 +113,10 @@ const logic = {
             const buddy = await User.findOne({ username: buddyUsername })
 
             if (!user) throw new NotFoundError(`user with id ${id} not found`)
+
+            user.buddies.forEach(_buddyId => {
+                if(_buddyId === buddy.id) throw new AlreadyExistsError ('this user is already a buddy')
+            })
             
             user.buddies.push(buddy.id)
 
