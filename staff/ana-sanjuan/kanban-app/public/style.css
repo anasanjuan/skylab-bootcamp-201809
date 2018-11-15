@@ -8,8 +8,8 @@ body {
 
 .post {
     background-color:#F5F6F7;
-    width: 150px;
-    height: 100px;
+    width: 160px;
+    height: 130px;
     margin: 10px;
 }
 
@@ -35,11 +35,11 @@ body {
 
 .post__dropdown {
     position: relative;
-    bottom: 30px;
+    bottom: 50px;
 }
 .post__trash {
     position: relative;
-    bottom: 30px;
+    bottom: 50px;
 }
 
 .column1 {
@@ -119,4 +119,8 @@ input {
 
 .assignPost{
     background-color: rgb(135, 135, 223)
+}
+
+.addBuddy {
+    display: flex;
 }

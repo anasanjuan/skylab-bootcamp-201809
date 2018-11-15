@@ -331,23 +331,28 @@ describe('logic', () => {
         })
 
         describe('list', () => {
-            let user, postit, postit2
+            let user,user2, postit, postit2, assignPostit
 
             beforeEach(async () => {
                 user = new User({ name: 'John', surname: 'Doe', username: 'jd', password: '123' })
+                user2 = new User({ name: 'John', surname: 'Doe', username: 'jd2', password: '123' })
+                await user.save()
 
-                postit = new Postit({ text: 'hello text', status: "TODO", user: user.id })
+                postit = new Postit({ text: 'hello text', status: "TODO", user: user.id})
 
                 postit2 = new Postit({ text: 'hello text 2', status: "TODO", user: user.id })
 
-                await user.save()
+                assignPostit = new Postit({ text: 'hello text', status: "TODO", user: user2.id, assignTo: user.id })
+
                 await postit.save()
                 await postit2.save()
+                await assignPostit.save()
             })
 
             it('should succeed on correct data', async () => {
-                const postits = await logic.listPostits(user.id)
-                const _postits = await Postit.find()
+                const [postits, assignPostits] = await logic.listPostits(user.id)
+
+                const _postits = await Postit.find({user: user.id} )
 
                 expect(_postits.length).to.equal(2)
 
@@ -371,6 +376,29 @@ describe('logic', () => {
 
                 expect(_postit2.id).to.equal(__postit2.id)
                 expect(_postit2.text).to.equal(__postit2.text)
+
+                expect(_postits.length).to.equal(2)
+
+                expect(postits.length).to.equal(_postits.length)
+                debugger
+
+                const _assignPostits = await Postit.find({assignTo: user.id})
+
+                expect(_assignPostits.length).to.equal(1)
+
+                const [_assignpostit] = _assignPostits
+
+                expect(_assignpostit.id).to.equal(assignPostit.id)
+                expect(_assignpostit.assignTo.id.toString()).to.equal(assignPostit.assignTo.id.toString())
+                expect(_assignpostit.text).to.equal(assignPostit.text)
+
+                const [__assignpostit] = assignPostits
+
+                expect(__assignpostit).not.to.be.instanceof(Postit)
+
+                expect(_assignpostit.id).to.equal(__assignpostit.id)
+                expect(_assignpostit.text).to.equal(__assignpostit.text)
+
             })
         })
 

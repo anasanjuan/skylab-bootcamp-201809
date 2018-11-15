@@ -16,7 +16,7 @@ class BuddyForm extends  Component {
         this.props.OnAddBuddy(this.state.buddyUsername)
     }
     render() {
-        return <div>
+        return <div className='addBuddy'>
             <form onSubmit={this.handleOnSubmit}>
                 <input onChange={this.handleOnChange} placeholder='write your buddy name here'/>
                 <button>Add Buddy</button>

@@ -37,13 +37,9 @@ class Post extends Component {
     render() {
         return <div>
         
-        <article className="post">
+        <article className="post assignPost">
             <textarea defaultValue={this.state.text} onChange={this.handleChange} onBlur={this.handleBlur} />
-            <select className="post__dropdown" onChange={this.handleAssignToChange} defaultValue = 'Select buddy' >
-                <option disabled={true} value="Select buddy">Select buddy</option>
-                {this.props.buddies.map(buddy => <option key={buddy} value={buddy}>{buddy}</option>)}
-            </select>
-            <select className="post__dropdown" onChange={this.handleStatusChange} defaultValue = {this.props.status}>
+            <select className="post__dropdown" onChange={this.handleStatusChange} defaultValue = {this.state.status}>
                 <option value="TODO">To Do</option>
                 <option value="DOING">Doing</option>
                 <option value="REVIEW">Review</option>
@@ -51,6 +47,7 @@ class Post extends Component {
             </select>
             <button className="post__trash" onClick={()=> this.props.onDeletePost(this.props.postitId)}><i className="far fa-trash-alt"></i></button>
         </article>
+        
         </div>
     }
 }

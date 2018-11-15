@@ -183,7 +183,7 @@ const logic = {
 
             const postits = await Postit.find( {user: user._id }, { __v: 0 }).lean()
             
-            // const assignPostits = await Postit.find( { assignTo: id }, { __v: 0 }).lean()
+            const assignPostits = await Postit.find( { assignTo: id }, { __v: 0 }).lean()
 
             const _postits = postits.map(postit => {
                 postit.id = postit._id.toString()
@@ -195,18 +195,18 @@ const logic = {
                 return postit
             })
 
-            // const _assignPostits = assignPostits.map(postit => {
-            //     postit.id = postit._id.toString()
+            const _assignPostits = assignPostits.map(postit => {
+                postit.id = postit._id.toString()
 
-            //     delete postit._id
+                delete postit._id
 
-            //     postit.user = postit.user.toString()
+                postit.user = postit.user.toString()
 
-            //     return postit
-            // })
+                return postit
+            })
             
-            // return [_postits, _assignPostits]
-            return _postits
+            return [_postits, _assignPostits]
+            // return _postits
         })()
     },
 
