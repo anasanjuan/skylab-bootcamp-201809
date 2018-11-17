@@ -189,7 +189,7 @@ describe('logic', () => {
                         logic.listPostits()
                             .then(postits => {
                                 expect(postits).not.to.be.undefined
-                                expect(postits.length).to.equal(1)
+                                expect(postits[0].length).to.equal(1)
                             })
                     )
                 })
@@ -198,7 +198,11 @@ describe('logic', () => {
                     logic.listPostits()
                         .then(postits => {
                             expect(postits).not.to.be.undefined
-                            expect(postits.length).to.equal(0)
+
+                            expect(postits[0].length).to.equal(0)
+
+                            expect(postits[0].length).to.equal(0)
+
                         })
                 )
             })
@@ -225,7 +229,7 @@ describe('logic', () => {
                     beforeEach(() =>
                         logic.addPostit(text, status)
                             .then(() => logic.listPostits())
-                            .then(postits => postitId = postits[0].id)
+                            .then(postits => postitId = postits[0][0].id)
                     )
 
                     it('should succeed', () =>
@@ -260,7 +264,7 @@ describe('logic', () => {
 
                         return logic.addPostit(text, status)
                             .then(() => logic.listPostits())
-                            .then(([postit]) => postitId = postit.id)
+                            .then((postits) => postitId = postits[0][0].id)
                     })
 
                     it('should succeed', () =>
@@ -272,12 +276,12 @@ describe('logic', () => {
                             })
                             .then(postits => {
                                 expect(postits).not.to.be.undefined
-                                expect(postits.length).to.equal(1)
+                                expect(postits[0].length).to.equal(1)
 
                                 const [postit] = postits
 
-                                expect(postit.id).to.equal(postitId)
-                                expect(postit.text).to.equal(text)
+                                expect(postit[0].id).to.equal(postitId)
+                                expect(postit[0].text).to.equal(text)
                             })
                     )
                 })
@@ -310,7 +314,7 @@ describe('logic', () => {
 
                         return logic.addPostit(text, "TODO")
                             .then(() => logic.listPostits())
-                            .then(([postit]) => postitId = postit.id)
+                            .then(([postit]) => postitId = postit[0].id)
                     })
 
                     it('should succeed', () =>
@@ -322,12 +326,12 @@ describe('logic', () => {
                             })
                             .then(postits => {
                                 expect(postits).not.to.be.undefined
-                                expect(postits.length).to.equal(1)
+                                expect(postits[0].length).to.equal(1)
 
                                 const [postit] = postits
 
-                                expect(postit.id).to.equal(postitId)
-                                expect(postit.status).to.equal(status)
+                                expect(postit[0].id).to.equal(postitId)
+                                expect(postit[0].status).to.equal(status)
                             })
                     )
                 })
@@ -361,8 +365,8 @@ describe('logic', () => {
                         const status = 'TODO'
 
                         return logic.addPostit(text, status)
-                        .then(() => logic.listPostits())
-                        .then(([postit]) => postitId = postit.id)
+                            .then(() => logic.listPostits())
+                            .then(([postit]) => postitId = postit[0].id)
                     })
             })
 

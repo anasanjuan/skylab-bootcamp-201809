@@ -1,1 +1,11 @@
 #.env
+
+data/users/**/*.png
+data/users/**/*.jpg
+data/users/**/*.jpeg
+data/users/**/*.gif
+data/users/**/*.svg
+data/users/**/*.bmp
+
+
+!data/users/**/default.jpg
