@@ -8,8 +8,8 @@ const logic = {
 
     url: 'http://localhost:5000/api',
 
-    register(name, surname, email, password, birthday, gender, phone){
-        
+    register(name, surname, email, password, birthday, gender, phone) {
+
         validate([
             { key: 'name', value: name, type: String },
             { key: 'surname', value: surname, type: String },
@@ -19,21 +19,18 @@ const logic = {
             { key: 'gender', value: gender, type: String, optional: true },
             { key: 'phone', value: phone, type: String, optional: true }
         ])
-        debugger
 
         return fetch(`${this.url}/users`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json; charset=utf-8'
-            }, 
-            body: JSON.stringify({name, surname, email, password, birthday, gender, phone})
+            },
+            body: JSON.stringify({ name, surname, email, password, birthday, gender, phone })
         })
-        .then(res => {
-            return res.json()}
-            )
-        .then(res => {
-            if(res.error) throw Error(res.error)
-        })
+            .then(res => res.json())
+            .then(res => {
+                if (res.error) throw Error(res.error)
+            })
 
 
     },
@@ -48,23 +45,30 @@ const logic = {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json; charset=utf-8'
-            }, 
-            body: JSON.stringify({email, password})
+            },
+            body: JSON.stringify({ email, password })
         })
+            .then(res => res.json())
             .then(res => {
-                debugger
-                return res.json()
-            })
-            .then(res => {
-                if(res.error) throw Error(res.error)
+                if (res.error) throw Error(res.error)
 
-                const {id, token} = res.data
-                
-                console.log(id, token)
+                const { id, token } = res.data
+
                 sessionStorage.setItem('userId', id)
                 sessionStorage.setItem('token', token)
-            
             })
+    },
+    
+    get loggedIn() {
+        return !!this._userId
+    },
+
+    logOut() {
+        this._userId = null
+        this._token = null
+
+        sessionStorage.removeItem('userId')
+        sessionStorage.removeItem('token')
     }
 }
 

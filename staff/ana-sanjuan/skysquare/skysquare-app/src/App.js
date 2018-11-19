@@ -3,6 +3,7 @@ import logic from './logic/logic'
 import Landing from './components/Landing';
 import Register from './components/Register';
 import LogIn from './components/LogIn';
+import Home from './components/Home';
 import Error from './components/Error';
 
 
@@ -17,7 +18,6 @@ class App extends Component {
         try {
             logic.register(name, surname, email, password, birthday, gender, phone)
                 .then(() => {
-                    debugger
                     this.setState({ error: null }, () => this.props.history.push('/logIn'))
                 })
                 .catch(error => this.setState({ error: error.message }))
@@ -32,8 +32,7 @@ class App extends Component {
         try {
             logic.logIn(email, password)
                 .then(() => {
-                    
-                    // this.setState({ error: null }, () => this.props.history.push('/home'))
+                    this.setState({ error: null }, () => this.props.history.push('/home'))
                 })
 
         } catch (err) {
@@ -41,19 +40,26 @@ class App extends Component {
         }
     }
 
-    handleGoBack = () => {
-        this.props.history.push('/')
+    handleRegisterGoBack = () => {
+        this.setState({ error: null }, () => this.props.history.push('/'))
+        
+    }
+
+    handleLogInGoBack = () => {
+        this.setState({ error: null }, () => this.props.history.push('/register'))
+    }
+
+    handleLogoutClick = () => {
+        logic.logOut()
     }
 
     render() {
-        return (
-            <div>
-                <Route exact path='/' render={() => <Landing onRegisterClick={this.handleRegisterClick} onLogInClick={this.handleLogInClick} />} />
-                <Route path='/register' render={() => <Register onRegister={this.handleRegister} OnGoBack={this.handleGoBack} onLogInClick={this.handleLogInClick} />} />
-                <Route path='/logIn' render={() => <LogIn onLogIn={this.handleLogIn} OnGoBack={this.handleGoBack} />} />
-                {/* <Route path='/home' render={() => <Home onLogIn={this.handleLogIn} OnGoBack={this.handleGoBack} />} /> */}
-
+        return (<div>
+                <Route exact path='/' render={() => !logic.loggedIn? <Landing onRegisterClick={this.handleRegisterClick} onLogInClick={this.handleLogInClick} />: <Redirect to="/home"/>} />
+                <Route path='/register' render={() => !logic.loggedIn? <Register onRegister={this.handleRegister} OnGoBack={this.handleRegisterGoBack} onLogInClick={this.handleLogInClick} />: <Redirect to="/home"/>} />
+                <Route path='/logIn' render={() => !logic.loggedIn? <LogIn onLogIn={this.handleLogIn} OnGoBack={this.handleLogInGoBack} />: <Redirect to="/home"/>} />
                 {this.state.error && <Error message={this.state.error} />}
+                <Route path='/home' render={() => logic.loggedIn? <Home onLogOutClick={this.handleLogoutClick} />:<Redirect to="/"/>} />
             </div>
         );
     }

@@ -21,6 +21,9 @@ function validate(params) {
                 if (optional && value === null) break
 
                 if (typeof value !== 'number') throw TypeError(`${value} is not a number`)
+                break
+            default:
+            break
         }
     })
 }

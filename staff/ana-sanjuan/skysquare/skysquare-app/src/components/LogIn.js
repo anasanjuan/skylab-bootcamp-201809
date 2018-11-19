@@ -17,7 +17,7 @@ class LogIn extends Component {
 
     handleSubmit = event => {
         event.preventDefault()
-        debugger
+        
         const {email, password} = this.state
         
         this.props.onLogIn(email, password)
@@ -25,7 +25,7 @@ class LogIn extends Component {
 
     render() {
         return <div>
-            <form  onSubmit={this.handleSubmit}>
+            <form onSubmit={this.handleSubmit}>
                 <header>
                     <nav className="navbar">
                         <ul className="navbar__ul">
