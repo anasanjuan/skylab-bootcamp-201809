@@ -1,0 +1,252 @@
+$color-danger: red
+$color-text: white
+
+
+%input
+    font-size: 30px
+    height: 3em
+    border: 1px solid #0B30A4
+    padding-left: 30px
+
+body 
+    margin: 0
+    padding: 0
+    font-family: 'Roboto', sans-serif
+    color: $color-text
+    width: 100vh
+    height: 100vw
+
+
+
+// all 
+.title
+    color: black
+    position: relative
+    top: 230px
+    background-color: #FFFFFF
+    width: 75%
+    height: 120px
+    display: block
+    margin: 0 auto
+    h1 
+        text-transform: uppercase
+        font-size: 60px
+        margin: 0
+        padding: 10px 20px 0px 20px
+        text-align: center
+        font-weight: 900
+        letter-spacing: 1px
+    h2 
+        text-transform: uppercase
+        margin: 0 
+        padding: 0px 70px
+        text-align: right
+        letter-spacing: 3px
+
+
+//landing
+.landing
+    background-image: url("./images/landing_photo.jpeg")
+    background-size: 100vh  1100px
+    background-color: #F0F0F5
+    width: 100vh
+    height: 1100px
+    .landing__subtitle
+        position: relative
+        top: 300px
+        color: white
+        font-size: 20px
+        text-align: center
+    .landing__register
+        position: relative
+        top: 500px
+        left: 28px
+        font-size: 25px
+        background-color: #FFFFFF
+        height: 3em
+        width: 90%
+        margin: 0 auto
+        opacity: 0.8
+.footer__logIn
+        font-size: 25px
+        background-color: #FFFFFF
+        height: 3em
+        width: 100vh
+
+
+
+//register
+.register
+    background-color: #2E5BE3
+    width: 100vh
+    height: 100vw
+    &__header
+        height: 120px
+    &__main
+        margin: 0
+        padding: 0
+        color: white
+        width: 100vh
+        height: 760px
+        background-color: #2E5BE3
+        .add_picture
+            background-color: #0B30A4
+            height: 200px
+            text-align: center
+    &__footer
+        display: flex
+        align-items: flex-end
+        background-color: #0B30A4
+        width: 100vh
+        height: 300px
+        button
+            font-size: 30px
+            color: white
+            width: 90%
+            margin: 20px auto
+            font-weight: 200
+.navbar
+    padding: 10px 10px
+    display: flex
+    background-color: #2E5BE3
+    color: white
+    font-size: 30px
+    font-weight: 200
+    padding-top: 55px 
+    &__ul 
+        margin: 0
+        padding: 0
+        width: 100%
+        list-style-type: none
+        display: flex
+        justify-content: space-between
+    &__button
+        color: white
+        font-size: 30px
+    
+.input_box
+    @extend %input 
+    background-color: #2E5BE3
+    display: block
+    width: 95%
+    
+    &--half
+        @extend %input 
+        background-color: #2E5BE3
+        display: inline-block
+        width: 45%
+    &--opt
+        @extend %input 
+        background-color: #1A46C1
+        display: block
+        width: 95%
+//logIn
+
+.logIn__main
+    background-color: #0B30A4
+    height: 1100px
+    width: 100vh
+.inputs
+   position: relative
+   top: 150px
+.input_box--logIn
+    @extend %input 
+    background-color: #8399D0
+    border-radius: 10px
+    width: 80%
+    margin: 10px 50px
+   
+
+
+//home 
+.header__home
+    background-image: url("./images/summer-barbeque-feast.jpg")
+    background-size: 700px 550px
+    background-color: #F0F0F5
+    width: 100vh
+    height: 550px
+    .title
+        position: relative
+        top: 230px
+        background-color: #FFFFFF
+        width: 75%
+        height: 120px
+        display: block
+        margin: 0 auto
+        h1 
+            text-transform: uppercase
+            font-size: 60px
+            margin: 0
+            padding: 10px 20px 0px 20px
+            text-align: center
+            font-weight: 900
+            letter-spacing: 1px
+
+        h2 
+            text-transform: uppercase
+            margin: 0 
+            padding: 0px 70px
+            text-align: right
+            letter-spacing: 3px
+
+.main__home 
+    background-color: #EFEEF3
+    height: 600px
+    width: 100vh
+    font-size: 25px
+    font-weigth: lighter
+
+    .search
+        font-size: 25px
+        background-color: #FFFFFF
+        height: 3em
+        width: 90%
+        display: block
+        margin: 0 auto
+        border-radius: 10px
+    .filter
+        &__top
+            width: 100%
+            display: flex 
+            background-color: #EFEEF3
+            justify-content: space-around
+        &__bottom
+            width: 100%
+            display: flex 
+            background-color: #EFEEF3
+            justify-content: space-around
+        &__card
+            text-align: center
+            height: 200px
+            padding-top: 50px 
+            padding-bottom: 0px
+        i
+            font-size: 50px
+
+
+
+.footer__home
+    width: 100vh
+    height: 100px
+    font-size: 20px
+    font-weigth: lighter
+    background-color: #F5F5F7
+    .footer__nav
+        padding: 10px 10px
+        display: flex
+    ul 
+        margin: 0
+        padding: 0
+        width: 100%
+        height: 100px
+        list-style-type: none
+        display: flex
+        justify-content: space-around
+        
+        .nav-items
+            text-align: center
+            h5 
+                margin: 0
+                padding: 0
+
+

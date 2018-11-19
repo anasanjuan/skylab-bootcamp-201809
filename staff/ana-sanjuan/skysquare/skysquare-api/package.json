@@ -1,0 +1,25 @@
+{
+  "name": "skysquare-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node .",
+    "debug": "node debug .",
+    "test": "mocha ./logic/logic.spec.js",
+    "debug-test": "mocha debug ./logic/logic.spec.js"
+  },
+  "keywords": [],
+  "author": "Ana",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "dotenv": "^6.1.0",
+    "express": "^4.16.4",
+    "jsonwebtoken": "^8.4.0",
+    "mongoose": "^5.3.12"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0"
+  }
+}

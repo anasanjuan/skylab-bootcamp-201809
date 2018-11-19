@@ -1,0 +1,268 @@
+.input_box--logIn, .input_box--opt, .input_box--half, .input_box {
+  font-size: 30px;
+  height: 3em;
+  border: 1px solid #0B30A4;
+  padding-left: 30px;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Roboto", sans-serif;
+  color: white;
+  width: 100vh;
+  height: 100vw;
+}
+
+.title {
+  color: black;
+  position: relative;
+  top: 230px;
+  background-color: #FFFFFF;
+  width: 75%;
+  height: 120px;
+  display: block;
+  margin: 0 auto;
+}
+.title h1 {
+  text-transform: uppercase;
+  font-size: 60px;
+  margin: 0;
+  padding: 10px 20px 0px 20px;
+  text-align: center;
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+.title h2 {
+  text-transform: uppercase;
+  margin: 0;
+  padding: 0px 70px;
+  text-align: right;
+  letter-spacing: 3px;
+}
+
+.landing {
+  background-image: url("./images/landing_photo.jpeg");
+  background-size: 100vh 1100px;
+  background-color: #F0F0F5;
+  width: 100vh;
+  height: 1100px;
+}
+.landing .landing__subtitle {
+  position: relative;
+  top: 300px;
+  color: white;
+  font-size: 20px;
+  text-align: center;
+}
+.landing .landing__register {
+  position: relative;
+  top: 500px;
+  left: 28px;
+  font-size: 25px;
+  background-color: #FFFFFF;
+  height: 3em;
+  width: 90%;
+  margin: 0 auto;
+  opacity: 0.8;
+}
+
+.footer__logIn {
+  font-size: 25px;
+  background-color: #FFFFFF;
+  height: 3em;
+  width: 100vh;
+}
+
+.register {
+  background-color: #2E5BE3;
+  width: 100vh;
+  height: 100vw;
+}
+.register__header {
+  height: 120px;
+}
+.register__main {
+  margin: 0;
+  padding: 0;
+  color: white;
+  width: 100vh;
+  height: 760px;
+  background-color: #2E5BE3;
+}
+.register__main .add_picture {
+  background-color: #0B30A4;
+  height: 200px;
+  text-align: center;
+}
+.register__footer {
+  display: flex;
+  align-items: flex-end;
+  background-color: #0B30A4;
+  width: 100vh;
+  height: 300px;
+}
+.register__footer button {
+  font-size: 30px;
+  color: white;
+  width: 90%;
+  margin: 20px auto;
+  font-weight: 200;
+}
+
+.navbar {
+  padding: 10px 10px;
+  display: flex;
+  background-color: #2E5BE3;
+  color: white;
+  font-size: 30px;
+  font-weight: 200;
+  padding-top: 55px;
+}
+.navbar__ul {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  list-style-type: none;
+  display: flex;
+  justify-content: space-between;
+}
+.navbar__button {
+  color: white;
+  font-size: 30px;
+}
+
+.input_box {
+  background-color: #2E5BE3;
+  display: block;
+  width: 95%;
+}
+.input_box--half {
+  background-color: #2E5BE3;
+  display: inline-block;
+  width: 45%;
+}
+.input_box--opt {
+  background-color: #1A46C1;
+  display: block;
+  width: 95%;
+}
+
+.logIn__main {
+  background-color: #0B30A4;
+  height: 1100px;
+  width: 100vh;
+}
+
+.inputs {
+  position: relative;
+  top: 150px;
+}
+
+.input_box--logIn {
+  background-color: #8399D0;
+  border-radius: 10px;
+  width: 80%;
+  margin: 10px 50px;
+}
+
+.header__home {
+  background-image: url("./images/summer-barbeque-feast.jpg");
+  background-size: 700px 550px;
+  background-color: #F0F0F5;
+  width: 100vh;
+  height: 550px;
+}
+.header__home .title {
+  position: relative;
+  top: 230px;
+  background-color: #FFFFFF;
+  width: 75%;
+  height: 120px;
+  display: block;
+  margin: 0 auto;
+}
+.header__home .title h1 {
+  text-transform: uppercase;
+  font-size: 60px;
+  margin: 0;
+  padding: 10px 20px 0px 20px;
+  text-align: center;
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+.header__home .title h2 {
+  text-transform: uppercase;
+  margin: 0;
+  padding: 0px 70px;
+  text-align: right;
+  letter-spacing: 3px;
+}
+
+.main__home {
+  background-color: #EFEEF3;
+  height: 600px;
+  width: 100vh;
+  font-size: 25px;
+  font-weigth: lighter;
+}
+.main__home .search {
+  font-size: 25px;
+  background-color: #FFFFFF;
+  height: 3em;
+  width: 90%;
+  display: block;
+  margin: 0 auto;
+  border-radius: 10px;
+}
+.main__home .filter__top {
+  width: 100%;
+  display: flex;
+  background-color: #EFEEF3;
+  justify-content: space-around;
+}
+.main__home .filter__bottom {
+  width: 100%;
+  display: flex;
+  background-color: #EFEEF3;
+  justify-content: space-around;
+}
+.main__home .filter__card {
+  text-align: center;
+  height: 200px;
+  padding-top: 50px;
+  padding-bottom: 0px;
+}
+.main__home .filter i {
+  font-size: 50px;
+}
+
+.footer__home {
+  width: 100vh;
+  height: 100px;
+  font-size: 20px;
+  font-weigth: lighter;
+  background-color: #F5F5F7;
+}
+.footer__home .footer__nav {
+  padding: 10px 10px;
+  display: flex;
+}
+.footer__home ul {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100px;
+  list-style-type: none;
+  display: flex;
+  justify-content: space-around;
+}
+.footer__home ul .nav-items {
+  text-align: center;
+}
+.footer__home ul .nav-items h5 {
+  margin: 0;
+  padding: 0;
+}
+
+/*# sourceMappingURL=styles.css.map */
