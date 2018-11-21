@@ -14,10 +14,11 @@
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.18.3",
+    "cloudinary": "^1.13.2",
     "dotenv": "^6.1.0",
     "express": "^4.16.4",
     "jsonwebtoken": "^8.4.0",
-    "mongoose": "^5.3.12"
+    "skysquare-data": "file:../skysquare-data"
   },
   "devDependencies": {
     "chai": "^4.2.0"

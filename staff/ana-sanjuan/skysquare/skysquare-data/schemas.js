@@ -28,7 +28,7 @@ const User = new Schema ({
     phone: {
         type: String
     },
-    followed: [{
+    followers: [{
         type: ObjectId,
         ref: 'User'
     }],
@@ -38,85 +38,101 @@ const User = new Schema ({
     }],
     favourites : [{
         type: ObjectId,
-        ref: 'Restaurant'
+        ref: 'Place'
     }],
     history : [{
         type: ObjectId,
-        ref: 'Restaurant'
+        ref: 'Place'
     }]
 
 })
 
-const Restaurant = new Schema ({
-    name : [{
+const Place = new Schema ({
+    name : {
         type: String, 
         required: true
-    }],
-    location: [{
+    },
+    latitude: {
         type: Number,
         required: true
-    }],
-    user: [{
+    },
+    longitud: {
+        type: Number,
+        required: true
+    },
+    address:{
+        type: String, 
+    },
+    userId: {
         type: ObjectId,
-        ref: 'User'
-    }],
-    scoring: [{
-        type: Number,
+        ref: 'User',
         required: true
-    }],
-    breakfast: [{
+    },
+    scoring: {
+        type: Number,
+    },
+    votes: {
+        type: Number,
+    },
+    breakfast: {
         type: Boolean,
-    }],
-    lunch: [{
+    },
+    lunch: {
         type: Boolean,
-    }],
-    dinner: [{
+    },
+    dinner: {
         type: Boolean,
-    }],
-    coffee: [{
+    },
+    coffee: {
         type: Boolean,
-    }],
-    nigthLife: [{
+    },
+    nigthLife: {
         type: Boolean,
-    }],
-    toDo: [{
+    },
+    thingsToDo: {
         type: Boolean,
-    }]
+    }
 })
 
 const Picture = new Schema({
-    url: [{
+    url: {
         type: String,
         required: true
-    }],
-    user: [{
+    },
+    public_id: {
+        type: String,
+        required: true
+    },
+    userId: {
         type: ObjectId,
-        ref: 'User'
-    }],
-    restaurant: [{
+        ref: 'User',
+        required: true
+    },
+    placeId: {
         type: ObjectId,
-        red: 'Restaurant'
-    }] 
+        red: 'Place',
+        required: true
+    } 
 })
 
-const Comment = new Schema({
+const Tip = new Schema({
     text: {
         type: String,
         required:true
     },
-    user: [{
+    userId: {
         type: ObjectId,
         ref: 'User'
-    }],
-    restaurant: [{
+    },
+    placeId: {
         type: ObjectId,
-        red: 'Restaurant'
-    }] 
+        red: 'Place'
+    } 
 })
 
 module.exports = {
     User,
-    Restaurant,
+    Place,
     Picture,
-    Comment
+    Tip
 }

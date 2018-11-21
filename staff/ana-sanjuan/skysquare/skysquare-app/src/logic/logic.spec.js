@@ -2,6 +2,10 @@ require('isomorphic-fetch')
 
 const {expect} = require( 'chai')
 const logic = require ('./logic')
+
+const {mongoose, models: { User, Place, Picture }} = require('skysquare-data')
+
+
 logic.url = 'http://localhost:5000/api'
 
 
