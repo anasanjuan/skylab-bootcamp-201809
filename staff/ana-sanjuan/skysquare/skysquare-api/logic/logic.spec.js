@@ -1,11 +1,19 @@
 const {mongoose, models: { User, Place, Picture }} = require('skysquare-data')
 const logic = require('./logic')
 const { AlreadyExistsError, AuthError } = require('../errors')
+const fs = require('fs')
 
 const { expect } = require('chai')
 
 const MONGO_URL = 'mongodb://localhost:27017/skysquare-test'
 
+var cloudinary = require('cloudinary')
+
+cloudinary.config({
+    cloud_name: 'dancing890',
+    api_key: '534167988966151',
+    api_secret: 'CpjYh3OdFdUc8BVB2h1gCMyX1cE'
+})
 // running test from CLI
 // normal -> $ mocha src/logic.spec.js --timeout 10000
 // debug -> $ mocha debug src/logic.spec.js --timeout 10000
@@ -416,50 +424,50 @@ describe('logic', () => {
 
 
 
-
-        false && describe('add place pictures', ()=> {
-            let place
-            beforeEach(async () => {
-                let placeName = 'Costa Dorada'
-                let latitude = 41.398469
-                let longitud = 2.199943
-                let userId = user.id
-                let breakfast = true
-                let lunch = false
-                let dinner = true
-                let coffee = false
-                let nigthLife = true
-                let thingsToDo = false
+        // with local data
+        // false && describe('add place pictures', ()=> {
+        //     let place
+        //     beforeEach(async () => {
+        //         let placeName = 'Costa Dorada'
+        //         let latitude = 41.398469
+        //         let longitud = 2.199943
+        //         let userId = user.id
+        //         let breakfast = true
+        //         let lunch = false
+        //         let dinner = true
+        //         let coffee = false
+        //         let nigthLife = true
+        //         let thingsToDo = false
     
-                place = new Place({name: placeName, latitude, longitud,  userId, breakfast, lunch, dinner, coffee, nigthLife, thingsToDo})
+        //         place = new Place({name: placeName, latitude, longitud,  userId, breakfast, lunch, dinner, coffee, nigthLife, thingsToDo})
                 
-                await user.save()
-                await place.save()
-            })
+        //         await user.save()
+        //         await place.save()
+        //     })
     
-            it('should succed on correct data', async () => {
+        //     it('should succed on correct data', async () => {
     
-                let image = './data/images/default-place-pic.png'
+        //         let image = './data/images/default-place-pic.png'
                 
-                const res = await logic.addPlacePicture(user.id, place.id, image)
+        //         const res = await logic.addPlacePicture(user.id, place.id, image)
                 
-                expect(res).to.be.undefined
+        //         expect(res).to.be.undefined
     
-                const pictures = await Picture.find()
+        //         const pictures = await Picture.find()
     
-                expect(pictures.length).to.be.equal(1)
+        //         expect(pictures.length).to.be.equal(1)
     
     
-                const [picture] = pictures
+        //         const [picture] = pictures
     
-                expect(picture.id).to.be.a('string')
-                expect(picture.url).to.be.a('string')
-                expect(picture.userId.toString()).to.equal(user.id)
-                expect(picture.placeId.toString()).to.equal(place.id)
+        //         expect(picture.id).to.be.a('string')
+        //         expect(picture.url).to.be.a('string')
+        //         expect(picture.userId.toString()).to.equal(user.id)
+        //         expect(picture.placeId.toString()).to.equal(place.id)
                 
     
-            })
-        })
+        //     })
+        // })
 
         describe('add place pictures ', ()=> {
             let place
@@ -483,12 +491,14 @@ describe('logic', () => {
     
             it('should succed on correct data', async () => {
     
-                let file = './data/images/default-place-pic.png'
-                
+                let image = './data/images/default-place-pic.png'
+
+                var file = fs.createReadStream(image)
+
                 const res = await logic.addPlacePicture(user.id, place.id, file)
-    
+
                 expect(res).to.be.undefined
-    
+
                 const pictures = await Picture.find()
     
                 expect(pictures.length).to.be.equal(1)
@@ -498,11 +508,20 @@ describe('logic', () => {
     
                 expect(picture.id).to.be.a('string')
                 expect(picture.url).to.be.a('string')
+                expect(picture.public_id).to.be.a('string')
                 expect(picture.userId.toString()).to.equal(user.id)
                 expect(picture.placeId.toString()).to.equal(place.id)
                 
     
             })
+
+            // afterEach(async() => {
+            //     debugger
+
+            //     await cloudinary.uploader.destroy(picture.public_id, (result) => {
+            //         debugger
+            //     });
+            // })
         })
 
         describe('list place pictures', () => {

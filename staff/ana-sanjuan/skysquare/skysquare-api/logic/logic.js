@@ -3,6 +3,7 @@ const { AlreadyExistsError, AuthError, NotFoundError } = require('../errors')
 const validate = require('../utils/validate')
 var cloudinary = require('cloudinary')
 
+
 cloudinary.config({
     cloud_name: 'dancing890',
     api_key: '534167988966151',
@@ -160,14 +161,14 @@ const logic = {
             { key: 'score', value: score, type: Number },
         ])
 
-        return (async() => {
+        return (async () => {
             let place = await Place.findById(placeId)
 
             if (!place) throw new NotFoundError(`place does not exist`)
-            
+
             place.votes += 1
 
-            place.scoring = (place.scoring + score)/place.votes
+            place.scoring = (place.scoring + score) / place.votes
 
             await place.save()
         })()
@@ -193,11 +194,11 @@ const logic = {
 
     //         let picture
 
-    //         await cloudinary.v2.uploader.upload(image, (error, result) => {
-    //             if (error) return error
+            // await cloudinary.v2.uploader.upload(image, (error, result) => {
+            //     if (error) return error
 
-    //             picture = new Picture({ url: result.url, public_id: result.public_id, userId, placeId })
-    //         })
+            //     picture = new Picture({ url: result.url, public_id: result.public_id, userId, placeId })
+            // })
 
     //         await picture.save()
     //     })()
@@ -207,7 +208,6 @@ const logic = {
         validate([
             { key: 'userId', value: userId, type: String },
             { key: 'placeId', value: placeId, type: String },
-            { key: 'file', value: file, type: String },
 
         ])
 
@@ -220,13 +220,18 @@ const logic = {
 
             if (!place) throw new NotFoundError(`place does not exist`)
 
-            let picture
 
-            await cloudinary.v2.uploader.upload(file, (error, result) => {
-                if (error) return error
+            const result = await new Promise((resolve, reject) => {
+                const stream = cloudinary.uploader.upload_stream((result, error) => {
+                    if (error) return reject(error)
 
-                picture = new Picture({ url: result.url, public_id: result.public_id, userId, placeId })
+                    resolve(result)
+                })
+
+                file.pipe(stream)
             })
+
+            picture = new Picture({ url: result.url, public_id: result.public_id, userId, placeId })
 
             await picture.save()
         })()
@@ -242,6 +247,19 @@ const logic = {
     //     url: 'https://res.cloudinary.com/demo/image/upload/v1371281596/sample.jpg',
     //     secure_url: 'https://res.cloudinary.com/demo/image/upload/v1371281596/sample.jpg' 
     //   }
+
+    // // Stream upload
+    // var upload_stream= cloudinary.uploader.upload_stream({tags: 'basic_sample'},function(err,image) {
+    //     console.log();
+    //     console.log("** Stream Upload");
+    //     if (err){ console.warn(err);}
+    //     console.log("* Same image, uploaded via stream");
+    //     console.log("* "+image.public_id);
+    //     console.log("* "+image.url);
+    //     waitForAllUploads("pizza3",err,image);
+    //   });
+    //   var file_reader = fs.createReadStream('pizza.jpg').pipe(upload_stream);
+
 
 
     listPlacePictures(placeId) {
