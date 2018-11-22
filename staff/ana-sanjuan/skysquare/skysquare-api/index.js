@@ -1,11 +1,11 @@
 require('dotenv').config()
 
-const mongoose = require('mongoose')
 const express = require('express')
 const package = require('./package.json')
 const router = require('./routes')
 const cors = require('./utils/cors')
-const { User } = require('./data')
+const {mongoose} = require('skysquare-data')
+
 
 const { env: { PORT, MONGO_URL } } = process
 

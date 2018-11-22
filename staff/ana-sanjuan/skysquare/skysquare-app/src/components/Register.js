@@ -53,7 +53,8 @@ class Register extends Component {
         this.props.onRegister(name, surname, email, password, birthday, gender, phone)
     }
     render() {
-        return (<form className="register" onSubmit={this.handleSubmit}>
+        return (<div className="register">
+            <form onSubmit={this.handleSubmit}>
                 <header className="register__header">
                     <nav className="navbar">
                         <ul className='navbar__ul'>
@@ -66,8 +67,10 @@ class Register extends Component {
                 <main className="register__main">
                     <section className="add_picture">Add Photo</section>
                     <section>
-                        <input className="input_box--half" placeholder="Name" onChange={this.handleNameChange}></input>
-                        <input className="input_box--half" placeholder="Surname" onChange={this.handleSurnameChange}></input>
+                        <div className="fullname">
+                            <input className="input_box--half" placeholder="Name" onChange={this.handleNameChange}></input>
+                            <input className="input_box--half" placeholder="Surname" onChange={this.handleSurnameChange}></input>
+                        </div>
                         <input className="input_box" placeholder="Email" onChange={this.handleEmailChange}></input>
                         <input className="input_box" placeholder="Password" onChange={this.handlePasswordChange}></input>
                         <input className="input_box" placeholder="Birthday" onChange={this.handleBirthdayChange}></input>
@@ -79,7 +82,7 @@ class Register extends Component {
                     <button onClick={this.props.onLogInClick}>Do you already have an account? Log In now</button>
                 </footer>
             </form>
-
+            </div>
 
         )
     }

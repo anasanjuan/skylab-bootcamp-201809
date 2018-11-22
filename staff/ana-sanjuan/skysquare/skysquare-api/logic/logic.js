@@ -1,4 +1,4 @@
-const { models: { User, Place, Picture } } = require('skysquare-data')
+const { models: { User, Place, Picture, ProfilePicture } } = require('skysquare-data')
 const { AlreadyExistsError, AuthError, NotFoundError } = require('../errors')
 const validate = require('../utils/validate')
 var cloudinary = require('cloudinary')
@@ -51,12 +51,12 @@ const logic = {
 
     },
 
-    retrieveUser(email) {
+    retrieveUser(id) {
         validate([
-            { key: 'email', value: email, type: String }
+            { key: 'id', value: id, type: String }
         ])
         return (async () => {
-            const user = await User.findOne({ email }, { password: 0, postits: 0, __v: 0 }).lean()
+            const user = await User.findById(id, { password: 0, postits: 0, __v: 0 }).lean()
 
             if (!user) throw new NotFoundError(`user with email ${email} not found`)
 
@@ -69,6 +69,37 @@ const logic = {
 
 
     },
+
+    addProfilePicture(userId, file) {
+        validate([
+            { key: 'userId', value: userId, type: String },
+
+        ])
+
+        return (async () => {
+            let user = await User.findById(userId)
+
+            if (!user) throw new NotFoundError(`user does not exist`)
+
+            const result = await new Promise((resolve, reject) => {
+                const stream = cloudinary.uploader.upload_stream((result, error) => {
+                    if (error) return reject(error)
+
+                    resolve(result)
+                })
+
+                file.pipe(stream)
+            })
+            profilePicture = new ProfilePicture({ url: result.url, public_id: result.public_id, userId })
+
+            await profilePicture.save()
+
+            user.profilePicture = profilePicture.id
+
+            await user.save()
+        })()
+    },
+
 
     addPlace(name, latitude, longitud, address, userId, breakfast, lunch, dinner, coffee, nigthLife, thingsToDo) {
         validate([
@@ -89,16 +120,18 @@ const logic = {
 
             if (!user) throw new NotFoundError(`user does not exist`)
 
-            let place = new Place({ name, latitude, longitud, address, userId, breakfast, lunch, dinner, coffee, nigthLife, thingsToDo })
+            let place = new Place({ name, latitude, longitud, userId, breakfast, lunch, dinner, coffee, nigthLife, thingsToDo })
 
             place.scoring = 0
+            place.scores = []
+            address != null && (user.address = address)
 
             await place.save()
         })()
 
     },
 
-    findPlaceByName(name) {
+    listPlacesByName(name) {
         validate([
             { key: 'name', value: name, type: String },
         ])
@@ -139,7 +172,7 @@ const logic = {
         })()
     },
 
-    findPlaceById(id) {
+    retrievePlaceById(id) {
         validate([
             { key: 'id', value: id, type: String },
         ])
@@ -165,44 +198,22 @@ const logic = {
             let place = await Place.findById(placeId)
 
             if (!place) throw new NotFoundError(`place does not exist`)
+            debugger
+            place.scores.push(score)
 
-            place.votes += 1
+            if (place.scores.length === 1){
+                place.scoring = score
+            } else {
+                const sum = place.scores.reduce((a, b) => a + b, 0)
 
-            place.scoring = (place.scoring + score) / place.votes
-
+                place.scoring = +(sum / place.scores.length).toFixed(0)
+            }
+                
             await place.save()
+
+            return place
         })()
     },
-    //with local image
-
-    // addPlacePicture(userId, placeId, image) {
-    //     validate([
-    //         { key: 'userId', value: userId, type: String },
-    //         { key: 'placeId', value: placeId, type: String },
-    //         { key: 'image', value: image, type: String }
-
-    //     ])
-
-    //     return (async () => {
-    //         let user = await User.findById(userId)
-
-    //         if (!user) throw new NotFoundError(`user does not exist`)
-
-    //         let place = await Place.findById(placeId)
-
-    //         if (!place) throw new NotFoundError(`place does not exist`)
-
-    //         let picture
-
-            // await cloudinary.v2.uploader.upload(image, (error, result) => {
-            //     if (error) return error
-
-            //     picture = new Picture({ url: result.url, public_id: result.public_id, userId, placeId })
-            // })
-
-    //         await picture.save()
-    //     })()
-    // },
 
     addPlacePicture(userId, placeId, file) {
         validate([
@@ -220,7 +231,6 @@ const logic = {
 
             if (!place) throw new NotFoundError(`place does not exist`)
 
-
             const result = await new Promise((resolve, reject) => {
                 const stream = cloudinary.uploader.upload_stream((result, error) => {
                     if (error) return reject(error)
@@ -237,31 +247,6 @@ const logic = {
         })()
     },
 
-    // { 
-    //     public_id: 'sample',
-    //     version: 1312461204,
-    //     width: 864,
-    //     height: 576,
-    //     format: 'jpg',
-    //     bytes: 120253,
-    //     url: 'https://res.cloudinary.com/demo/image/upload/v1371281596/sample.jpg',
-    //     secure_url: 'https://res.cloudinary.com/demo/image/upload/v1371281596/sample.jpg' 
-    //   }
-
-    // // Stream upload
-    // var upload_stream= cloudinary.uploader.upload_stream({tags: 'basic_sample'},function(err,image) {
-    //     console.log();
-    //     console.log("** Stream Upload");
-    //     if (err){ console.warn(err);}
-    //     console.log("* Same image, uploaded via stream");
-    //     console.log("* "+image.public_id);
-    //     console.log("* "+image.url);
-    //     waitForAllUploads("pizza3",err,image);
-    //   });
-    //   var file_reader = fs.createReadStream('pizza.jpg').pipe(upload_stream);
-
-
-
     listPlacePictures(placeId) {
         validate([
             { key: 'placeId', value: placeId, type: String },
@@ -274,12 +259,34 @@ const logic = {
 
             const pictures = await Picture.find({ placeId })
 
-            const pictureUrls = pictures.map(url => picture.url)
+            const pictureUrls = pictures.map(picture => picture.url)
 
             return pictureUrls
         })()
 
     },
+
+    listUserPictures(userId) {
+        validate([
+            { key: 'userId', value: userId, type: String },
+        ])
+
+        return (async () => {
+            let user = await User.findById(userId)
+
+            if (!user) throw new NotFoundError(`user does not exist`)
+
+            const pictures = await Picture.find({ userId })
+
+            const pictureUrls = pictures.map(picture => picture.url)
+
+            return pictureUrls
+        })()
+
+    },
+
+
+
 }
 
 module.exports = logic

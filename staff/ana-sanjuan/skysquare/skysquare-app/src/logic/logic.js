@@ -40,7 +40,6 @@ const logic = {
             { key: 'email', value: email, type: String },
             { key: 'password', value: password, type: String },
         ])
-
         return fetch(`${this.url}/auth`, {
             method: 'POST',
             headers: {
@@ -54,10 +53,14 @@ const logic = {
 
                 const { id, token } = res.data
 
+                this._userId = id
+                this._token = token
+                
                 sessionStorage.setItem('userId', id)
                 sessionStorage.setItem('token', token)
             })
     },
+
     
     get loggedIn() {
         return !!this._userId

@@ -1,13 +1,14 @@
 * {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
 }
 
 .input_box--logIn, .input_box--opt, .input_box--half, .input_box {
-  font-size: 30px;
-  height: 3em;
+  font-size: 16px;
+  height: 2.5em;
   border: 1px solid #0B30A4;
-  padding-left: 30px;
+  padding-left: 25px;
 }
 
 body {
@@ -15,23 +16,22 @@ body {
   padding: 0;
   font-family: "Roboto", sans-serif;
   color: white;
-  width: 100vh;
-  height: 100vw;
+  background-size: 100% 100%;
 }
 
 .title {
   color: black;
   position: relative;
-  top: 230px;
+  top: 120px;
   background-color: #FFFFFF;
   width: 75%;
-  height: 120px;
+  height: 4em;
   display: block;
   margin: 0 auto;
 }
 .title h1 {
   text-transform: uppercase;
-  font-size: 60px;
+  font-size: 30px;
   margin: 0;
   padding: 10px 20px 0px 20px;
   text-align: center;
@@ -44,75 +44,83 @@ body {
   padding: 0px 70px;
   text-align: right;
   letter-spacing: 3px;
+  font-size: 10px;
 }
 
 .landing {
-  background-image: url("./images/landing-photo.jpeg");
-  background-size: 100vh 1100px;
-  background-color: #F0F0F5;
-  width: 100vh;
-  height: 1100px;
+  background: linear-gradient(rgba(20, 20, 20, 0.5), rgba(20, 20, 20, 0.5)), url("./images/landing-photo.jpeg");
+  width: 100%;
+  height: 100vh;
 }
-.landing .landing__subtitle {
+.landing__header {
+  height: 60%;
+}
+.landing__subtitle {
   position: relative;
-  top: 300px;
+  top: 160px;
   color: white;
-  font-size: 20px;
+  font-size: 15px;
   text-align: center;
+  letter-spacing: 1px;
 }
-.landing .landing__register {
-  position: relative;
-  top: 500px;
-  left: 28px;
-  font-size: 25px;
+.landing__main {
+  height: 34%;
+}
+.landing__register {
+  font-size: 15px;
   background-color: #FFFFFF;
   height: 3em;
   width: 90%;
   margin: 0 auto;
   opacity: 0.8;
+  margin-left: 20px;
+}
+.landing__footer {
+  height: 5%;
 }
 
 .footer__logIn {
-  font-size: 25px;
+  font-size: 15px;
   background-color: #FFFFFF;
   height: 3em;
-  width: 100vh;
+  width: 100%;
 }
 
 .register {
   background-color: #2E5BE3;
-  width: 100vh;
-  height: 100vw;
+  width: 100%;
+  heigth: 100vh;
 }
 .register__header {
-  height: 120px;
+  width: 100%;
+  height: 10%;
 }
 .register__main {
   margin: 0;
   padding: 0;
   color: white;
-  width: 100vh;
-  height: 760px;
+  width: 100%;
+  height: 70%;
   background-color: #2E5BE3;
 }
 .register__main .add_picture {
   background-color: #0B30A4;
-  height: 200px;
+  height: 130px;
   text-align: center;
 }
 .register__footer {
   display: flex;
   align-items: flex-end;
   background-color: #0B30A4;
-  width: 100vh;
-  height: 300px;
+  width: 100%;
+  height: 225px;
 }
 .register__footer button {
-  font-size: 30px;
+  font-size: 15px;
   color: white;
   width: 90%;
   margin: 20px auto;
-  font-weight: 200;
+  font-weight: 10;
 }
 
 .navbar {
@@ -120,9 +128,9 @@ body {
   display: flex;
   background-color: #2E5BE3;
   color: white;
-  font-size: 30px;
+  font-size: 20px;
   font-weight: 200;
-  padding-top: 55px;
+  padding-top: 35px;
 }
 .navbar__ul {
   margin: 0;
@@ -134,29 +142,35 @@ body {
 }
 .navbar__button {
   color: white;
-  font-size: 30px;
+  font-size: 20px;
+}
+
+.fullname {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  width: 100%;
 }
 
 .input_box {
   background-color: #2E5BE3;
   display: block;
-  width: 95%;
+  width: 100%;
 }
 .input_box--half {
   background-color: #2E5BE3;
-  display: inline-block;
-  width: 45%;
+  width: 50%;
 }
 .input_box--opt {
   background-color: #1A46C1;
   display: block;
-  width: 95%;
+  width: 100%;
 }
 
 .logIn__main {
   background-color: #0B30A4;
-  height: 1100px;
-  width: 100vh;
+  width: 100%;
+  height: 100vh;
 }
 
 .inputs {
@@ -168,52 +182,30 @@ body {
   background-color: #8399D0;
   border-radius: 10px;
   width: 80%;
-  margin: 10px 50px;
+  margin: 10px 20px;
 }
 
-.header__home {
+.search {
+  width: 100%;
+  height: 100vh;
+}
+.search__header {
   background-image: url("./images/home-photo.jpg");
-  background-size: 700px 550px;
+  background-size: 150% 130%;
   background-color: #F0F0F5;
-  width: 100vh;
-  height: 510px;
+  width: 100%;
+  height: 50%;
 }
-.header__home .title {
-  position: relative;
-  top: 230px;
-  background-color: #FFFFFF;
-  width: 75%;
-  height: 120px;
-  display: block;
-  margin: 0 auto;
-}
-.header__home .title h1 {
-  text-transform: uppercase;
-  font-size: 60px;
-  margin: 0;
-  padding: 10px 20px 0px 20px;
-  text-align: center;
-  font-weight: 900;
-  letter-spacing: 1px;
-}
-.header__home .title h2 {
-  text-transform: uppercase;
-  margin: 0;
-  padding: 0px 70px;
-  text-align: right;
-  letter-spacing: 3px;
-}
-
-.main__home {
+.search__main {
   background-color: #EFEEF3;
-  height: 580px;
-  width: 100vh;
+  height: 50%;
+  width: 100%;
   font-size: 25px;
   font-weigth: lighter;
   color: black;
 }
-.main__home .search {
-  font-size: 25px;
+.search__box {
+  font-size: 15px;
   background-color: #FFFFFF;
   height: 3em;
   width: 90%;
@@ -221,53 +213,56 @@ body {
   margin: 0 auto;
   border-radius: 10px;
 }
-.main__home .filter__top {
+.search .filter {
+  font-size: 15px;
+}
+.search .filter__top {
+  width: 100%;
+  display: flex;
+  background-color: #EFEEF3;
+  justify-content: space-around;
+  border-width: 3px;
+}
+.search .filter__bottom {
   width: 100%;
   display: flex;
   background-color: #EFEEF3;
   justify-content: space-around;
 }
-.main__home .filter__bottom {
-  width: 100%;
-  display: flex;
-  background-color: #EFEEF3;
-  justify-content: space-around;
-}
-.main__home .filter__card {
+.search .filter__card {
   text-align: center;
-  height: 200px;
-  padding-top: 50px;
+  height: 20%;
+  padding-top: 20%;
   padding-bottom: 0px;
 }
-.main__home .filter i {
-  font-size: 50px;
+.search .filter i {
+  font-size: 30px;
 }
 
-.footer__home {
-  width: 100vh;
-  height: 90px;
-  font-size: 20px;
+.footer {
+  width: 100%;
+  font-size: 15px;
   font-weigth: lighter;
   background-color: #F5F5F7;
   color: black;
+  border-top: 1px solid #C3C4C8;
 }
-.footer__home .footer__nav {
+.footer .footer__nav {
   padding: 20px 10px;
   display: flex;
 }
-.footer__home ul {
+.footer ul {
   margin: 0;
   padding: 0;
   width: 100%;
-  height: 100px;
   list-style-type: none;
   display: flex;
   justify-content: space-around;
 }
-.footer__home ul .nav-items {
+.footer ul .nav-items {
   text-align: center;
 }
-.footer__home ul .nav-items h5 {
+.footer ul .nav-items h5 {
   margin: 0;
   padding: 0;
 }

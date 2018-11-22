@@ -43,7 +43,11 @@ const User = new Schema ({
     history : [{
         type: ObjectId,
         ref: 'Place'
-    }]
+    }],
+    profilePicture : {
+        type: ObjectId,
+        ref: 'Picture'
+    }
 
 })
 
@@ -71,9 +75,9 @@ const Place = new Schema ({
     scoring: {
         type: Number,
     },
-    votes: {
+    scores: [{
         type: Number,
-    },
+    }],
     breakfast: {
         type: Boolean,
     },
@@ -115,6 +119,22 @@ const Picture = new Schema({
     } 
 })
 
+const ProfilePicture = new Schema({
+    url: {
+        type: String,
+        required: true
+    },
+    public_id: {
+        type: String,
+        required: true
+    },
+    userId: {
+        type: ObjectId,
+        ref: 'User',
+        required: true
+    },
+    
+})
 const Tip = new Schema({
     text: {
         type: String,
@@ -134,5 +154,6 @@ module.exports = {
     User,
     Place,
     Picture,
+    ProfilePicture,
     Tip
 }

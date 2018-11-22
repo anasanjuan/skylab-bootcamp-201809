@@ -1,4 +1,4 @@
-const {mongoose, models: { User, Place, Picture }} = require('skysquare-data')
+const {mongoose, models: { User, Place, Picture,ProfilePicture }} = require('skysquare-data')
 const logic = require('./logic')
 const { AlreadyExistsError, AuthError } = require('../errors')
 const fs = require('fs')
@@ -21,7 +21,7 @@ cloudinary.config({
 describe('logic', () => {
     before(() => mongoose.connect(MONGO_URL, { useNewUrlParser: true, useCreateIndex: true }))
 
-    beforeEach(() => Promise.all([User.deleteMany(), Place.deleteMany(), Picture.deleteMany()]))
+    beforeEach(() => Promise.all([User.deleteMany(), Place.deleteMany(), Picture.deleteMany(), ProfilePicture.deleteMany()]))
     
 
     describe('users', () => {
@@ -133,7 +133,7 @@ describe('logic', () => {
         })
 
         describe('retrieve User', ()=> {
-            let name, surname, email, password, birthday, gender, phone
+            let user
             beforeEach(() => {
                 name = 'John'
                 surname = 'Doe'
@@ -143,26 +143,140 @@ describe('logic', () => {
                 gender = 'Male'
                 phone = `jdPhone-${Math.random()}`
 
-                _user = new User({ name, surname, email, password, birthday, gender, phone })
+                user = new User({ name, surname, email, password, birthday, gender, phone })
 
-                return _user.save()
+                return user.save()
 
             })
             it('should succed on correct data', async () => {
-                const user = await logic.retrieveUser(email)
+                const _user = await logic.retrieveUser(user.id)
 
-                expect(user).not.to.be.instanceOf(User)
+                expect(_user).not.to.be.instanceOf(User)
 
-                expect(user.id).to.be.a('string')
-                expect(user.name).to.equal(name)
-                expect(user.surname).to.equal(surname)
-                expect(user.email).to.equal(email)
-                expect(user.birthday).to.equal(birthday)
-                expect(user.gender).to.equal(gender)
-                expect(user.phone).to.equal(phone)
+                expect(_user.id).to.be.a('string')
+                expect(_user.name).to.equal(user.name)
+                expect(_user.surname).to.equal(user.surname)
+                expect(_user.email).to.equal(user.email)
+                expect(_user.birthday).to.equal(user.birthday)
+                expect(_user.gender).to.equal(user.gender)
+                expect(_user.phone).to.equal(user.phone)
 
             })
         })
+
+        describe('add profile pictures ', ()=> {
+            let user
+            beforeEach(() => {
+                name = 'John'
+                surname = 'Doe'
+                email = `jd-${Math.random()}@example.com`
+                password = `jd-${Math.random()}`
+                birthday = '20/02/2002'
+                gender = 'Male'
+                phone = `jdPhone-${Math.random()}`
+
+                user = new User({ name, surname, email, password, birthday, gender, phone })
+
+                return user.save()
+
+            })
+            it('should succed on correct data', async () => {
+    
+                let image = './data/test-images/default-profile-pic.png'
+
+                var file = fs.createReadStream(image)
+
+                const res = await logic.addProfilePicture(user.id, file)
+
+                expect(res).to.be.undefined
+
+                let _users = await User.find()
+
+                expect(_users.length).to.equal(1)
+
+                let [_user] = _users
+
+                expect(_user.id).to.be.a('string')
+                expect(_user.name).to.equal(name)
+                expect(_user.surname).to.equal(surname)
+                expect(_user.email).to.equal(email)
+                expect(_user.password).to.equal(password)
+                expect(_user.birthday).to.equal(birthday)
+                expect(_user.gender).to.equal(gender)
+                expect(_user.phone).to.equal(phone)
+
+
+                const profilePictures = await ProfilePicture.find()
+    
+                expect(profilePictures.length).to.be.equal(1)
+    
+    
+                const [profilePicture] = profilePictures
+
+                expect(profilePicture.id).to.equal(_user.profilePicture._id.toString())
+                expect(profilePicture.id).to.be.a('string')
+                expect(profilePicture.url).to.be.a('string')
+                expect(profilePicture.public_id).to.be.a('string')
+                expect(profilePicture.userId.toString()).to.equal(user.id)
+                
+                cloudinary.uploader.destroy(profilePictures.public_id, (result) => { });
+
+                
+            })
+        }) 
+
+        describe('list user pictures', () => {
+            let user, place, picture
+            beforeEach(async()=> {
+                let name = 'John'
+                let surname = 'Doe'
+                let email = `jd-${Math.random()}@example.com`
+                let password = `jd-${Math.random()}`
+                let birthday = '20/02/2002'
+                let gender = 'Male'
+                let phone = `jdPhone-${Math.random()}`
+    
+                user = new User({ name, surname, email, password, birthday, gender, phone })
+    
+                let placeName = 'Costa Dorada'
+                let latitude = 41.398469
+                let longitud = 2.199943
+                let userId = user.id
+                let breakfast = true
+                let lunch = false
+                let dinner = true
+                let coffee = false
+                let nigthLife = true
+                let thingsToDo = false
+    
+                place = new Place({name: placeName, latitude, longitud,  userId, breakfast, lunch, dinner, coffee, nigthLife, thingsToDo})
+                
+                url= 'http://res.cloudinary.com/dancing890/image/upload/v1542718364/h7nnejboqjyirdyq5tfo.png'
+
+                picture = new Picture ({url, userId: user.id, public_id:'h7nnejboqjyirdyq5tfo', placeId: place.id})
+                
+                await user.save()
+                await place.save()
+                await picture.save()
+            })
+            it('should succed on correct data', async ()=> {
+                const pictureUrls = await logic.listUserPictures(user.id)
+
+                expect(pictureUrls.length).to.equal(1)
+                
+                const [pictureUrl] = pictureUrls
+                expect(pictureUrl).to.be.a('string')
+                expect(pictureUrl).to.equal(url)
+
+                const _pictures = await Picture.find({userId: user.id})
+
+                expect(_pictures.length).to.equal(1)
+                
+                const [_picture] = _pictures
+                expect(_picture.url).to.be.equal(pictureUrl)
+            })
+        }) 
+
     })
 
 
@@ -247,7 +361,7 @@ describe('logic', () => {
                 await place.save()
             })
             it('should succed on correct name', async () => {
-                const places = await logic.findPlaceByName(place.name)
+                const places = await logic.listPlacesByName(place.name)
 
                 const [_place ] = places
                 
@@ -330,7 +444,7 @@ describe('logic', () => {
 
         })
 
-        describe('list place by Id', () => {
+        describe('retrieve place by Id', () => {
             let place 
 
             beforeEach(async () => {
@@ -352,7 +466,7 @@ describe('logic', () => {
                 await place.save()
             })
             it('should succed on correct name', async () => {
-                const _place = await logic.findPlaceById(place.id)
+                const _place = await logic.retrievePlaceById(place.id)
                 
                 expect(_place).not.to.be.instanceof(Place)
                 expect(_place.id).to.be.a('string')
@@ -422,53 +536,6 @@ describe('logic', () => {
 
         })
 
-
-
-        // with local data
-        // false && describe('add place pictures', ()=> {
-        //     let place
-        //     beforeEach(async () => {
-        //         let placeName = 'Costa Dorada'
-        //         let latitude = 41.398469
-        //         let longitud = 2.199943
-        //         let userId = user.id
-        //         let breakfast = true
-        //         let lunch = false
-        //         let dinner = true
-        //         let coffee = false
-        //         let nigthLife = true
-        //         let thingsToDo = false
-    
-        //         place = new Place({name: placeName, latitude, longitud,  userId, breakfast, lunch, dinner, coffee, nigthLife, thingsToDo})
-                
-        //         await user.save()
-        //         await place.save()
-        //     })
-    
-        //     it('should succed on correct data', async () => {
-    
-        //         let image = './data/images/default-place-pic.png'
-                
-        //         const res = await logic.addPlacePicture(user.id, place.id, image)
-                
-        //         expect(res).to.be.undefined
-    
-        //         const pictures = await Picture.find()
-    
-        //         expect(pictures.length).to.be.equal(1)
-    
-    
-        //         const [picture] = pictures
-    
-        //         expect(picture.id).to.be.a('string')
-        //         expect(picture.url).to.be.a('string')
-        //         expect(picture.userId.toString()).to.equal(user.id)
-        //         expect(picture.placeId.toString()).to.equal(place.id)
-                
-    
-        //     })
-        // })
-
         describe('add place pictures ', ()=> {
             let place
             beforeEach(async () => {
@@ -485,13 +552,12 @@ describe('logic', () => {
     
                 place = new Place({name: placeName, latitude, longitud,  userId, breakfast, lunch, dinner, coffee, nigthLife, thingsToDo})
                 
-                await user.save()
                 await place.save()
             })
     
             it('should succed on correct data', async () => {
     
-                let image = './data/images/default-place-pic.png'
+                let image = './data/test-images/default-place-pic.png'
 
                 var file = fs.createReadStream(image)
 
@@ -512,16 +578,10 @@ describe('logic', () => {
                 expect(picture.userId.toString()).to.equal(user.id)
                 expect(picture.placeId.toString()).to.equal(place.id)
                 
-    
+                cloudinary.uploader.destroy(picture.public_id, (result) => { });
             })
 
-            // afterEach(async() => {
-            //     debugger
-
-            //     await cloudinary.uploader.destroy(picture.public_id, (result) => {
-            //         debugger
-            //     });
-            // })
+           
         })
 
         describe('list place pictures', () => {
@@ -549,9 +609,6 @@ describe('logic', () => {
     
                 place = new Place({name: placeName, latitude, longitud,  userId, breakfast, lunch, dinner, coffee, nigthLife, thingsToDo})
                 
-                await user.save()
-                await place.save()
-                
                 url= 'http://res.cloudinary.com/dancing890/image/upload/v1542718364/h7nnejboqjyirdyq5tfo.png'
 
                 picture = new Picture ({url, userId: user.id, public_id:'h7nnejboqjyirdyq5tfo', placeId: place.id})
@@ -577,6 +634,7 @@ describe('logic', () => {
                 expect(_picture.url).to.be.equal(pictureUrl)
             })
         }) 
+
 
         
     })
