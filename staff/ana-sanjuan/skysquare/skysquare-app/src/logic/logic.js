@@ -72,7 +72,29 @@ const logic = {
 
         sessionStorage.removeItem('userId')
         sessionStorage.removeItem('token')
-    }
+    },
+
+    listPlaces(filter) {
+        validate([
+            { key: 'filter', value: filter, type: String },
+        ])
+       
+        return fetch(`${this.url}/users/${this._userId}/places/filter/${filter}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${this._token}`
+            }
+        })
+        .then(res => {
+            return res.json()
+        })
+        .then(res => {
+            if (res.error) throw Error(res.error)
+            return res.data
+        })
+    },
+
+   
 }
 
 // export default logic

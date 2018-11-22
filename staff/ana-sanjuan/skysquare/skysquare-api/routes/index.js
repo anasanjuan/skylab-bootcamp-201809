@@ -97,9 +97,9 @@ router.post('/users/:id/places', [bearerTokenParser, jwtVerifier, jsonBodyParser
     }, res)
 })
 
-router.get('/users/:id/places/name', [bearerTokenParser, jwtVerifier, jsonBodyParser], (req, res) => {
+router.get('/users/:id/places/name/:name', [bearerTokenParser, jwtVerifier, jsonBodyParser], (req, res) => {
     routeHandler(() => {
-        const { params: { id }, body: { name }, sub } = req
+        const { params: { id, name }, sub } = req
         if (id !== sub) throw Error('token sub does not match user id')
 
         return logic.listPlacesByName(name)
@@ -111,11 +111,11 @@ router.get('/users/:id/places/name', [bearerTokenParser, jwtVerifier, jsonBodyPa
     }, res)
 })
 
-router.get('/users/:id/places/filter', [bearerTokenParser, jwtVerifier, jsonBodyParser], (req, res) => {
+router.get('/users/:id/places/filter/:filter', [bearerTokenParser, jwtVerifier, jsonBodyParser], (req, res) => {
     routeHandler(() => {
-        const { params: { id }, body: { filter }, sub } = req
+        const { params: { id, filter }, sub } = req
         if (id !== sub) throw Error('token sub does not match user id')
-
+        debugger
         return logic.listPlacesByFilter(filter)
             .then(places =>
                 res.json({

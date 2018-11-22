@@ -1,5 +1,6 @@
 $color-danger: red
 $color-text: white
+$color-header: #2E5BE3
 
 * 
     margin: 0
@@ -142,8 +143,6 @@ body
     background-color: #2E5BE3
     display: block
     width: 100%
-    
-    
     &--half
         @extend %input 
         background-color: #2E5BE3
@@ -244,4 +243,37 @@ body
                 margin: 0
                 padding: 0
 
+// List places
+.list__places
+    width: 100%
+    height: 100%
+    &__header
+        background-color: $color-header
+        height: 80px
+    .input_box
+        @extend %input 
+        display: block
+        width: 80%
+        margin: 0 auto
+        background-color: white
+        border-radius: 9px
+        
+        
+//Place
+.place
+    border: 1px solid #0B30A4
+    color: black
+    height: 130px
+    h1 
+        color: blue 
+        font-size: 15px
+    .score
+        background-color: #02B552
+        width: 30px
+        height: 30px
+        position: relative
+        bottom: 50px
+        left: 340px
+        border-radius: 9px
 
+    

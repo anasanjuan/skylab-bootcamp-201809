@@ -4,8 +4,9 @@ import Landing from './components/Landing'
 import Register from './components/Register'
 import LogIn from './components/LogIn'
 import Search from './components/Search'
-import Lists from './components/Lists'
+import Mylists from './components/Mylists'
 import History from './components/History'
+import ListPlaces from './components/ListPlaces'
 import Error from './components/Error'
 import Footer from './components/Footer'
 import Profile from './components/Profile'
@@ -63,7 +64,10 @@ class App extends Component {
         return(<div className='home'>
                 <div className='main'>
                 <Route exact path='/home' render={() => logic.loggedIn? <Search />:<Redirect to="/logIn"/>} />
-                <Route path='/home/lists' render={() => logic.loggedIn? <Lists  />:<Redirect to="/logIn"/>} />
+                <Route path='/home/:filter' render={(props) => logic.loggedIn? <ListPlaces filter={props.match.params.filter}/>:<Redirect to="/logIn"/>} />
+                {/* <Route path='/home/showRestaurant' render={() => logic.loggedIn? <ShowRestarurant />:<Redirect to="/logIn"/>} /> */}
+                {/* <Route path='/home/breakfast' render={() => logic.loggedIn? <ListRestaurants filter={'breakfast'}  />:<Redirect to="/logIn"/>} /> */}
+                <Route path='/home/myLists' render={() => logic.loggedIn? <Mylists  />:<Redirect to="/logIn"/>} />
                 <Route path='/home/history' render={() => logic.loggedIn? <History />:<Redirect to="/logIn"/>} />
                 <Route path='/home/profile' render={() => logic.loggedIn? <Profile onLogOutClick={this.handleLogoutClick} />:<Redirect to="/logIn"/>} />
                 </div>

@@ -372,12 +372,6 @@ describe('logic', () => {
                 expect(_place.longitud).to.equal(place.longitud)
                 expect(_place.address).to.equal(place.address)
                 expect(_place.scoring).to.be.a('number')
-                expect(_place.breakfast).to.equal(place.breakfast)
-                expect(_place.lunch).to.equal(place.lunch)
-                expect(_place.dinner).to.equal(place.dinner)
-                expect(_place.coffee).to.equal(place.coffee)
-                expect(_place.nigthLife).to.equal(place.nigthLife)
-                expect(_place.thingsToDo).to.equal(place.thingsToDo)
 
             })
 
@@ -433,12 +427,6 @@ describe('logic', () => {
                 expect(_place.longitud).to.equal(place.longitud)
                 expect(_place.address).to.equal(place.address)
                 expect(_place.scoring).to.be.a('number')
-                expect(_place.breakfast).to.equal(place.breakfast)
-                expect(_place.lunch).to.equal(place.lunch)
-                expect(_place.dinner).to.equal(place.dinner)
-                expect(_place.coffee).to.equal(place.coffee)
-                expect(_place.nigthLife).to.equal(place.nigthLife)
-                expect(_place.thingsToDo).to.equal(place.thingsToDo)
 
             })
 

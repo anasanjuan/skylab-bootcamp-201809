@@ -147,7 +147,8 @@ const logic = {
                 return place
             })
 
-            return places
+            return places.map(({ id, name, latitude, longitud, address, scoring }) => ({ id, name, latitude, longitud, address, scoring }))
+
         })()
     },
 
@@ -167,8 +168,7 @@ const logic = {
 
                 return place
             })
-
-            return places
+            return places.map(({ id, name, latitude, longitud, address, scoring }) => ({ id, name, latitude, longitud, address, scoring }))
         })()
     },
 
