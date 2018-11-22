@@ -17,11 +17,11 @@ class ListPlaces extends Component {
         return (<div className='list__places'>
             <header className= 'list__places__header'>
                 <Link to={'/home'}><i className="fas fa-arrow-left" onClick={this.props.OnGoBack}></i></Link>
-                <input className='input_box' type='text'></input>
+                <input className='input_box' type='text' placeholder={this.props.filter}></input>
             </header>
             <main className='list__places__main'>
                 <section >
-                    {this.state.places.map(place => <Place key={place.id} name={place.name} scoring={place.scoring} />)}
+                    {this.state.places.map(place => <Place key={place.id} name={place.name} scoring={place.scoring} picture={place.picture} />)}
                 </section>
             </main>
         </div>)

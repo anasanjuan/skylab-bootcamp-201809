@@ -1,11 +1,20 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 
-function Place (props) {
-    return(<div className='place'>
-        <img></img>
-        <h1>{props.name}</h1>
-        <p>lorem lorem</p>
-        <div className='score'>{props.scoring}</div>
+function Place(props) {
+    return (<div className='list__place__item'>
+        <Link to={`/home/place/${props.key}`}>
+            <header className='list__place__item__header'>
+                <div> <img alt='' src={props.picture} ></img></div>
+                <div>
+                    <h1>{props.name}</h1>
+                    <p>lorem lorem</p>
+                </div>
+                <div className='score'>{props.scoring}</div>
+            </header>
+        </Link>
+        <p>lorem tip lorem tip</p>
+
     </div>)
 }
 

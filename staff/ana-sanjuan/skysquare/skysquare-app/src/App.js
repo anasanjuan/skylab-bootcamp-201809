@@ -7,6 +7,7 @@ import Search from './components/Search'
 import Mylists from './components/Mylists'
 import History from './components/History'
 import ListPlaces from './components/ListPlaces'
+import ShowPlace from './components/ShowPlace'
 import Error from './components/Error'
 import Footer from './components/Footer'
 import Profile from './components/Profile'
@@ -59,12 +60,15 @@ class App extends Component {
         logic.logOut()
     }
     
+    // renderPlace() {
 
+    // }
     renderHome() {
         return(<div className='home'>
                 <div className='main'>
                 <Route exact path='/home' render={() => logic.loggedIn? <Search />:<Redirect to="/logIn"/>} />
-                <Route path='/home/:filter' render={(props) => logic.loggedIn? <ListPlaces filter={props.match.params.filter}/>:<Redirect to="/logIn"/>} />
+                <Route path='/home/:filter' render={props => logic.loggedIn? <ListPlaces filter={props.match.params.filter}/>:<Redirect to="/logIn"/>} />
+                <Route path='/home/place/:placeId' render={(props) => logic.loggedIn? <ShowPlace/>:<Redirect to="/logIn"/>} />
                 {/* <Route path='/home/showRestaurant' render={() => logic.loggedIn? <ShowRestarurant />:<Redirect to="/logIn"/>} /> */}
                 {/* <Route path='/home/breakfast' render={() => logic.loggedIn? <ListRestaurants filter={'breakfast'}  />:<Redirect to="/logIn"/>} /> */}
                 <Route path='/home/myLists' render={() => logic.loggedIn? <Mylists  />:<Redirect to="/logIn"/>} />

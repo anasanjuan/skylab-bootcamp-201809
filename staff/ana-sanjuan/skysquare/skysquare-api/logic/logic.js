@@ -160,15 +160,29 @@ const logic = {
         return (async () => {
 
             let places = await Place.find({ [filter]: true }, { userId: 0, __v: 0 }).lean()
+            
+            const listPlaces = await Promise.all(
+                places.forEach(async place => {
+                    const pictures = await Picture.findById(place.id)
 
-            places.forEach(place => {
-                place.id = place._id.toString()
+                    if(pictures) {
+                        const picture = "https://res.cloudinary.com/dancing890/image/upload/v1542807002/waxfi0xtcm5u48yltzxc.png"
+                    } else {
 
-                delete place._id
+                    const picture = pictures[Math.floor(Math.random()*items.length)];
+                    }
+                    
+                    place.picture = picture
 
-                return place
-            })
-            return places.map(({ id, name, latitude, longitud, address, scoring }) => ({ id, name, latitude, longitud, address, scoring }))
+                    place.id = place._id.toString()
+    
+                    delete place._id
+                    
+                    return place
+                })
+            )
+            
+            return listPlaces.map(({ id, name, latitude, longitud, address, scoring, picture }) => ({ id, name, latitude, longitud, address, scoring, picture }))
         })()
     },
 
