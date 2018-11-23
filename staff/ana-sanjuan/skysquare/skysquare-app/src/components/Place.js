@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 
 function Place(props) {
     return (<div className='list__place__item'>
-        <Link to={`/home/place/${props.key}`}>
+        <Link to={`/home/place/${props.id}`}>
             <header className='list__place__item__header'>
                 <div> <img alt='' src={props.picture} ></img></div>
                 <div>

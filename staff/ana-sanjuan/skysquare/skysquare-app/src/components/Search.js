@@ -3,14 +3,6 @@ import {Link} from 'react-router-dom'
 
 class Search extends Component {
     state = {}
-    
-    handleBreakfastClick= event=> {
-        event.preventDefault()
-
-        this.props.onFilterClick('breakfast')
-    }
-
-    
 
     render() {
         return <div className= "search">

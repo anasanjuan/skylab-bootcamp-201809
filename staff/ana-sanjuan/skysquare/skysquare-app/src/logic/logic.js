@@ -1,3 +1,5 @@
+// require('dotenv').config()
+// const { env: { URL } } = process
 const validate = require('../utils/validate')
 
 global.sessionStorage = require('sessionstorage')
@@ -6,10 +8,9 @@ const logic = {
     _userId: sessionStorage.getItem('userId') || null,
     _token: sessionStorage.getItem('token') || null,
 
-    url: 'http://localhost:5000/api',
+    url: 'http://localhost:5000/api', //todo pasar a .env
 
     register(name, surname, email, password, birthday, gender, phone) {
-
         validate([
             { key: 'name', value: name, type: String },
             { key: 'surname', value: surname, type: String },
@@ -31,8 +32,6 @@ const logic = {
             .then(res => {
                 if (res.error) throw Error(res.error)
             })
-
-
     },
 
     logIn(email, password) {
@@ -40,6 +39,7 @@ const logic = {
             { key: 'email', value: email, type: String },
             { key: 'password', value: password, type: String },
         ])
+
         return fetch(`${this.url}/auth`, {
             method: 'POST',
             headers: {
@@ -90,9 +90,52 @@ const logic = {
         })
         .then(res => {
             if (res.error) throw Error(res.error)
+
             return res.data
         })
     },
+
+    retrievePlace(placeId) {
+        validate([
+            { key: 'placeId', value: placeId, type: String },
+        ])
+       
+        return fetch(`${this.url}/users/${this._userId}/places/${placeId}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${this._token}`
+            }
+        })
+        .then(res => {
+            return res.json()
+        })
+        .then(res => {
+            if (res.error) throw Error(res.error)
+            return res.data
+        })
+
+    },
+
+    listPictures(placeId) {
+        validate([
+            { key: 'placeId', value: placeId, type: String },
+        ])
+
+        return fetch(`${this.url}/users/${this._userId}/places/${placeId}/pictures`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${this._token}`
+            }
+        })
+        .then(res => {
+            return res.json()
+        })
+        .then(res => {
+            if (res.error) throw Error(res.error)
+            return res.data
+        })
+
+    }
 
    
 }

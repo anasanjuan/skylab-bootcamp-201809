@@ -4,15 +4,15 @@ import Place from './Place'
 import logic from '../logic/logic'
 
 class ListPlaces extends Component {
-    state = { places: []}
+    state = { places: [], coches: ''}
 
     componentDidMount() {
         logic.listPlaces(this.props.filter)
             .then(places => {
                 this.setState({ places })
             })
-
     }
+    
     render() {
         return (<div className='list__places'>
             <header className= 'list__places__header'>
@@ -21,7 +21,7 @@ class ListPlaces extends Component {
             </header>
             <main className='list__places__main'>
                 <section >
-                    {this.state.places.map(place => <Place key={place.id} name={place.name} scoring={place.scoring} picture={place.picture} />)}
+                    {this.state.places.map(place => <Place key={place.id} id={place.id} name={place.name} scoring={place.scoring} picture={place.picture} />)}
                 </section>
             </main>
         </div>)

@@ -160,45 +160,63 @@ const logic = {
         return (async () => {
 
             let places = await Place.find({ [filter]: true }, { userId: 0, __v: 0 }).lean()
-            
+
             const listPlaces = await Promise.all(
-                places.forEach(async place => {
+                places.map(async place => {
                     const pictures = await Picture.findById(place.id)
 
-                    if(pictures) {
+                    if (!pictures) {
                         const picture = "https://res.cloudinary.com/dancing890/image/upload/v1542807002/waxfi0xtcm5u48yltzxc.png"
-                    } else {
-
-                    const picture = pictures[Math.floor(Math.random()*items.length)];
-                    }
                     
-                    place.picture = picture
+                        place.picture = picture
+                    } else {
+                        const picture = pictures[Math.floor(Math.random() * pictures.length)]
+
+                        place.picture = picture
+                    }
+
+                   
 
                     place.id = place._id.toString()
-    
+
                     delete place._id
-                    
+
                     return place
                 })
             )
-            
-            return listPlaces.map(({ id, name, latitude, longitud, address, scoring, picture }) => ({ id, name, latitude, longitud, address, scoring, picture }))
+
+            return listPlaces.map(({ id, name, scoring, picture }) => ({ id, name, scoring, picture }))
         })()
+
     },
 
-    retrievePlaceById(id) {
+    retrievePlaceById(placeId) {
         validate([
-            { key: 'id', value: id, type: String },
+            { key: 'placeId', value: placeId, type: String },
         ])
-
         return (async () => {
-            let place = await Place.findById(id, { userId: 0, __v: 0 }).lean()
+
+            let place = await Place.findById(placeId, { userId: 0, __v: 0 }).lean()
+
+            const pictures = await Picture.findById(place.id)
+
+            if (!pictures) {
+                const picture = "http://res.cloudinary.com/dancing890/image/upload/b_rgb:2e5be3/v1542807002/waxfi0xtcm5u48yltzxc.png"
+
+                place.picture = picture
+            } else {
+                const picture = pictures[Math.floor(Math.random() * pictures.length)]
+
+                place.picture = picture
+            }
 
             place.id = place._id.toString()
 
             delete place._id
 
-            return place
+            const { id, name, latitude, longitud, address, scoring, picture } = place
+
+            return { id, name, latitude, longitud, address, scoring, picture } 
 
         })()
     },
@@ -215,14 +233,14 @@ const logic = {
             debugger
             place.scores.push(score)
 
-            if (place.scores.length === 1){
+            if (place.scores.length === 1) {
                 place.scoring = score
             } else {
                 const sum = place.scores.reduce((a, b) => a + b, 0)
 
                 place.scoring = +(sum / place.scores.length).toFixed(0)
             }
-                
+
             await place.save()
 
             return place

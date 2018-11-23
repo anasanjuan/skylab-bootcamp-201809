@@ -1,6 +1,7 @@
 $color-danger: red
 $color-text: white
 $color-header: #2E5BE3
+$color-text-grey: #4E595E
 
 * 
     margin: 0
@@ -294,14 +295,99 @@ body
             text-align: center
             color: white
         img 
-            height: 55px
-            width: 55px
+            height: 50px
+            width: 50px
             margin: 8px
             border-radius: 8px
+            background-color: #2E5BE3
     p 
             font-size: 13px
             font-weight: lighter
             margin: 15px
+
+// PlaceHeader
+.placeHeader
+    color: black
+    img 
+        height: 250px
+        width: 250px
+        margin: 8px
+        border-radius: 8px
+    .placeHeader__nav
+        padding: 10px 10px
+        display: flex
+        color: white
+        font-size: 20px
+        font-weight: 200
+        padding-top: 35px 
+        ul 
+            margin: 0
+            padding: 0
+            width: 100%
+            list-style-type: none
+            display: flex
+            justify-content: space-between
+        a:link 
+            text-decoration: none
+
+        a:visited 
+            text-decoration: none
+
+        a:hover 
+            text-decoration: underline
+
+        a:active 
+            text-decoration: underline
+        &__button
+            color: white
+            font-size: 20px
+
+.info
+    color: #4E595E
+    background-color: white
+    &__main
+        display: flex
+        margin-bottom: 20px
+    &__navbar
+        padding: 10px 10px
+        font-size: 20px
+        font-weight: 200
+        padding-top: 35px 
+        display: flex
+        justify-content: space-around
+    ul 
+        margin: 0
+        padding: 0
+        width: 100%
+        list-style-type: none
+        display: flex
+        justify-content: space-around
+
+.pictures
+    color: #4E595E
+    background-color: white
+    &__main
+        display: flex
+        margin-bottom: 20px
+.tips
+    color: #4E595E
+    background-color: white
+    &__main
+        display: flex
+        margin-bottom: 20px
+
+.info__main
+    display: flex
+    justify-content: space-between
+.map 
+   width: 160px
+   height: 200px
+   background-color: grey
+
+.profile
+    color: black
    
+ 
+    
 
     
