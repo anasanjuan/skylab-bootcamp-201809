@@ -1,4 +1,7 @@
 
+
+require('dotenv').config()
+const { env: { API_KEY } } = process
 import React, { Component } from 'react';
 import GoogleMapReact from 'google-map-react'
 
@@ -30,7 +33,7 @@ class ShowMap extends Component {
 				<GoogleMapReact
 					center={{ lat: this.state.lat, lng: this.state.lng }}
 					defaultZoom={14}
-					bootstrapURLKeys={{ key: "AIzaSyDMgVAMQ3l51fT-suy2MOTswccssoOCuJ4", language: 'es', region: 'es' }}
+					bootstrapURLKeys={{ key: API_KEY, language: 'es', region: 'es' }}
 					onGoogleApiLoaded={this.setMarker}>
 				</GoogleMapReact>
 			</section>
