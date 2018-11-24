@@ -1,8 +1,7 @@
-
+import React, { Component } from 'react'
+import GoogleMapReact from 'google-map-react'
 require('dotenv').config()
 const { env: { API_KEY } } = process
-import React, { Component } from 'react';
-import GoogleMapReact from 'google-map-react'
 
 class AddMap extends Component {
 	state= {latitude: 0, longitude: 0}
