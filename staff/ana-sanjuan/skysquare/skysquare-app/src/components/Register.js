@@ -47,9 +47,9 @@ class Register extends Component {
 
     handleSubmit = event => {
         event.preventDefault()
-        
+
         const { name, surname, email, password, birthday, gender, phone } = this.state
-        
+
         this.props.onRegister(name, surname, email, password, birthday, gender, phone)
     }
     render() {
@@ -60,7 +60,7 @@ class Register extends Component {
                         <ul className='navbar__ul'>
                             <li><i className="fas fa-arrow-left" onClick={this.props.OnGoBack}></i></li>
                             <li>Register</li>
-                            <li><button type="submit"className="navbar__button" >OK</button></li>
+                            <li><button type="submit" className="navbar__button">OK</button></li>
                         </ul>
                     </nav>
                 </header>
@@ -82,7 +82,7 @@ class Register extends Component {
                     <button onClick={this.props.onLogInClick}>Do you already have an account? Log In now</button>
                 </footer>
             </form>
-            </div>
+        </div>
 
         )
     }

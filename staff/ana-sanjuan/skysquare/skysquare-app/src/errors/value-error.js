@@ -1,4 +1,4 @@
-class ValueError extends Error {
+export default class ValueError extends Error {
     constructor(message, extra) {
         super()
 
@@ -11,5 +11,5 @@ class ValueError extends Error {
     }
 }
 
-export default ValueError
+// export default ValueError
 // module.exports = ValueError

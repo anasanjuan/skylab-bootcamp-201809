@@ -2,6 +2,9 @@ $color-danger: red
 $color-text: white
 $color-header: #2E5BE3
 $color-text-grey: #4E595E
+$color-dark-blue: #0B30A4
+$color-light-blue: #152F9E
+
 
 * 
     margin: 0
@@ -24,6 +27,17 @@ body
     color: $color-text
     background-size: 100%  100%
 
+.score
+    background-color: #02B552
+    width: 30px
+    height: 30px
+    position: relative
+    top: 10px
+    left: 133px
+    padding: 5px
+    border-radius: 9px
+    text-align: center
+    color: white
 
 // all 
 .title
@@ -258,6 +272,7 @@ body
         position: fixed
         top: 0
         width: 100%
+        z-index: 1
     &__main
         margin-top: 80px
     .input_box
@@ -281,19 +296,6 @@ body
             margin: 15px
             color: blue 
             font-size: 15px
-        
-        .score
-            background-color: #02B552
-            width: 30px
-            height: 30px
-            position: relative
-            top: 10px
-            left: 133px
-            z-index: -1
-            padding: 5px
-            border-radius: 9px
-            text-align: center
-            color: white
         img 
             height: 50px
             width: 50px
@@ -362,6 +364,17 @@ body
         list-style-type: none
         display: flex
         justify-content: space-around
+    .score
+        width: 30px
+        height: 30px
+        position: relative
+        top: 10px
+        left: 20px
+        padding: 5px
+        border-radius: 9px
+        padding: auto 10px
+        text-align: center
+        color: white
 
 .pictures
     color: #4E595E
@@ -386,7 +399,33 @@ body
 
 .profile
     color: black
-   
+
+.add__place
+    color: black
+    background-color: white
+    &__map
+        margin: 20px auto
+    &__fields
+        margin: 20px
+        input
+            margin: 6px
+        label
+            display: block
+            margin: 10px
+        .checkboxes
+            display: flex
+            margin: 20px
+        button
+            font-size: 20px
+            background-color: $color-dark-blue
+            color: white
+    
+       
+.error 
+    color: red
+
+
+
  
     
 

@@ -7,17 +7,15 @@ class Info extends Component {
 
     componentDidMount() {
         logic.retrievePlace(this.props.id)
-            .then(place => {
-                this.setState({ place })
-            })
+            .then(place => this.setState({ place }))
     }
 
     render() {
         return (<div className='info'>
             <main className='info__main'>
                 <div>
-                    <div>scoring</div>
-                    <p>address</p>
+                    <div className='score'>{this.state.place.scoring}</div>
+                    <p>{this.state.place.address}</p>
                 </div>
                 <aside className="register-hive-main__map">
                     <ShowMap lat={this.state.place.latitude} lng={this.state.place.longitud}/>

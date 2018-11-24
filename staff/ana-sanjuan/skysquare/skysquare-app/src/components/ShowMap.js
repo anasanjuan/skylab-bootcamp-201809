@@ -29,7 +29,7 @@ class ShowMap extends Component {
 			<section className="map">
 				<GoogleMapReact
 					center={{ lat: this.state.lat, lng: this.state.lng }}
-					defaultZoom={8}
+					defaultZoom={14}
 					bootstrapURLKeys={{ key: "AIzaSyDMgVAMQ3l51fT-suy2MOTswccssoOCuJ4", language: 'es', region: 'es' }}
 					onGoogleApiLoaded={this.setMarker}>
 				</GoogleMapReact>

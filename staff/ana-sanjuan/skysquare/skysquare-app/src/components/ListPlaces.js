@@ -7,7 +7,7 @@ class ListPlaces extends Component {
     state = { places: [], coches: ''}
 
     componentDidMount() {
-        logic.listPlaces(this.props.filter)
+        logic.listPlacesByFilter(this.props.filter)
             .then(places => {
                 this.setState({ places })
             })

@@ -12,9 +12,8 @@ function Place(props) {
                 </div>
                 <div className='score'>{props.scoring}</div>
             </header>
+            <p>lorem tip lorem tip</p>
         </Link>
-        <p>lorem tip lorem tip</p>
-
     </div>)
 }
 

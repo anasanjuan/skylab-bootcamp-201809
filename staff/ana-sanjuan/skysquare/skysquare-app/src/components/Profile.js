@@ -1,30 +1,43 @@
-import React from 'react'
+import React, {Component} from 'react'
+import {Link} from 'react-router-dom'
+import logic from '../logic/logic'
 
-function Profile(props) {
+class Profile extends Component {
+    state={user:{}}
 
-    debugger
+    componentDidMount() {
+        logic.retrieveUser() 
+            .then(user=> {
+                this.setState({user})
+            })
+
+    }
+
+    render() {
     return <div className="profile">
         <header>
             <div>
-                <button onClick={props.onLogOutClick}>Log Out</button>
+                <button onClick={this.props.onLogOutClick}>Log Out</button>
                 <h1>My profile</h1>
             </div>
             <div>
-                <img></img>
-                <p>Number tips</p>
-                <p>Number pics</p>
+                {/* <img src='{this.state.user.picture}'></img> */}
+                <p>{this.state.user.name}</p>
+                <p>{this.state.user.surname}</p>
+                <p>{this.state.user.email}</p>
+                <p>{this.state.user.phone}</p>
+                <p>{this.state.user.birthday}</p>
             </div>
         </header>
         <main>
-            <section>
-                <h2>Add a New Place</h2>
-            </section>
+            <button onClick={this.props.onAddPlaceClick}>Add New Place</button>
             <section>
                 <p>list tips and pictures</p>
             </section>
         </main>
 
     </div>
+}
 }
 
 export default Profile

@@ -85,10 +85,10 @@ router.post('/users/:id/profilePicture', [bearerTokenParser, jwtVerifier, jsonBo
 
 router.post('/users/:id/places', [bearerTokenParser, jwtVerifier, jsonBodyParser], (req, res) => {
     routeHandler(() => {
-        const { params: { id }, body: { name, latitude, longitud, address, userId, breakfast, lunch, dinner, coffee, nigthLife, thingsToDo }, sub } = req
+        const { params: { id }, body: { name, latitude, longitud, address, breakfast, lunch, dinner, coffee, nigthLife, thingsToDo }, sub } = req
         if (id !== sub) throw Error('token sub does not match user id')
-
-        return logic.addPlace(name, latitude, longitud, address, userId, breakfast, lunch, dinner, coffee, nigthLife, thingsToDo)
+        debugger
+        return logic.addPlace(name, latitude, longitud, address, id, breakfast, lunch, dinner, coffee, nigthLife, thingsToDo)
             .then(() =>
                 res.json({
                     message: 'place added'

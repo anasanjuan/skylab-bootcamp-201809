@@ -8,18 +8,19 @@ import Mylists from './components/Mylists'
 import History from './components/History'
 import ListPlaces from './components/ListPlaces'
 import Info from './components/Info'
+import AddPlace from './components/AddPlace'
 import Pictures from './components/Pictures'
 import Tips from './components/Tips'
 import Error from './components/Error'
 import Footer from './components/Footer'
 import Profile from './components/Profile'
 import PlaceHeader from './components/PlaceHeader'
-import { Route, withRouter, Redirect, Switch } from 'react-router-dom'
+import { Route, withRouter, Redirect } from 'react-router-dom'
 
 
 
 class App extends Component {
-    state = { error: null }
+    state = { error: null, placesByName: []}
 
     handleRegisterClick = () => this.props.history.push('/register')
 
@@ -43,6 +44,7 @@ class App extends Component {
                 .then(() => {
                     this.setState({ error: null }, () => this.props.history.push('/home'))
                 })
+                .catch(error => this.setState({ error: error.message }))
 
         } catch (err) {
             this.setState({ error: err.message })
@@ -60,13 +62,57 @@ class App extends Component {
 
     handleLogoutClick = () => {
         logic.logOut()
+        .then(() => {
+            this.setState({ error: null }, () => this.props.history.push('/'))
+        })
+        .catch(error => this.setState({ error: error.message }))
     }
+
+    handleAddPlaceClick = () => {
+        this.setState({ error: null }, () => this.props.history.push('/home/add-place'))
+
+    }
+
+    handleOnAddPlaceSubmit = (name, address, latitude, longitud, breakfast, lunch, dinner, coffee, nightLife,thingsToDo) => {
+        try {
+            logic.AddPlace(name, address, latitude, longitud, breakfast, lunch, dinner, coffee, nightLife,thingsToDo)
+                .then(() => {
+                    this.setState({ error: null }, () => this.props.history.push('/home/profile'))
+                })
+                .catch(error => this.setState({ error: error.message }))
+
+        } catch(err) {
+            this.setState({error: err.message})
+        }
+    }
+
+    //TODO different component for list places by name? 
+    // handleSearchSubmit = name => {
+    //     try {
+    //         logic.listPlacesByName(name)
+    //         .then(placesByName => {
+    //             this.setState({ error: null, placesByName }, () => this.props.history.push(`/home/name/${name}`))
+    //         })
+    //         .catch(error => this.setState({ error: error.message }))
+
+    //     } catch(err) {
+    //         this.setState({error: err.message})
+    //     }
+    // }
+
+    // renderProfile() {
+    //     return(<div>
+    //         <Route exact path='/home/profile' render={() => logic.loggedIn ? <Profile onLogOutClick={this.handleLogoutClick} /> :<Redirect to="/logIn" />} />
+    //         <Route path='/add-place' render={() => logic.loggedIn ? <AddPlace/> :<Redirect to="/logIn" />} />
+    //     </div>)
+    // }
+
 
     renderPlace(placeId) {
         return (<div>
             <PlaceHeader id={placeId} />
             <Route exact path='/home/place/:id' render={props => logic.loggedIn ? <Info id={props.match.params.id} /> : <Redirect to="/logIn" />} />
-            <Route path='/home/place/:id/pictures' render={props => logic.loggedIn ? <Pictures id={props.match.params.id} /> : <Redirect to="/logIn" />} />
+            <Route path='/home/place/:id/pictures' render={props => logic.loggedIn ? <Pictures key={props.match.params.id} id={props.match.params.id} /> : <Redirect to="/logIn" />} />
             <Route path='/home/place/:id/tips' render={props => logic.loggedIn ? <Tips id={props.match.params.id} /> : <Redirect to="/logIn" />} />
         </div>)
 
@@ -74,24 +120,26 @@ class App extends Component {
     renderHome() {
         return (<div className='home'>
             <div className='main'>
-                <Switch>
-                <Route exact path='/home' render={() => logic.loggedIn ? <Search /> : <Redirect to="/logIn" />} />
-                <Route exact path='/home/:filter' render={props => logic.loggedIn ? <ListPlaces filter={props.match.params.filter} /> : <Redirect to="/logIn" />} />
+                {this.state.error && <Error message={this.state.error} />}
+
+                <Route exact path='/home' render={() => logic.loggedIn ? <Search onSearchSubmit={this.handleSearchSubmit}/> : <Redirect to="/logIn" />} />
+                <Route exact path='/home/filter/:filter' render={props => logic.loggedIn ? <ListPlaces filter={props.match.params.filter} /> : <Redirect to="/logIn" />} />
+                <Route exact path='/home/name/:name' render={props => logic.loggedIn ? <ListPlaces filter={props.match.params.filter} /> : <Redirect to="/logIn" />} />                
                 <Route path='/home/place/:id' render={props => logic.loggedIn ? this.renderPlace(props.match.params.id) : <Redirect to="/logIn" />} />
-                <Route path='/myLists' render={() => logic.loggedIn ? <Mylists /> : <Redirect to="/logIn" />} />
-                <Route path='/history' render={() => logic.loggedIn ? <History /> : <Redirect to="/logIn" />} />
-                <Route path='/profile' render={() => logic.loggedIn ? <Profile onLogOutClick={this.handleLogoutClick} /> : <Redirect to="/logIn" />} />    
-                </Switch>
+                {/* <Route path='/home/myLists' render={() => logic.loggedIn ? <Mylists /> : <Redirect to="/logIn" />} />
+                <Route path='/home/history' render={() => logic.loggedIn ? <History /> : <Redirect to="/logIn" />} /> */}
+                <Route path='/home/profile' render={() => logic.loggedIn ? <Profile onAddPlaceClick= {this.handleAddPlaceClick} onLogOutClick={this.handleLogoutClick} /> :<Redirect to="/logIn" />} />
+                <Route path='/home/add-place' render={() => logic.loggedIn ? <AddPlace onAddPlace= {this.handleOnAddPlaceSubmit}/> :<Redirect to="/logIn" />} />
             </div>
             <Footer />
         </div>)
     }
     render() {
         return (<div>
+            {this.state.error && <Error message={this.state.error} />}
             <Route exact path='/' render={() => !logic.loggedIn ? <Landing onRegisterClick={this.handleRegisterClick} onLogInClick={this.handleLogInClick} /> : <Redirect to="/home" />} />
             <Route path='/register' render={() => !logic.loggedIn ? <Register onRegister={this.handleRegister} OnGoBack={this.handleRegisterGoBack} onLogInClick={this.handleLogInClick} /> : <Redirect to="/home" />} />
             <Route path='/logIn' render={() => !logic.loggedIn ? <LogIn onLogIn={this.handleLogIn} OnGoBack={this.handleLogInGoBack} /> : <Redirect to="/home" />} />
-            {this.state.error && <Error message={this.state.error} />}
             <Route path='/home' render={() => logic.loggedIn ? this.renderHome() : <Redirect to="/logIn" />} />
 
         </div>

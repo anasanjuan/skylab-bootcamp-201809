@@ -44,6 +44,8 @@ const logic = {
         return (async () => {
             let user = await User.findOne({ email })
 
+            if (!user) throw new NotFoundError(`user with email ${email} not found`)
+
             if (user.password !== password) throw new AuthError(`incorrect user or password`)
 
             return user.id
@@ -63,6 +65,10 @@ const logic = {
             user.id = user._id.toString()
 
             delete user._id
+
+            // const profilePicture = await ProfilePicture.findById(id)
+
+            // user.picture = profilePicture.url
 
             return user
         })()
@@ -108,13 +114,14 @@ const logic = {
             { key: 'longitud', value: longitud, type: Number },
             { key: 'address', value: address, type: String },
             { key: 'userId', value: userId, type: String },
-            { key: 'breakfast', value: breakfast, type: Boolean, optional: true },
-            { key: 'lunch', value: lunch, type: Boolean, optional: true },
-            { key: 'dinner', value: dinner, type: Boolean, optional: true },
-            { key: 'coffee', value: coffee, type: Boolean, optional: true },
-            { key: 'nigthLife', value: nigthLife, type: Boolean, optional: true },
-            { key: 'thingsToDo', value: thingsToDo, type: Boolean, optional: true }
+            { key: 'breakfast', value: breakfast, type: String, optional: true },
+            { key: 'lunch', value: lunch, type: String, optional: true },
+            { key: 'dinner', value: dinner, type: String, optional: true },
+            { key: 'coffee', value: coffee, type: String, optional: true },
+            { key: 'nigthLife', value: nigthLife, type: String, optional: true },
+            { key: 'thingsToDo', value: thingsToDo, type: String, optional: true }
         ])
+        debugger
         return (async () => {
             let user = await User.findById(userId)
 
@@ -139,6 +146,8 @@ const logic = {
         return (async () => {
             let places = await Place.find({ name }, { userId: 0, __v: 0 }).lean()
 
+            if (!place) throw new NotFoundError(`place does not exist`)
+
             places.forEach(place => {
                 place.id = place._id.toString()
 
@@ -159,7 +168,7 @@ const logic = {
 
         return (async () => {
 
-            let places = await Place.find({ [filter]: true }, { userId: 0, __v: 0 }).lean()
+            let places = await Place.find({ [filter]: 'on' }, { userId: 0, __v: 0 }).lean()
 
             const listPlaces = await Promise.all(
                 places.map(async place => {
@@ -198,6 +207,8 @@ const logic = {
 
             let place = await Place.findById(placeId, { userId: 0, __v: 0 }).lean()
 
+            if (!place) throw new NotFoundError(`place does not exist`)
+
             const pictures = await Picture.findById(place.id)
 
             if (!pictures) {
@@ -230,7 +241,7 @@ const logic = {
             let place = await Place.findById(placeId)
 
             if (!place) throw new NotFoundError(`place does not exist`)
-            debugger
+
             place.scores.push(score)
 
             if (place.scores.length === 1) {

@@ -13,19 +13,19 @@ class Footer extends Component {
                             <h5>Search</h5>
                         </li>
                     </Link>
-                    <Link to={'/myLists'}>
+                    <Link to={'/home/myLists'}>
                         <li className="nav-items">
                             <i className="fas fa-list-ul"></i>
                             <h5>Lists</h5>
                         </li>
                     </Link>
-                    <Link to={'/history'}>
+                    <Link to={'/home/history'}>
                         <li className="nav-items">
                             <i className="fas fa-history"></i>
                             <h5>History</h5>
                         </li>
                     </Link>
-                    <Link to={'/profile'}>
+                    <Link to={'/home/profile'}>
                         <li className="nav-items">
                             <i className="far fa-user"></i>
                             <h5>Profile</h5>

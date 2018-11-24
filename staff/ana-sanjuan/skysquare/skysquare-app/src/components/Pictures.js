@@ -12,7 +12,7 @@ class Pictures extends Component {
     render() {
         return (<div className='pictures'>
             <main className='pictures__main'>
-                {this.state.pictures.map(picture => <img src={`${picture}`}></img>)}
+                {this.state.pictures.map(picture => <img src={`${picture}`} alt='#'></img>)}
             </main>
         </div>)
     }

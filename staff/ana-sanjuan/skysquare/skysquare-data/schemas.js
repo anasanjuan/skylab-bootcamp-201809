@@ -79,22 +79,22 @@ const Place = new Schema ({
         type: Number,
     }],
     breakfast: {
-        type: Boolean,
+        type: String,
     },
     lunch: {
-        type: Boolean,
+        type: String,
     },
     dinner: {
-        type: Boolean,
+        type: String,
     },
     coffee: {
-        type: Boolean,
+        type: String,
     },
     nigthLife: {
-        type: Boolean,
+        type: String,
     },
     thingsToDo: {
-        type: Boolean,
+        type: String,
     }
 })
 

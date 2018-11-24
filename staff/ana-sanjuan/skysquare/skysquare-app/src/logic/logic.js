@@ -60,7 +60,23 @@ const logic = {
                 sessionStorage.setItem('token', token)
             })
     },
+    
+    retrieveUser() {
+        return fetch(`${this.url}/users/${this._userId}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${this._token}`
+            }
+        })
+        .then(res => {
+            return res.json()
+        })
+        .then(res => {
+            if (res.error) throw Error(res.error)
 
+            return res.data
+        })
+    },
     
     get loggedIn() {
         return !!this._userId
@@ -74,7 +90,35 @@ const logic = {
         sessionStorage.removeItem('token')
     },
 
-    listPlaces(filter) {
+    AddPlace(name, address, latitude, longitud, breakfast, lunch, dinner, coffee, nightLife,thingsToDo) {
+        validate([
+            { key: 'name', value: name, type: String },
+            { key: 'address', value: address, type: String },
+            { key: 'latitude', value: latitude, type: Number },
+            { key: 'longitud', value: longitud, type: Number },
+            { key: 'breakfast', value: breakfast, type: String },
+            { key: 'lunch', value: lunch, type: String },
+            { key: 'dinner', value: dinner, type: String },
+            { key: 'coffee', value: coffee, type: String },
+            { key: 'nightLife', value: nightLife, type: String },
+            { key: 'thingsToDo', value: thingsToDo, type: String }
+        ])
+        
+        return fetch(`${this.url}/users/${this._userId}/places`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json; charset=utf-8',
+                'Authorization': `Bearer ${this._token}`
+            },
+            body: JSON.stringify({ name, address, latitude, longitud, breakfast, lunch, dinner, coffee, nightLife,thingsToDo })
+        })
+            .then(res => res.json())
+            .then(res => {
+                if (res.error) throw Error(res.error)
+            })
+    },
+
+    listPlacesByFilter(filter) {
         validate([
             { key: 'filter', value: filter, type: String },
         ])
@@ -93,6 +137,27 @@ const logic = {
 
             return res.data
         })
+    },
+
+    listPlacesByName(name) {
+        validate([
+            { key: 'name', value: name, type: String },
+        ])
+       
+        return fetch(`${this.url}/users/${this._userId}/places/name/${name}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${this._token}`
+            }
+        })
+        .then(res => {
+            return res.json()
+        })
+        .then(res => {
+            if (res.error) throw Error(res.error)
+            return res.data
+        })
+
     },
 
     retrievePlace(placeId) {

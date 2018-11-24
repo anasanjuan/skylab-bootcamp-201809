@@ -23,6 +23,19 @@ body {
   background-size: 100% 100%;
 }
 
+.score {
+  background-color: #02B552;
+  width: 30px;
+  height: 30px;
+  position: relative;
+  top: 10px;
+  left: 133px;
+  padding: 5px;
+  border-radius: 9px;
+  text-align: center;
+  color: white;
+}
+
 .title {
   color: black;
   position: relative;
@@ -282,6 +295,7 @@ body {
   position: fixed;
   top: 0;
   width: 100%;
+  z-index: 1;
 }
 .list__places__main {
   margin-top: 80px;
@@ -306,19 +320,6 @@ body {
   margin: 15px;
   color: blue;
   font-size: 15px;
-}
-.list__place__item__header .score {
-  background-color: #02B552;
-  width: 30px;
-  height: 30px;
-  position: relative;
-  top: 10px;
-  left: 133px;
-  z-index: -1;
-  padding: 5px;
-  border-radius: 9px;
-  text-align: center;
-  color: white;
 }
 .list__place__item__header img {
   height: 50px;
@@ -399,6 +400,18 @@ body {
   display: flex;
   justify-content: space-around;
 }
+.info .score {
+  width: 30px;
+  height: 30px;
+  position: relative;
+  top: 10px;
+  left: 20px;
+  padding: 5px;
+  border-radius: 9px;
+  padding: auto 10px;
+  text-align: center;
+  color: white;
+}
 
 .pictures {
   color: #4E595E;
@@ -431,6 +444,37 @@ body {
 
 .profile {
   color: black;
+}
+
+.add__place {
+  color: black;
+  background-color: white;
+}
+.add__place__map {
+  margin: 20px auto;
+}
+.add__place__fields {
+  margin: 20px;
+}
+.add__place__fields input {
+  margin: 6px;
+}
+.add__place__fields label {
+  display: block;
+  margin: 10px;
+}
+.add__place__fields .checkboxes {
+  display: flex;
+  margin: 20px;
+}
+.add__place__fields button {
+  font-size: 20px;
+  background-color: #0B30A4;
+  color: white;
+}
+
+.error {
+  color: red;
 }
 
 /*# sourceMappingURL=styles.css.map */
