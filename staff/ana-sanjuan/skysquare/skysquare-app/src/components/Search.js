@@ -31,43 +31,31 @@ class Search extends Component {
                 </form>
                 <div className="filter">
                     <div className="filter__top">
-                        <Link to={'/home/filter/breakfast'}>
-                        <section className="filter__card">
+                        <Link to={'/home/filter/breakfast'} className="filter__card">
                             <p><i className="fas fa-coffee"></i></p>
                             <p>Breakfast</p>
-                        </section>
                         </Link>
-                        <Link to={'/home/filter/lunch'}>
-                        <section className="filter__card">
+                        <Link to={'/home/filter/lunch'} className="filter__card">
                             <p><i className="fas fa-coffee"></i></p>
                             <p>Lunch</p>
-                        </section>
                         </Link>
-                        <Link  to={'/home/filter/dinner'}>
-                        <section className="filter__card">
+                        <Link  to={'/home/filter/dinner'} className="filter__card">
                             <p><i className="fas fa-coffee"></i></p>
                             <p>Dinner</p>
-                        </section>
                         </Link>
                     </div>
                     <div className="filter__bottom">
-                    <Link  to={'/home/filter/coffee'}>
-                        <section className="filter__card">
+                    <Link  to={'/home/filter/coffee'} className="filter__card">
                             <p><i className="fas fa-coffee"></i></p>
                             <p>Coffee and tea</p>
-                        </section>
                         </Link>
-                        <Link to={'/home/filter/nigthLife'}>
-                        <section className="filter__card">
+                        <Link to={'/home/filter/nigthLife'} className="filter__card">
                             <p><i className="fas fa-glass-martini-alt"></i></p>
                             <p>Night Life</p>
-                        </section>
                         </Link>
-                        <Link to={'/home/filter/thingsToDo'}>
-                        <section className="filter__card">
+                        <Link to={'/home/filter/thingsToDo'} className="filter__card">
                             <p><i className="fas fa-theater-masks"></i></p>
                             <p>Things <br /> to do</p>
-                        </section>
                         </Link>
                     </div>
                 </div>

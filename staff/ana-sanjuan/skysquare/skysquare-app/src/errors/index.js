@@ -1,21 +1,15 @@
-const AlreadyExistsError = require('./already-exists-error')
-const AuthError = require('./auth-error')
-const NotAllowedError = require('./not-allowed-error')
-const NotFoundError = require('./not-found-error')
-const ValueError = require('./value-error')
+class ValueError extends Error {
+    constructor(message, extra) {
+        super()
 
-// module.exports = {
-//     AlreadyExistsError,
-//     AuthError,
-//     NotAllowedError,
-//     NotFoundError,
-//     ValueError
-// }
+        Error.captureStackTrace(this, this.constructor)
 
-export default {
-    AlreadyExistsError,
-    AuthError,
-    NotAllowedError,
-    NotFoundError,
-    ValueError
+        this.name = 'ValueError'
+        this.message = message
+
+        if (extra) this.extra = extra
+    }
 }
+
+export default ValueError
+// module.exports = ValueError

@@ -48,6 +48,7 @@ router.post('/auth', jsonBodyParser, (req, res) => {
 router.get('/users/:id', [bearerTokenParser, jwtVerifier, jsonBodyParser], (req, res) => {
     routeHandler(() => {
         const { params: { id }, sub } = req
+
         if (id !== sub) throw Error('token sub does not match user id')
 
         return logic.retrieveUser(id)
@@ -62,6 +63,7 @@ router.get('/users/:id', [bearerTokenParser, jwtVerifier, jsonBodyParser], (req,
 router.post('/users/:id/profilePicture', [bearerTokenParser, jwtVerifier, jsonBodyParser], (req, res) => {
     routeHandler(() => {
         const { params: { id }, sub } = req
+
         if (id !== sub) throw Error('token sub does not match user id')
 
         return new Promise((resolve, reject) => {
@@ -69,6 +71,11 @@ router.post('/users/:id/profilePicture', [bearerTokenParser, jwtVerifier, jsonBo
 
             busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
                 logic.addProfilePicture(id, file)
+                    .then(url => {
+                        res.json({
+                         data: url
+                        })
+                    })
             })
 
             busboy.on('finish', () => resolve())
@@ -77,17 +84,77 @@ router.post('/users/:id/profilePicture', [bearerTokenParser, jwtVerifier, jsonBo
 
             req.pipe(busboy)
         })
-            .then(() => res.json({
-                message: 'photo uploaded'
-            }))
+        
+
+    }, res)
+})
+
+router.post('/users/:id/favourites', [bearerTokenParser, jwtVerifier, jsonBodyParser], (req, res) => {
+    routeHandler(() => {
+        const { params: { id }, body: { placeId }, sub } = req
+
+        if (id !== sub) throw Error('token sub does not match user id')
+
+        return logic.uploadFavourites(id, placeId)
+            .then(() =>
+                res.json({
+                    message: 'favourite uploaded'
+                })
+            )
+    }, res)
+})
+
+router.get('/users/:id/favourites', [bearerTokenParser, jwtVerifier, jsonBodyParser], (req, res) => {
+    routeHandler(() => {
+        const { params: { id }, sub } = req
+
+        if (id !== sub) throw Error('token sub does not match user id')
+
+        return logic.listFavourites(id)
+            .then(favourites =>
+                res.json({
+                    data: favourites
+                })
+            )
+    }, res)
+})
+router.post('/users/:id/check-ins', [bearerTokenParser, jwtVerifier, jsonBodyParser], (req, res) => {
+    routeHandler(() => {
+        debugger
+        const { params: { id }, body: { placeId }, sub } = req
+
+        if (id !== sub) throw Error('token sub does not match user id')
+
+        return logic.uploadCheckIns(id, placeId)
+            .then(() =>
+                res.json({
+                    message: 'checkIn uploaded'
+                })
+            )
+    }, res)
+})
+
+router.get('/users/:id/check-ins', [bearerTokenParser, jwtVerifier, jsonBodyParser], (req, res) => {
+    routeHandler(() => {
+        const { params: { id }, sub } = req
+
+        if (id !== sub) throw Error('token sub does not match user id')
+
+        return logic.listCheckIns(id)
+            .then(checkIns =>
+                res.json({
+                    data: checkIns
+                })
+            )
     }, res)
 })
 
 router.post('/users/:id/places', [bearerTokenParser, jwtVerifier, jsonBodyParser], (req, res) => {
     routeHandler(() => {
         const { params: { id }, body: { name, latitude, longitud, address, breakfast, lunch, dinner, coffee, nigthLife, thingsToDo }, sub } = req
+
         if (id !== sub) throw Error('token sub does not match user id')
-        debugger
+
         return logic.addPlace(name, latitude, longitud, address, id, breakfast, lunch, dinner, coffee, nigthLife, thingsToDo)
             .then(() =>
                 res.json({
@@ -100,6 +167,7 @@ router.post('/users/:id/places', [bearerTokenParser, jwtVerifier, jsonBodyParser
 router.get('/users/:id/places/name/:name', [bearerTokenParser, jwtVerifier, jsonBodyParser], (req, res) => {
     routeHandler(() => {
         const { params: { id, name }, sub } = req
+
         if (id !== sub) throw Error('token sub does not match user id')
 
         return logic.listPlacesByName(name)
@@ -114,8 +182,9 @@ router.get('/users/:id/places/name/:name', [bearerTokenParser, jwtVerifier, json
 router.get('/users/:id/places/filter/:filter', [bearerTokenParser, jwtVerifier, jsonBodyParser], (req, res) => {
     routeHandler(() => {
         const { params: { id, filter }, sub } = req
+
         if (id !== sub) throw Error('token sub does not match user id')
-        debugger
+
         return logic.listPlacesByFilter(filter)
             .then(places =>
                 res.json({
@@ -128,9 +197,10 @@ router.get('/users/:id/places/filter/:filter', [bearerTokenParser, jwtVerifier, 
 router.get('/users/:id/places/:placeId', [bearerTokenParser, jwtVerifier, jsonBodyParser], (req, res) => {
     routeHandler(() => {
         const { params: { id, placeId }, sub } = req
+
         if (id !== sub) throw Error('token sub does not match user id')
 
-        return logic.retrievePlaceById(placeId)
+        return logic.retrievePlaceById(id, placeId)
             .then(place =>
                 res.json({
                     data: place
@@ -142,6 +212,7 @@ router.get('/users/:id/places/:placeId', [bearerTokenParser, jwtVerifier, jsonBo
 router.post('/users/:id/places/:placeId/scoring', [bearerTokenParser, jwtVerifier, jsonBodyParser], (req, res) => {
     routeHandler(() => {
         const { params: { id, placeId }, body: { score }, sub } = req
+
         if (id !== sub) throw Error('token sub does not match user id')
 
         return logic.updateScoring(placeId, score)
@@ -156,6 +227,7 @@ router.post('/users/:id/places/:placeId/scoring', [bearerTokenParser, jwtVerifie
 router.post('/users/:id/places/:placeId/pictures', [bearerTokenParser, jwtVerifier, jsonBodyParser], (req, res) => {
     routeHandler(() => {
         const { params: { id, placeId }, sub } = req
+
         if (id !== sub) throw Error('token sub does not match user id')
 
         return new Promise((resolve, reject) => {
@@ -163,23 +235,27 @@ router.post('/users/:id/places/:placeId/pictures', [bearerTokenParser, jwtVerifi
 
             busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
                 logic.addPlacePicture(id, placeId, file)
+                    .then(url => {
+                        res.json({
+                            data: url
+                        })
+                    })
             })
 
-            busboy.on('finish', () => resolve())
+            busboy.on('finish', res => resolve(res))
 
             busboy.on('error', err => reject(err))
 
             req.pipe(busboy)
         })
-            .then(() => res.json({
-                message: 'photo uploaded'
-            }))
+
     }, res)
 })
 
 router.get('/users/:id/places/:placeId/pictures', [bearerTokenParser, jwtVerifier, jsonBodyParser], (req, res) => {
     routeHandler(() => {
         const { params: { id, placeId }, sub } = req
+
         if (id !== sub) throw Error('token sub does not match user id')
 
         return logic.listPlacePictures(placeId)
@@ -193,7 +269,8 @@ router.get('/users/:id/places/:placeId/pictures', [bearerTokenParser, jwtVerifie
 
 router.get('/users/:id/pictures', [bearerTokenParser, jwtVerifier, jsonBodyParser], (req, res) => {
     routeHandler(() => {
-        const { params: { id}, sub } = req
+        const { params: { id }, sub } = req
+
         if (id !== sub) throw Error('token sub does not match user id')
 
         return logic.listUserPictures(id)
@@ -204,5 +281,68 @@ router.get('/users/:id/pictures', [bearerTokenParser, jwtVerifier, jsonBodyParse
             )
     }, res)
 })
+
+
+
+router.post('/users/:id/places/:placeId/scoring', [bearerTokenParser, jwtVerifier, jsonBodyParser], (req, res) => {
+    routeHandler(() => {
+        const { params: { id, placeId }, body: { score }, sub } = req
+
+        if (id !== sub) throw Error('token sub does not match user id')
+
+        return logic.updateScoring(placeId, score)
+            .then(place =>
+                res.json({
+                    data: place
+                })
+            )
+    }, res)
+})
+
+router.post('/users/:id/places/:placeId/tips', [bearerTokenParser, jwtVerifier, jsonBodyParser], (req, res) => {
+    routeHandler(() => {
+        const { params: { id, placeId }, body: { text }, sub } = req
+
+        if (id !== sub) throw Error('token sub does not match user id')
+
+        return logic.addTip(id, placeId, text)
+            .then(tip =>
+                res.json({
+                    data: tip
+                })
+            )
+    }, res)
+})
+
+router.get('/users/:id/places/:placeId/tips', [bearerTokenParser, jwtVerifier, jsonBodyParser], (req, res) => {
+    routeHandler(() => {
+        const { params: { id, placeId }, sub } = req
+
+        if (id !== sub) throw Error('token sub does not match user id')
+
+        return logic.listPlaceTips(placeId)
+            .then(tips =>
+                res.json({
+                    data: tips
+                })
+            )
+    }, res)
+})
+
+router.get('/users/:id/tips', [bearerTokenParser, jwtVerifier, jsonBodyParser], (req, res) => {
+    routeHandler(() => {
+        const { params: { id }, sub } = req
+
+        if (id !== sub) throw Error('token sub does not match user id')
+
+        return logic.listUserTips(id)
+            .then(tips =>
+                res.json({
+                    data: tips
+                })
+            )
+    }, res)
+})
+
 
 module.exports = router

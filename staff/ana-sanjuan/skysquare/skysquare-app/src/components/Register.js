@@ -50,8 +50,9 @@ class Register extends Component {
 
         const { name, surname, email, password, birthday, gender, phone } = this.state
 
-        this.props.onRegister(name, surname, email, password, birthday, gender, phone)
+        this.props.onRegister(name, surname, email, password, birthday, gender? gender: null, phone? phone: null)
     }
+    
     render() {
         return (<div className="register">
             <form onSubmit={this.handleSubmit}>

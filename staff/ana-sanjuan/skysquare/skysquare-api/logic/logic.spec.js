@@ -1,4 +1,4 @@
-const {mongoose, models: { User, Place, Picture,ProfilePicture }} = require('skysquare-data')
+const { mongoose, models: { User, Place, Picture, Tip } } = require('skysquare-data')
 const logic = require('./logic')
 const { AlreadyExistsError, AuthError } = require('../errors')
 const fs = require('fs')
@@ -21,8 +21,8 @@ cloudinary.config({
 describe('logic', () => {
     before(() => mongoose.connect(MONGO_URL, { useNewUrlParser: true, useCreateIndex: true }))
 
-    beforeEach(() => Promise.all([User.deleteMany(), Place.deleteMany(), Picture.deleteMany(), ProfilePicture.deleteMany()]))
-    
+    beforeEach(() => Promise.all([User.deleteMany(), Place.deleteMany(), Picture.deleteMany(), Tip.deleteMany()]))
+
 
     describe('users', () => {
         describe('register User', () => {
@@ -132,7 +132,7 @@ describe('logic', () => {
             })
         })
 
-        describe('retrieve User', ()=> {
+        describe('retrieve User', () => {
             let user
             beforeEach(() => {
                 name = 'John'
@@ -164,7 +164,7 @@ describe('logic', () => {
             })
         })
 
-        describe('add profile pictures ', ()=> {
+        describe('add profile pictures ', () => {
             let user
             beforeEach(() => {
                 name = 'John'
@@ -181,12 +181,12 @@ describe('logic', () => {
 
             })
             it('should succed on correct data', async () => {
-    
+
                 let image = './data/test-images/default-profile-pic.png'
 
                 var file = fs.createReadStream(image)
 
-                const res = await logic.addProfilePicture(user.id, file)
+                const res = await logic.uploadProfilePicture(user.id, file)
 
                 expect(res).to.be.undefined
 
@@ -204,30 +204,16 @@ describe('logic', () => {
                 expect(_user.birthday).to.equal(birthday)
                 expect(_user.gender).to.equal(gender)
                 expect(_user.phone).to.equal(phone)
+                expect(_user.profilePicture).to.be.a('string')
+                expect(_user.profilePicture).not.to.equal('https://res.cloudinary.com/dancing890/image/upload/v1542808705/i4lb8xdnpblbbhuvi7zv.png')
 
-
-                const profilePictures = await ProfilePicture.find()
-    
-                expect(profilePictures.length).to.be.equal(1)
-    
-    
-                const [profilePicture] = profilePictures
-
-                expect(profilePicture.id).to.equal(_user.profilePicture._id.toString())
-                expect(profilePicture.id).to.be.a('string')
-                expect(profilePicture.url).to.be.a('string')
-                expect(profilePicture.public_id).to.be.a('string')
-                expect(profilePicture.userId.toString()).to.equal(user.id)
-                
-                cloudinary.uploader.destroy(profilePictures.public_id, (result) => { });
-
-                
+                cloudinary.uploader.destroy(_user.profilePublicId, (result) => { });
             })
-        }) 
+        })
 
         describe('list user pictures', () => {
             let user, place, picture
-            beforeEach(async()=> {
+            beforeEach(async () => {
                 let name = 'John'
                 let surname = 'Doe'
                 let email = `jd-${Math.random()}@example.com`
@@ -235,9 +221,9 @@ describe('logic', () => {
                 let birthday = '20/02/2002'
                 let gender = 'Male'
                 let phone = `jdPhone-${Math.random()}`
-    
+
                 user = new User({ name, surname, email, password, birthday, gender, phone })
-    
+
                 let placeName = 'Costa Dorada'
                 let latitude = 41.398469
                 let longitud = 2.199943
@@ -248,34 +234,34 @@ describe('logic', () => {
                 let coffee = false
                 let nigthLife = true
                 let thingsToDo = false
-    
-                place = new Place({name: placeName, latitude, longitud,  userId, breakfast, lunch, dinner, coffee, nigthLife, thingsToDo})
-                
-                url= 'http://res.cloudinary.com/dancing890/image/upload/v1542718364/h7nnejboqjyirdyq5tfo.png'
 
-                picture = new Picture ({url, userId: user.id, public_id:'h7nnejboqjyirdyq5tfo', placeId: place.id})
-                
+                place = new Place({ name: placeName, latitude, longitud, userId, breakfast, lunch, dinner, coffee, nigthLife, thingsToDo })
+
+                url = 'http://res.cloudinary.com/dancing890/image/upload/v1542718364/h7nnejboqjyirdyq5tfo.png'
+
+                picture = new Picture({ url, userId: user.id, public_id: 'h7nnejboqjyirdyq5tfo', placeId: place.id })
+
                 await user.save()
                 await place.save()
                 await picture.save()
             })
-            it('should succed on correct data', async ()=> {
+            it('should succed on correct data', async () => {
                 const pictureUrls = await logic.listUserPictures(user.id)
 
                 expect(pictureUrls.length).to.equal(1)
-                
+
                 const [pictureUrl] = pictureUrls
                 expect(pictureUrl).to.be.a('string')
                 expect(pictureUrl).to.equal(url)
 
-                const _pictures = await Picture.find({userId: user.id})
+                const _pictures = await Picture.find({ userId: user.id })
 
                 expect(_pictures.length).to.equal(1)
-                
+
                 const [_picture] = _pictures
                 expect(_picture.url).to.be.equal(pictureUrl)
             })
-        }) 
+        })
 
     })
 
@@ -340,7 +326,7 @@ describe('logic', () => {
         })
 
         describe('list places by name', () => {
-            let place 
+            let place
 
             beforeEach(async () => {
                 let placeName = 'Costa Dorada'
@@ -355,29 +341,29 @@ describe('logic', () => {
                 let coffee = false
                 let nigthLife = true
                 let thingsToDo = false
-    
-                place = new Place({name: placeName, latitude, longitud, address, userId, scoring, breakfast, lunch, dinner, coffee, nigthLife, thingsToDo})
-                
+
+                place = new Place({ name: placeName, latitude, longitud, address, userId, scoring, breakfast, lunch, dinner, coffee, nigthLife, thingsToDo })
+
                 await place.save()
             })
             it('should succed on correct name', async () => {
                 const places = await logic.listPlacesByName(place.name)
 
-                const [_place ] = places
-                
+                const [_place] = places
+
                 expect(_place).not.to.be.instanceof(Place)
                 expect(_place.id).to.be.a('string')
                 expect(_place.name).to.equal(place.name)
-                expect(_place.latitude).to.equal(place.latitude)
-                expect(_place.longitud).to.equal(place.longitud)
-                expect(_place.address).to.equal(place.address)
+                // expect(_place.latitude).to.equal(place.latitude)
+                // expect(_place.longitud).to.equal(place.longitud)
+                // expect(_place.address).to.equal(place.address)
                 expect(_place.scoring).to.be.a('number')
 
             })
 
         })
         describe('list places by filter', () => {
-            let place 
+            let place
 
             beforeEach(async () => {
                 let placeName = 'Costa Dorada'
@@ -386,30 +372,30 @@ describe('logic', () => {
                 let address = "Street st, 43, Barcelona"
                 let userId = user.id
                 let scoring = 0
-                let breakfast = true
-                let lunch = false
-                let dinner = false
-                let coffee = false
-                let nigthLife = false
-                let thingsToDo = false
-    
-                place = new Place({name: placeName, latitude, longitud, address, userId, scoring, breakfast, lunch, dinner, coffee, nigthLife, thingsToDo})
-                
+                let breakfast = 'on'
+                let lunch = 'off'
+                let dinner = 'off'
+                let coffee = 'off'
+                let nigthLife = 'off'
+                let thingsToDo = 'off'
+
+                place = new Place({ name: placeName, latitude, longitud, address, userId, scoring, breakfast, lunch, dinner, coffee, nigthLife, thingsToDo })
+
                 let placeName2 = 'Costa Dorada2'
                 let latitude2 = 41.398469
                 let longitud2 = 2.199943
                 let address2 = "Street st, 45, Barcelona"
                 let userId2 = user.id
                 let scoring2 = 0
-                let breakfast2 = false
-                let lunch2 = true
-                let dinner2 = false
-                let coffee2 = false
-                let nigthLife2 = false
-                let thingsToDo2 = false
-    
-                place2 = new Place({name: placeName2, latitude: latitude2, longitud: longitud2, addres: address2, userId: userId2, scoring: scoring2, breakfast: breakfast2, lunch: lunch2, dinner: dinner2, coffee: coffee2, nightLife: nigthLife2, thingsToDo: thingsToDo2})
-                
+                let breakfast2 = 'off'
+                let lunch2 = 'on'
+                let dinner2 = 'off'
+                let coffee2 = 'off'
+                let nigthLife2 = 'off'
+                let thingsToDo2 = 'off'
+
+                place2 = new Place({ name: placeName2, latitude: latitude2, longitud: longitud2, addres: address2, userId: userId2, scoring: scoring2, breakfast: breakfast2, lunch: lunch2, dinner: dinner2, coffee: coffee2, nightLife: nigthLife2, thingsToDo: thingsToDo2 })
+
                 await place.save()
                 await place2.save()
             })
@@ -417,8 +403,8 @@ describe('logic', () => {
                 let filter = 'breakfast'
 
                 const places = await logic.listPlacesByFilter(filter)
-                
-                const [_place ] = places
+
+                const [_place] = places
 
                 expect(_place).not.to.be.instanceof(Place)
                 expect(_place.id).to.be.a('string')
@@ -433,7 +419,7 @@ describe('logic', () => {
         })
 
         describe('retrieve place by Id', () => {
-            let place 
+            let place
 
             beforeEach(async () => {
                 let placeName = 'Costa Dorada'
@@ -448,14 +434,14 @@ describe('logic', () => {
                 let coffee = false
                 let nigthLife = true
                 let thingsToDo = false
-    
-                place = new Place({name: placeName, latitude, longitud, address, userId, scoring, breakfast, lunch, dinner, coffee, nigthLife, thingsToDo})
-                
+
+                place = new Place({ name: placeName, latitude, longitud, address, userId, scoring, breakfast, lunch, dinner, coffee, nigthLife, thingsToDo })
+
                 await place.save()
             })
             it('should succed on correct name', async () => {
                 const _place = await logic.retrievePlaceById(place.id)
-                
+
                 expect(_place).not.to.be.instanceof(Place)
                 expect(_place.id).to.be.a('string')
                 expect(_place.name).to.equal(place.name)
@@ -475,7 +461,7 @@ describe('logic', () => {
         })
 
         describe('update scoring', () => {
-            let place 
+            let place
 
             beforeEach(async () => {
                 let placeName = 'Costa Dorada'
@@ -484,27 +470,30 @@ describe('logic', () => {
                 let address = "Street st, 43, Barcelona"
                 let userId = user.id
                 let scoring = 5
-                let votes = 2
+                let scores = [5]
                 let breakfast = true
                 let lunch = false
                 let dinner = true
                 let coffee = false
                 let nigthLife = true
                 let thingsToDo = false
-    
-                place = new Place({name: placeName, latitude, longitud, address, userId, scoring, votes, breakfast, lunch, dinner, coffee, nigthLife, thingsToDo})
-                
+
+                place = new Place({ name: placeName, latitude, longitud, address, userId, scoring, scores, breakfast, lunch, dinner, coffee, nigthLife, thingsToDo })
+
                 await place.save()
             })
             it('should succed on correct data', async () => {
                 let newScore = 10
 
-                const res = await logic.updateScoring(place.id, newScore)
-                
-                expect(res).to.be.undefined
+                const {scoring, scores} = await logic.updateScoring(place.id, newScore)
+
+                expect(scoring).to.equal(7.5)
+                expect(scores.length).to.equal(2)
+                expect(scores[0]).to.equal(5)
+                expect(scores[1]).to.equal(10)
 
                 const _place = await Place.findById(place.id)
-               
+
                 expect(_place.name).to.equal(place.name)
                 expect(_place.latitude).to.equal(place.latitude)
                 expect(_place.longitud).to.equal(place.longitud)
@@ -517,14 +506,17 @@ describe('logic', () => {
                 expect(_place.thingsToDo).to.equal(place.thingsToDo)
 
                 expect(_place.scoring).to.be.a('number')
-                expect(_place.scoring).to.equal(5)
+                expect(_place.scoring).to.equal(7.5)
+                expect(_place.scores.length).to.equal(2)
+                expect(_place.scores[0]).to.equal(5)
+                expect(_place.scores[1]).to.equal(10)
 
 
             })
 
         })
 
-        describe('add place pictures ', ()=> {
+        describe('add place pictures ', () => {
             let place
             beforeEach(async () => {
                 let placeName = 'Costa Dorada'
@@ -537,14 +529,14 @@ describe('logic', () => {
                 let coffee = false
                 let nigthLife = true
                 let thingsToDo = false
-    
-                place = new Place({name: placeName, latitude, longitud,  userId, breakfast, lunch, dinner, coffee, nigthLife, thingsToDo})
-                
+
+                place = new Place({ name: placeName, latitude, longitud, userId, breakfast, lunch, dinner, coffee, nigthLife, thingsToDo })
+
                 await place.save()
             })
-    
+
             it('should succed on correct data', async () => {
-    
+
                 let image = './data/test-images/default-place-pic.png'
 
                 var file = fs.createReadStream(image)
@@ -554,26 +546,26 @@ describe('logic', () => {
                 expect(res).to.be.undefined
 
                 const pictures = await Picture.find()
-    
+
                 expect(pictures.length).to.be.equal(1)
-    
-    
+
+
                 const [picture] = pictures
-    
+
                 expect(picture.id).to.be.a('string')
                 expect(picture.url).to.be.a('string')
                 expect(picture.public_id).to.be.a('string')
                 expect(picture.userId.toString()).to.equal(user.id)
                 expect(picture.placeId.toString()).to.equal(place.id)
-                
+
                 cloudinary.uploader.destroy(picture.public_id, (result) => { });
             })
 
-           
+
         })
 
         describe('list place pictures', () => {
-            beforeEach(async()=> {
+            beforeEach(async () => {
                 let name = 'John'
                 let surname = 'Doe'
                 let email = `jd-${Math.random()}@example.com`
@@ -581,9 +573,9 @@ describe('logic', () => {
                 let birthday = '20/02/2002'
                 let gender = 'Male'
                 let phone = `jdPhone-${Math.random()}`
-    
+
                 user = new User({ name, surname, email, password, birthday, gender, phone })
-    
+
                 let placeName = 'Costa Dorada'
                 let latitude = 41.398469
                 let longitud = 2.199943
@@ -594,38 +586,261 @@ describe('logic', () => {
                 let coffee = false
                 let nigthLife = true
                 let thingsToDo = false
-    
-                place = new Place({name: placeName, latitude, longitud,  userId, breakfast, lunch, dinner, coffee, nigthLife, thingsToDo})
-                
-                url= 'http://res.cloudinary.com/dancing890/image/upload/v1542718364/h7nnejboqjyirdyq5tfo.png'
 
-                picture = new Picture ({url, userId: user.id, public_id:'h7nnejboqjyirdyq5tfo', placeId: place.id})
-                
+                place = new Place({ name: placeName, latitude, longitud, userId, breakfast, lunch, dinner, coffee, nigthLife, thingsToDo })
+
+                url = 'http://res.cloudinary.com/dancing890/image/upload/v1542718364/h7nnejboqjyirdyq5tfo.png'
+
+                picture = new Picture({ url, userId: user.id, public_id: 'h7nnejboqjyirdyq5tfo', placeId: place.id })
+
                 await user.save()
                 await place.save()
                 await picture.save()
             })
-            it('should succed on correct data', async ()=> {
+            it('should succed on correct data', async () => {
                 const pictureUrls = await logic.listPlacePictures(place.id)
 
                 expect(pictureUrls.length).to.equal(1)
-                
+
                 const [pictureUrl] = pictureUrls
                 expect(pictureUrl).to.be.a('string')
                 expect(pictureUrl).to.equal(url)
 
-                const _pictures = await Picture.find({placeId: place.id})
+                const _pictures = await Picture.find({ placeId: place.id })
 
                 expect(_pictures.length).to.equal(1)
-                
+
                 const [_picture] = _pictures
                 expect(_picture.url).to.be.equal(pictureUrl)
             })
-        }) 
+        })
 
-
-        
     })
-    
+
+    describe('tips', () => {
+        let user, place
+        beforeEach(async () => {
+            let name = 'John'
+            let surname = 'Doe'
+            let email = `jd-${Math.random()}@example.com`
+            let password = `jd-${Math.random()}`
+            let birthday = '20/02/2002'
+            let gender = 'Male'
+            let phone = `jdPhone-${Math.random()}`
+
+            user = new User({ name, surname, email, password, birthday, gender, phone })
+
+            let placeName = 'Costa Dorada'
+            let latitude = 41.398469
+            let longitud = 2.199943
+            let userId = user.id
+            let breakfast = true
+            let lunch = false
+            let dinner = true
+            let coffee = false
+            let nigthLife = true
+            let thingsToDo = false
+
+            place = new Place({ name: placeName, latitude, longitud, userId, breakfast, lunch, dinner, coffee, nigthLife, thingsToDo })
+
+            await user.save()
+            await place.save()
+        })
+        describe('add tips', () => {
+            it('should succed on correct data', async () => {
+                let text = `text-${Math.random()}`
+
+                const res = await logic.addTip(user.id, place.id, text)
+
+                expect(res).to.be.undefined
+
+                const tips = await Tip.find()
+
+                expect(tips.length).to.equal(1)
+
+                const [tip] = tips
+
+                expect(tip.id).to.be.a('string')
+                expect(tip.userId.toString()).to.equal(user.id)
+                expect(tip.placeId.toString()).to.equal(place.id)
+            })
+        })
+        describe('list tips by place Id', () => {
+            let tip
+            beforeEach(async () => {
+                let text = `text-${Math.random()}`
+
+                tip = new Tip({ userId: user.id, placeId: place.id, text })
+
+                await tip.save()
+            })
+            it('should succced on correct data', async () => {
+                const tips = await logic.listPlaceTips(place.id)
+
+                expect(tips.length).to.equal(1)
+
+                const [_tip] = tips
+
+                expect(_tip.id).to.be.a('string')
+                expect(_tip.id).to.equal(tip.id)
+                expect(_tip.userId.toString()).to.equal(tip.userId.toString())
+                expect(_tip.placeId.toString()).to.equal(tip.placeId.toString())
+                expect(_tip.userName).to.equal(user.name)
+                expect(_tip.userPicture).to.equal(user.profilePicture)
+
+
+            })
+        })
+
+        describe('list tips by user Id', () => {
+            let tip
+            beforeEach(async () => {
+                let text = `text-${Math.random()}`
+
+                tip = new Tip({ userId: user.id, placeId: place.id, text })
+
+                await tip.save()
+            })
+            it('should succced on correct data', async () => {
+                const tips = await logic.listUserTips(user.id)
+
+                expect(tips.length).to.equal(1)
+
+                const [_tip] = tips
+
+                expect(_tip.id).to.be.a('string')
+                expect(_tip.id).to.equal(tip.id)
+                expect(_tip.userId.toString()).to.equal(tip.userId.toString())
+                expect(_tip.placeId.toString()).to.equal(tip.placeId.toString())
+            })
+        })
+    })
+
+    describe('favourites', () => {
+        let user, place
+        beforeEach(async () => {
+            let name = 'John'
+            let surname = 'Doe'
+            let email = `jd-${Math.random()}@example.com`
+            let password = `jd-${Math.random()}`
+            let birthday = '20/02/2002'
+            let gender = 'Male'
+            let phone = `jdPhone-${Math.random()}`
+
+            user = new User({ name, surname, email, password, birthday, gender, phone })
+
+            let placeName = 'Costa Dorada'
+            let latitude = 41.398469
+            let longitud = 2.199943
+            let userId = user.id
+            let address = 'address st'
+            let breakfast = true
+            let lunch = false
+            let dinner = true
+            let coffee = false
+            let nigthLife = true
+            let thingsToDo = false
+
+            place = new Place({ name: placeName, latitude, longitud, userId,address, breakfast, lunch, dinner, coffee, nigthLife, thingsToDo })
+
+            await user.save()
+            await place.save()
+        })
+        describe('add favourites', () => {
+            it('it should succedd on correct data', async () => {
+                const res = await logic.addFavourites(user.id, place.id)
+
+                expect(res).to.be.undefined
+
+                const _user = await User.findById(user.id)
+
+                expect(_user.favourites.length).to.equal(1)
+                expect(_user.favourites[0]._id.toString()).to.equal(place.id)
+            })
+
+        })
+        describe('list favourites', () => {
+            it('it should succedd on correct data', async () => {
+                user.favourites.push(place.id)
+
+                await user.save()
+
+                const favourites = await logic.listFavourites(user.id)
+
+                expect(favourites.length).to.equal(1)
+
+                const [favourite] = favourites
+                expect(favourite.address).to.equal(place.address)
+                expect(favourite.scoring).to.equal(place.scoring)
+            })
+        })
+
+
+
+    })
+
+
+    describe('CheckIns', () => {
+        let user, place
+        beforeEach(async () => {
+            let name = 'John'
+            let surname = 'Doe'
+            let email = `jd-${Math.random()}@example.com`
+            let password = `jd-${Math.random()}`
+            let birthday = '20/02/2002'
+            let gender = 'Male'
+            let phone = `jdPhone-${Math.random()}`
+
+            user = new User({ name, surname, email, password, birthday, gender, phone })
+
+            let placeName = 'Costa Dorada'
+            let latitude = 41.398469
+            let longitud = 2.199943
+            let userId = user.id
+            let address = 'address st'
+            let breakfast = true
+            let lunch = false
+            let dinner = true
+            let coffee = false
+            let nigthLife = true
+            let thingsToDo = false
+
+            place = new Place({ name: placeName, latitude, longitud, userId,address, breakfast, lunch, dinner, coffee, nigthLife, thingsToDo })
+
+            await user.save()
+            await place.save()
+        })
+        describe('add CheckIns', () => {
+            it('it should succedd on correct data', async () => {
+                const res = await logic.addCheckIns(user.id, place.id)
+
+                expect(res).to.be.undefined
+
+                const _user = await User.findById(user.id)
+
+                expect(_user.checkIns.length).to.equal(1)
+                expect(_user.checkIns[0]._id.toString()).to.equal(place.id)
+            })
+
+        })
+        describe('list CheckIns', () => {
+            it('it should succedd on correct data', async () => {
+                user.checkIns.push(place.id)
+
+                await user.save()
+
+                const checkIns = await logic.listCheckIns(user.id)
+
+                expect(checkIns.length).to.equal(1)
+
+                const [checkIn] = checkIns
+                expect(checkIn.address).to.equal(place.address)
+                expect(checkIn.scoring).to.equal(place.scoring)
+            })
+        })
+
+    })
+
+
     after(() => mongoose.disconnect())
 })

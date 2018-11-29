@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import GoogleMapReact from 'google-map-react'
+
 require('dotenv').config()
-const { env: { API_KEY } } = process
+const {  REACT_APP_API_KEY }  = process.env
 
 class AddMap extends Component {
 	state= {latitude: 0, longitude: 0}
@@ -10,7 +11,7 @@ class AddMap extends Component {
 		this.getLocation()
 			.then(res => {
 				const {latitude, longitude} = res.coords
-				debugger
+
 				this.setState({latitude, longitude})
 			})
 		  
@@ -53,12 +54,11 @@ class AddMap extends Component {
 	render = () => {
 		return (
 			// Important! Always set the container height explicitly
-			<section style={{ width: "100vw", height: "300px" }} className="register-hive-main__map">
+			<section style={{ width: "90vw", height: "250px" }}>
 				<GoogleMapReact
-					// defaultCenter={{ lat: 41.398639, lng: 2.200063 }}
-					center={{ lat: this.state.latitude, lng: this.state.longitude }}
+					center={{ lat: Number(this.state.latitude), lng: Number(this.state.longitude) }}
 					defaultZoom={14}
-					bootstrapURLKeys={{ key: API_KEY, language: 'es', region: 'es' }}
+					bootstrapURLKeys={{ key: REACT_APP_API_KEY, language: 'es', region: 'es' }}
 					onClick={this.handleMapClick}
 					onGoogleApiLoaded={this.setMapInstance}>
 				</GoogleMapReact>

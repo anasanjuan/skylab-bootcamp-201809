@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
-    "dotenv": "^6.1.0",
     "google-map-react": "^1.1.1",
     "react": "^16.5.2",
     "react-dom": "^16.5.2",
@@ -12,7 +11,7 @@
     "skysquare-data": "file:../skysquare-data"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "set HTTPS=true&&react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
@@ -30,6 +29,7 @@
   ],
   "devDependencies": {
     "chai": "^4.2.0",
+    "dotenv": "^6.1.0",
     "isomorphic-fetch": "^2.2.1",
     "sessionstorage": "^0.1.0"
   }

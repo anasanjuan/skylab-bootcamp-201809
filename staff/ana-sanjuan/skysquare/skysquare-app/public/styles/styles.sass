@@ -1,43 +1,64 @@
 $color-danger: red
 $color-text: white
 $color-header: #2E5BE3
+$color-light-background: #EFEFF4
 $color-text-grey: #4E595E
+$color-text-light-grey: #BFC2C4
 $color-dark-blue: #0B30A4
 $color-light-blue: #152F9E
-
+$header-height: 60px
 
 * 
     margin: 0
     padding: 0
     box-sizing: border-box
+
 *:focus 
     outline: none
+*:link 
+    text-decoration: none
+    color: $color-text-grey
+*:visited 
+    text-decoration: none
+    color: $color-text-grey
+// *:hover 
+//     text-decoration: none
+//     color: blue
+*:active 
+    text-decoration: none
 
+
+%place_section
+    color: $color-text-grey
+    background-color: white
+    height: 45vh
+    position: fixed
+    top:  44vh
+    overflow-y: scroll
+    
 %input
     font-size: 16px
     height: 2.5em
     border: 1px solid #0B30A4
     padding-left: 25px
-    
+
+%score
+    background-color: #02B552
+    width: 30px
+    height: 30px
+    padding: 5px
+    border-radius: 9px
+    text-align: center
+    color: white
+
 
 body 
     margin: 0
     padding: 0
     font-family: 'Roboto', sans-serif
-    color: $color-text
     background-size: 100%  100%
 
-.score
-    background-color: #02B552
-    width: 30px
-    height: 30px
-    position: relative
-    top: 10px
-    left: 133px
-    padding: 5px
-    border-radius: 9px
-    text-align: center
-    color: white
+
 
 // all 
 .title
@@ -53,18 +74,17 @@ body
         text-transform: uppercase
         font-size: 30px
         margin: 0
-        padding: 10px 20px 0px 20px
+        padding: 2px 0 0 0 
         text-align: center
         font-weight: 900
         letter-spacing: 1px
     h2 
         text-transform: uppercase
         margin: 0 
-        padding: 0px 70px
+        padding: 0px 40px
         text-align: right
         letter-spacing: 3px
         font-size: 10px
-
 
 //landing
 
@@ -191,7 +211,7 @@ body
 //search 
 .search
     width: 100%
-    height: 90vh
+    height: 92vh
     &__header
         background-image: url("./images/home-photo.jpg")
         background-size: 150% 130%
@@ -206,7 +226,6 @@ body
         font-size: 25px
         font-weigth: lighter
         color: black
-
     &__box
         font-size: 15px
         background-color: #FFFFFF
@@ -217,35 +236,39 @@ body
         border-radius: 10px
     .filter
         font-size: 15px
-
         &__top
             width: 100%
             display: flex 
             background-color: #EFEEF3
             justify-content: space-around
             border-bottom: 1px solid #C0C1C5
-            
+            padding: 20px 0px 30px 0px
+
         &__bottom
             width: 100%
             display: flex 
             background-color: #EFEEF3
             justify-content: space-around
+            padding: 50px 0px 10px 0px
         &__card
             text-align: center
-            height: 20%
-            padding-top: 50%
-            padding-bottom: 50%
+        &__card:hover
+            text-decoration: none
+            color: $color-text-light-grey
         i
             font-size: 30px
 .footer
     width: 100%
-    font-size: 15px
-    font-weigth: lighter
+    font-size: 17px
+    font-weight: lighter
     background-color: #F5F5F7
     color: black
     border-top: 1px solid #C3C4C8
+    z-index: 1000
+    position: fixed
+    top:  91vh
     .footer__nav
-        padding: 20px 10px
+        padding: 10px 10px
         display: flex
     ul 
         margin: 0
@@ -254,12 +277,18 @@ body
         list-style-type: none
         display: flex
         justify-content: space-around
-        
-        .nav-items
+        .nav-item
             text-align: center
             h5 
                 margin: 0
                 padding: 0
+                font-size: 12px
+
+        .nav-item:hover 
+            text-decoration: none
+            color: blue 
+       
+       
 
 // List places
 .list__places
@@ -286,49 +315,110 @@ body
         
         
 //Place
-.list__place__item
+.place
     border-bottom: 1px solid #C3C4C8
     color: black
     height: 130px
     &__header
         display: flex
         h1 
-            margin: 15px
+            margin: 15px 0 5px 15px
             color: blue 
             font-size: 15px
-        img 
-            height: 50px
-            width: 50px
-            margin: 8px
-            border-radius: 8px
+            text-transform: capitalize
+
+    &__picture 
+        width: 80px
+        height: 70px
+        margin: 15px 10px 0 20px
+        overflow: hidden
+        .picture_img
+            background-size: cover 
+            background-position: center center 
+            background-repeat: no-repeat
+            width: 70px
+            height: 70px
+            border-radius: 5px
             background-color: #2E5BE3
+
+    &__info
+        width: 70%
+        h4 
+            text-transform: capitalize
+            margin: 5px 0px 0px 16px
+            font-size: 12px
+
+    &__score 
+        width: 15% 
+        padding: 15px 0
+        .score
+           @extend %score
     p 
-            font-size: 13px
-            font-weight: lighter
-            margin: 15px
+        font-size: 13px
+        font-weight: lighter
+        margin: 15px
+
+
+
+
+    
 
 // PlaceHeader
-.placeHeader
-    color: black
-    img 
-        height: 250px
-        width: 250px
-        margin: 8px
-        border-radius: 8px
-    .placeHeader__nav
-        padding: 10px 10px
-        display: flex
+.place-header:before 
+    content: ''
+    background-color: #000
+    opacity: 0.3
+    width: 100%
+    height: 100%
+    z-index: 0
+    position: absolute
+    top: 0
+    left: 0
+.place-header
+    position: fixed
+    top: 0
+    width: 100%
+    height: 44vh
+    display: flex
+    font-weight: lighter
+    background-repeat: no-repeat
+    background-size: cover
+    background-position: center center
+    &__main
         color: white
-        font-size: 20px
+        z-index: 10
+        height: 40vh
+        margin-top: 20px 
+        margin-left: 20px
+        h1 
+            color: white
+            z-index: 10
+            width: 95%
+            position: absolute
+            top: 200px
+            font-weight: lighter
+            text-transform: capitalize
+    &__nav
+        color: white
+        z-index: 10
+        position: absolute
+        top: 226px
+        padding: 0px 0px 10px 10px
+        display: flex
+        width: 98%
+        font-size: 15px
         font-weight: 200
         padding-top: 35px 
         ul 
             margin: 0
             padding: 0
-            width: 100%
+            width: 90%
             list-style-type: none
             display: flex
             justify-content: space-between
+            li 
+                color: white
+                z-index: 10
         a:link 
             text-decoration: none
 
@@ -336,62 +426,137 @@ body
             text-decoration: none
 
         a:hover 
-            text-decoration: underline
+            text-decoration: none
+            font-weight: bold
 
         a:active 
             text-decoration: underline
-        &__button
-            color: white
-            font-size: 20px
-
+        
 .info
-    color: #4E595E
+    color: $color-text-grey
     background-color: white
+    height: 45vh
+    width: 100%
+    position: fixed
+    top: 44vh
+    .space
+        border-top: 1px solid  $color-text-light-grey
+        border-bottom: 1px solid  $color-text-light-grey
+        background-color: $color-light-background
+        height: 10px
     &__main
         display: flex
         margin-bottom: 20px
-    &__navbar
-        padding: 10px 10px
-        font-size: 20px
+        justify-content: space-between
+    .current__scoring
+        display: flex
+        width: 55%
+        margin-bottom: 10px
+        &__score
+            width: 10%
+            .score
+                @extend %score
+                position: relative
+                top: 10px
+                left: 133px
+    &__options
+        display: flex
+        justify-content: space-between
+        margin: 2px 10px
+        font-size: 8px
         font-weight: 200
-        padding-top: 35px 
-        display: flex
-        justify-content: space-around
-    ul 
-        margin: 0
-        padding: 0
+        padding-top: 2.5px 
         width: 100%
-        list-style-type: none
-        display: flex
-        justify-content: space-around
-    .score
-        width: 30px
+        &__item
+            padding: 0 20px
+            text-align: center
+            button 
+                margin: 0
+            h4 
+                font-weight: lighter
+                font-size: 12px
+                margin: 2px
+            img
+                width: 30px
+                height: 25px
+                padding: 0 auto
+        .favourites
+            border-left: 1px solid $color-text-light-grey
+        .scoring
+            border-left: 1px solid $color-text-light-grey
+            
+    .info__bar  
+        margin-left: 20px  
         height: 30px
-        position: relative
-        top: 10px
-        left: 20px
-        padding: 5px
-        border-radius: 9px
-        padding: auto 10px
-        text-align: center
-        color: white
+        width: 90px
+        padding-top: 10px
+        p 
+            width: 120px
+            font-weight: lighter
+            font-size: 12px
+            margin: 0
+            padding-top: 0
+            height: 0.5em
+        progress 
+            height: 8px
+            border-radius: 5px
+            margin: 0
+            padding: 0
+            width: 130px
+        progress[value]::-webkit-progress-bar 
+            background-color: #F5F5F7
+            border-radius: 2px
+        progress[value]::-webkit-progress-value
+            background-color: #02B552
+            border-radius: 2px 
+    .address
+        padding: 0px 20px
+        border-top: 1px solid $color-text-light-grey
+        color: $color-text-grey
+        font-weight: lighter
+        width: 100% 
+        h4 
+            text-transform: uppercase
+            font-size: 10px
+            color: $color-text-light-grey
+            font-weight: lighter
+            margin: 0
+            padding-top: 10px
+
 
 .pictures
-    color: #4E595E
-    background-color: white
+    @extend %place_section
+    
     &__main
         display: flex
+        flex-wrap: wrap
+        width: 100%
         margin-bottom: 20px
+.picture__item
+    display: block
+    max-width: 100%
+    max-height: 128px
+    width: auto
+    height: auto
+    margin: 2px
+
+.picture__preview
+    display: block
+    max-width: 230px
+    max-height: 95px
+    width: auto
+    height: auto
+
+
 .tips
-    color: #4E595E
-    background-color: white
+    @extend %place_section
+    
     &__main
         display: flex
         margin-bottom: 20px
 
-.info__main
-    display: flex
-    justify-content: space-between
+ 
+
 .map 
    width: 160px
    height: 200px
@@ -399,12 +564,67 @@ body
 
 .profile
     color: black
+    height: 90vh
+    &__header
+        height: $header-height
+        background-color: $color-light-blue
+        color: white
+        font-weight: lighter
+        display: flex
+        h4 
+            width: 90%
+            padding: 1em
+            font-weight: lighter
+            text-align: center
+        button
+            width: 10%
+            color: white 
+    &__edit
+        position: absolute
+        display: none
+        z-index: 1000
+        top: calc(#{$header-height} - 1rem)
+        background-color: $color-light-blue
+        &--open
+            display: block
+    &__info
+        width: 100%
+        height: 150px
+        border-bottom: 1px solid #0B30A4
+        display: flex
+    .profile__pic
+        background-repeat: no-repeat
+        background-size: cover
 
+
+.addPlace__button
+    height: 100px
+    width: 100%
+    border-bottom: 1px solid #0B30A4
+.add-profile-picture
+    img 
+        margin: 20px
+        width: 85px
+        height: 85px
+        border-radius: 10px
+        background-repeat: no-repeat
+        background-size: cover
+
+.profilePicture__edit 
+        position: absolute
+        display: none
+        z-index: 1000
+        bottom: 80vh
+        background-color: white
+        &--open
+            display: block
+    
 .add__place
     color: black
     background-color: white
-    &__map
-        margin: 20px auto
+    h4 
+        font-size: 15px
+        font-weigth: lighter
     &__fields
         margin: 20px
         input
@@ -414,17 +634,33 @@ body
             margin: 10px
         .checkboxes
             display: flex
-            margin: 20px
+            margin: 18px
         button
             font-size: 20px
             background-color: $color-dark-blue
             color: white
+.add__map
+    margin: 10px auto
     
        
 .error 
     color: red
 
+.favourites
+    color: black
+    &__main
+        img 
+            width: 60px
+            height: 60px
+            background-color: $color-dark-blue
 
+.history
+    color: black
+    &__main
+        img 
+            width: 60px
+            height: 60px
+            background-color: $color-dark-blue
 
  
     

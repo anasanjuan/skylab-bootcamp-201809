@@ -1,4 +1,8 @@
+require('dotenv').config()
+
 require('isomorphic-fetch')
+
+global.sessionStorage = require('sessionstorage')
 
 const {expect} = require( 'chai')
 const logic = require ('./logic')
@@ -6,10 +10,8 @@ const logic = require ('./logic')
 const {mongoose, models: { User, Place, Picture }} = require('skysquare-data')
 
 
-logic.url = 'http://localhost:5000/api'
+logic.url = process.env.REACT_APP_API_URL
 
-
-global.sessionStorage = require('sessionstorage')
 
 describe('logic', ()=> {
 

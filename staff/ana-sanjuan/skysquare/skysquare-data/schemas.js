@@ -1,6 +1,6 @@
-const {Schema, SchemaTypes: { ObjectId }} = require('mongoose')
+const { Schema, SchemaTypes: { ObjectId } } = require('mongoose')
 
-const User = new Schema ({
+const User = new Schema({
     name: {
         type: String,
         required: true
@@ -18,7 +18,7 @@ const User = new Schema ({
         type: String,
         required: true
     },
-    birthday:{
+    birthday: {
         type: String,
         required: true
     },
@@ -36,24 +36,28 @@ const User = new Schema ({
         type: ObjectId,
         ref: 'User'
     }],
-    favourites : [{
+    favourites: [{
         type: ObjectId,
         ref: 'Place'
     }],
-    history : [{
+    checkIns: [{
         type: ObjectId,
         ref: 'Place'
     }],
-    profilePicture : {
-        type: ObjectId,
-        ref: 'Picture'
+    profilePicture: {
+        type: 'String',
+        required: true,
+        default: 'https://res.cloudinary.com/dancing890/image/upload/v1542808705/i4lb8xdnpblbbhuvi7zv.png'
+    },
+    profilePublicId: {
+        type: 'String',
     }
 
 })
 
-const Place = new Schema ({
-    name : {
-        type: String, 
+const Place = new Schema({
+    name: {
+        type: String,
         required: true
     },
     latitude: {
@@ -64,8 +68,8 @@ const Place = new Schema ({
         type: Number,
         required: true
     },
-    address:{
-        type: String, 
+    address: {
+        type: String,
     },
     userId: {
         type: ObjectId,
@@ -74,27 +78,28 @@ const Place = new Schema ({
     },
     scoring: {
         type: Number,
+        default: 0
     },
     scores: [{
         type: Number,
     }],
     breakfast: {
-        type: String,
+        type: Boolean,
     },
     lunch: {
-        type: String,
+        type: Boolean,
     },
     dinner: {
-        type: String,
+        type: Boolean,
     },
     coffee: {
-        type: String,
+        type: Boolean,
     },
     nigthLife: {
-        type: String,
+        type: Boolean,
     },
     thingsToDo: {
-        type: String,
+        type: Boolean,
     }
 })
 
@@ -116,29 +121,13 @@ const Picture = new Schema({
         type: ObjectId,
         red: 'Place',
         required: true
-    } 
+    }
 })
 
-const ProfilePicture = new Schema({
-    url: {
-        type: String,
-        required: true
-    },
-    public_id: {
-        type: String,
-        required: true
-    },
-    userId: {
-        type: ObjectId,
-        ref: 'User',
-        required: true
-    },
-    
-})
 const Tip = new Schema({
     text: {
         type: String,
-        required:true
+        required: true
     },
     userId: {
         type: ObjectId,
@@ -147,13 +136,15 @@ const Tip = new Schema({
     placeId: {
         type: ObjectId,
         red: 'Place'
-    } 
+    },
+    time: { 
+        type: String
+    }
 })
 
 module.exports = {
     User,
     Place,
     Picture,
-    ProfilePicture,
     Tip
 }

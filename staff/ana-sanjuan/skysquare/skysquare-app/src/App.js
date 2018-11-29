@@ -4,7 +4,7 @@ import Landing from './components/Landing'
 import Register from './components/Register'
 import LogIn from './components/LogIn'
 import Search from './components/Search'
-import Mylists from './components/Mylists'
+import Favourites from './components/Favourites'
 import History from './components/History'
 import ListPlaces from './components/ListPlaces'
 import Info from './components/Info'
@@ -17,7 +17,8 @@ import Profile from './components/Profile'
 import PlaceHeader from './components/PlaceHeader'
 import { Route, withRouter, Redirect } from 'react-router-dom'
 
-
+// logic.url = 'http://192.168.0.37:5000/api'
+logic.url = 'http://localhost:5000/api'
 
 class App extends Component {
     state = { error: null, placesByName: []}
@@ -62,10 +63,9 @@ class App extends Component {
 
     handleLogoutClick = () => {
         logic.logOut()
-        .then(() => {
-            this.setState({ error: null }, () => this.props.history.push('/'))
-        })
-        .catch(error => this.setState({ error: error.message }))
+        
+        this.setState({ error: null }, () => this.props.history.push('/'))
+        
     }
 
     handleAddPlaceClick = () => {
@@ -86,27 +86,9 @@ class App extends Component {
         }
     }
 
-    //TODO different component for list places by name? 
-    // handleSearchSubmit = name => {
-    //     try {
-    //         logic.listPlacesByName(name)
-    //         .then(placesByName => {
-    //             this.setState({ error: null, placesByName }, () => this.props.history.push(`/home/name/${name}`))
-    //         })
-    //         .catch(error => this.setState({ error: error.message }))
-
-    //     } catch(err) {
-    //         this.setState({error: err.message})
-    //     }
-    // }
-
-    // renderProfile() {
-    //     return(<div>
-    //         <Route exact path='/home/profile' render={() => logic.loggedIn ? <Profile onLogOutClick={this.handleLogoutClick} /> :<Redirect to="/logIn" />} />
-    //         <Route path='/add-place' render={() => logic.loggedIn ? <AddPlace/> :<Redirect to="/logIn" />} />
-    //     </div>)
-    // }
-
+    handleSearchSubmit = name => {
+        this.setState({ error: null }, () => this.props.history.push(`/home/name/${name}`))
+    }
 
     renderPlace(placeId) {
         return (<div>
@@ -121,13 +103,12 @@ class App extends Component {
         return (<div className='home'>
             <div className='main'>
                 {this.state.error && <Error message={this.state.error} />}
-
                 <Route exact path='/home' render={() => logic.loggedIn ? <Search onSearchSubmit={this.handleSearchSubmit}/> : <Redirect to="/logIn" />} />
-                <Route exact path='/home/filter/:filter' render={props => logic.loggedIn ? <ListPlaces filter={props.match.params.filter} /> : <Redirect to="/logIn" />} />
-                <Route exact path='/home/name/:name' render={props => logic.loggedIn ? <ListPlaces filter={props.match.params.filter} /> : <Redirect to="/logIn" />} />                
+                <Route exact path='/home/filter/:filter' render={props => logic.loggedIn ? <ListPlaces type={'filter'} filter={props.match.params.filter} /> : <Redirect to="/logIn" />} />
+                <Route exact path='/home/name/:name' render={props => logic.loggedIn ? <ListPlaces type={'name'} name={props.match.params.name} /> : <Redirect to="/logIn" />} />                
                 <Route path='/home/place/:id' render={props => logic.loggedIn ? this.renderPlace(props.match.params.id) : <Redirect to="/logIn" />} />
-                {/* <Route path='/home/myLists' render={() => logic.loggedIn ? <Mylists /> : <Redirect to="/logIn" />} />
-                <Route path='/home/history' render={() => logic.loggedIn ? <History /> : <Redirect to="/logIn" />} /> */}
+                <Route path='/home/favourites' render={() => logic.loggedIn ? <Favourites /> : <Redirect to="/logIn" />} />
+                <Route path='/home/history' render={() => logic.loggedIn ? <History /> : <Redirect to="/logIn" />} />
                 <Route path='/home/profile' render={() => logic.loggedIn ? <Profile onAddPlaceClick= {this.handleAddPlaceClick} onLogOutClick={this.handleLogoutClick} /> :<Redirect to="/logIn" />} />
                 <Route path='/home/add-place' render={() => logic.loggedIn ? <AddPlace onAddPlace= {this.handleOnAddPlaceSubmit}/> :<Redirect to="/logIn" />} />
             </div>
