@@ -104,8 +104,8 @@ class App extends Component {
             <div className='main'>
                 {this.state.error && <Error message={this.state.error} />}
                 <Route exact path='/home' render={() => logic.loggedIn ? <Search onSearchSubmit={this.handleSearchSubmit}/> : <Redirect to="/logIn" />} />
-                <Route exact path='/home/filter/:filter' render={props => logic.loggedIn ? <ListPlaces type={'filter'} filter={props.match.params.filter} /> : <Redirect to="/logIn" />} />
-                <Route exact path='/home/name/:name' render={props => logic.loggedIn ? <ListPlaces type={'name'} name={props.match.params.name} /> : <Redirect to="/logIn" />} />                
+                <Route exact path='/home/filter/:filter' render={props => logic.loggedIn ? <ListPlaces type={'filter'} filter={props.match.params.filter} onSearchSubmit={this.handleSearchSubmit} /> : <Redirect to="/logIn" />} />
+                <Route exact path='/home/name/:name' render={props => logic.loggedIn ? <ListPlaces type={'name'} name={props.match.params.name} onSearchSubmit={this.handleSearchSubmit}/> : <Redirect to="/logIn" />} />                
                 <Route path='/home/place/:id' render={props => logic.loggedIn ? this.renderPlace(props.match.params.id) : <Redirect to="/logIn" />} />
                 <Route path='/home/favourites' render={() => logic.loggedIn ? <Favourites /> : <Redirect to="/logIn" />} />
                 <Route path='/home/history' render={() => logic.loggedIn ? <History /> : <Redirect to="/logIn" />} />

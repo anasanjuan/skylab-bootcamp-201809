@@ -215,7 +215,7 @@ router.post('/users/:id/places/:placeId/scoring', [bearerTokenParser, jwtVerifie
 
         if (id !== sub) throw Error('token sub does not match user id')
 
-        return logic.updateScoring(placeId, score)
+        return logic.updateScoring(id, placeId, score)
             .then(place =>
                 res.json({
                     data: place

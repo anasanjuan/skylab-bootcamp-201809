@@ -3,10 +3,15 @@ import logic from '../logic/logic'
 import Tip from './Tip'
 
 class Tips extends Component {
-    state = { tips: [], text: '' }
+    state = { error: null, tips: [], text: '' }
     componentDidMount() {
-        logic.listPlaceTips(this.props.id)
-            .then(tips => this.setState({ tips }))
+        try {
+            logic.listPlaceTips(this.props.id)
+                .then(tips => this.setState({ tips, error: null }))
+                .catch(err => this.setState({ error: err.message }))
+        } catch (err) {
+            this.setState({ error: err.message })
+        }
     }
 
     handleTextChange = event => {
@@ -17,21 +22,28 @@ class Tips extends Component {
 
     handleSubmitText = event => {
         event.preventDefault()
-
-        logic.addTip(this.props.id, this.state.text)
-            .then(res => {
-                let newTips = this.state.tips
-                this.setState({ text: '', tips: [...newTips, res] })
-            })
+        try {
+            logic.addTip(this.props.id, this.state.text)
+                .then(res => {
+                    let newTips = this.state.tips
+                    
+                    this.setState({ text: '', tips: [...newTips, res], error: null })
+                })
+                .catch(err => this.setState({ error: err.message }))
+        } catch (err) {
+            this.setState({ error: err.message })
+        }
     }
 
     render() {
         return (<main className='tips'>
-            <section>
-                <h4>Insert a new tip</h4>
+            <section className='add__tip'>
                 <form onSubmit={this.handleSubmitText}>
-                    <input type='text' value={this.state.text} placeholder='what is good in this place?' onChange={this.handleTextChange}></input>
-                    <button type='submit'>Save</button>
+                    <div className='add__tip__header'>
+                        <h6>Add a new tip</h6>
+                        <button type='submit'>Publish</button>
+                    </div>
+                    <textarea className='textarea__tip' type='text' value={this.state.text} placeholder='what is good in this place?' onChange={this.handleTextChange}></textarea>
                 </form>
             </section>
             <section>

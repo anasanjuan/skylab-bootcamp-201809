@@ -3,16 +3,21 @@ import { Link } from 'react-router-dom'
 import logic from '../logic/logic'
 
 class PlaceHeader extends Component {
-    state = { place: [] }
+    state = { error: null, place: [] }
 
     componentDidMount() {
-        logic.retrievePlace(this.props.id)
-            .then(place => this.setState({ place }))
+        try {
+            logic.retrievePlace(this.props.id)
+                .then(place => this.setState({ place, error: null }))
+                .catch(err => this.setState({ error: err.message }))
+        } catch (err) {
+            this.setState({ error: err.message })
+        }
     }
 
     render() {
         // return <header className='place-header'>
-        return <header className='place-header' style={{backgroundImage: `url(${this.state.place.picture})`  }}>
+        return <header className='place-header' style={{ backgroundImage: `url(${this.state.place.picture})` }}>
             <section className='place-header__main'>
                 <Link to={'/home'}><i className="fas fa-arrow-left arrow" onClick={this.props.OnGoBack}></i></Link>
                 <h1>{this.state.place.name}</h1>

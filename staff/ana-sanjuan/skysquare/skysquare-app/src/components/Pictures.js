@@ -2,11 +2,16 @@ import React, { Component } from 'react'
 import logic from '../logic/logic'
 
 class Pictures extends Component {
-    state = { pictures: [], picture: null, previewPicture: null }
+    state = { error: null, pictures: [], picture: null, previewPicture: null }
 
     componentDidMount() {
-        logic.listPictures(this.props.id)
-            .then(pictures => this.setState({ pictures }))
+        try {
+            logic.listPictures(this.props.id)
+            .then(pictures => this.setState({ pictures, error: null }))
+            .catch(err => this.setState({ error: err.message }))
+        } catch (err) {
+            this.setState({ error: err.message })
+        }
     }
 
     handlePictureSelect = event => {
@@ -22,12 +27,17 @@ class Pictures extends Component {
     handlePictureLoad = event => {
         event.preventDefault()
 
-        logic.UploadPicture(this.props.id, this.state.picture)
+        try {
+            logic.UploadPicture(this.props.id, this.state.picture)
             .then(res => {
                 const prevPictures = this.state.pictures
 
-                this.setState({ previewPicture: null, pictures: [...prevPictures, res] })
+                this.setState({ previewPicture: null, pictures: [...prevPictures, res], error: null })
             })
+            .catch(err => this.setState({ error: err.message }))
+        } catch (err) {
+            this.setState({ error: err.message })
+        }
     }
 
     render() {

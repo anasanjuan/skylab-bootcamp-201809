@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 
 class Register extends Component {
-    state = { name: '', surname: '', email: '', password: '', birthday: '', gender: '', phone: '' }
+    state = { error: null, name: '', surname: '', email: '', password: '', birthday: '', gender: '', phone: '' }
 
     handleNameChange = event => {
         const name = event.target.value
@@ -50,9 +50,9 @@ class Register extends Component {
 
         const { name, surname, email, password, birthday, gender, phone } = this.state
 
-        this.props.onRegister(name, surname, email, password, birthday, gender? gender: null, phone? phone: null)
+        this.props.onRegister(name, surname, email, password, birthday, gender ? gender : null, phone ? phone : null)
     }
-    
+
     render() {
         return (<div className="register">
             <form onSubmit={this.handleSubmit}>
@@ -72,11 +72,16 @@ class Register extends Component {
                             <input className="input_box--half" placeholder="Name" onChange={this.handleNameChange}></input>
                             <input className="input_box--half" placeholder="Surname" onChange={this.handleSurnameChange}></input>
                         </div>
-                        <input className="input_box" placeholder="Email" onChange={this.handleEmailChange}></input>
-                        <input className="input_box" placeholder="Password" onChange={this.handlePasswordChange}></input>
-                        <input className="input_box" placeholder="Birthday" onChange={this.handleBirthdayChange}></input>
-                        <input className="input_box--opt" placeholder="Gender(optional)" onChange={this.handleGenderChange}></input>
-                        <input className="input_box--opt" placeholder="Phone number" onChange={this.handlePhoneChange}></input>
+                        <input type='email' className="input_box" placeholder="Email" onChange={this.handleEmailChange}></input>
+                        <input type='password' className="input_box" placeholder="Password" onChange={this.handlePasswordChange}></input>
+                        <input type='date' className="input_box" placeholder="Birthday" onChange={this.handleBirthdayChange}></input>
+                        <select className="input_box--opt" onChange={this.handleGenderChange} default="Gender">
+                            <option value="Gender">Gender(optional)</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="I prefer not to say it">I prefer not to say it</option>
+                        </select>
+                        <input className="input_box--opt" placeholder="Phone number(optional)" onChange={this.handlePhoneChange}></input>
                     </section>
                 </main>
                 <footer className="register__footer">

@@ -1,13 +1,18 @@
 import React from 'react'
 
 function Tip(props) {
-    return <section>
-        <div><img src={props.userPicture} alt='#'></img></div>
-        <div>
-            <h5>{`${props.userName} ${props.userSurname}`}</h5>
-            <h6>{props.time}</h6>
+    return <section className='tip'>
+    
+        <div className='tip__top'>
+            <div className='tip__top__img'>
+                <img className='basic__img' src={props.userPicture} alt='#'></img>
+            </div>
+            <div className='tip__info'>
+                <h5>{`${props.userName} ${props.userSurname}`}</h5>
+                <h6>{props.time}</h6>
+            </div>
         </div>
-        <p>{props.text}</p>
+        <p className='tip__text'>{props.text}</p>
     </section>
 }
 export default Tip

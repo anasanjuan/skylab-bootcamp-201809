@@ -3,16 +3,21 @@ import logic from '../logic/logic'
 import Place from './Place'
 
 class Favourites extends Component {
-    state = { favourites: [] }
+    state = { error: null, favourites: [] }
 
     componentDidMount() {
-        logic.listFavourites()
-            .then(res => this.setState({ favourites: res }))
+        try {
+            logic.listFavourites()
+                .then(res => this.setState({ favourites: res, error: null }))
+                .catch(err => this.setState({ error: err.message }))
+        } catch (err) {
+            this.setState({ error: err.message })
+        }
     }
 
     render() {
         return <div className='favourites'>
-            <header>
+            <header className='blue__header'>
                 <h1>My favourite places</h1>
             </header>
             <main className='favourites__main'>

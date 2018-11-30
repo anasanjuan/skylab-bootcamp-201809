@@ -6,7 +6,7 @@ function Place(props) {
         <Link to={`/home/place/${props.id}`}>
             <header className='place__header'>
                 <div className='place__picture'>
-                        <img className='picture_img' src={props.picture} alt='' ></img>
+                    <img className='picture_img' src={props.picture} alt='' ></img>
                 </div>
                 <div className='place__info'>
                     <h1>{props.name}</h1>

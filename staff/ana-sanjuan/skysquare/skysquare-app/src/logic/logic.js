@@ -140,6 +140,7 @@ const logic = {
         validate([
             { key: 'name', value: name, type: String },
         ])
+        
         return fetch(`${this.url}/users/${this._userId}/places/name/${name}`, {
             method: 'GET',
             headers: {
@@ -332,7 +333,6 @@ const logic = {
             { key: 'text', value: text, type: String },
 
         ])
-
         return fetch(`${this.url}/users/${this._userId}/places/${placeId}/tips`, {
             method: 'POST',
             headers: {
@@ -352,6 +352,7 @@ const logic = {
         validate([
             { key: 'placeId', value: placeId, type: String },
         ])
+        
         return fetch(`${this.url}/users/${this._userId}/places/${placeId}/tips`, {
             method: 'GET',
             headers: {
@@ -369,6 +370,7 @@ const logic = {
         validate([
             { key: 'userId', value: userId, type: String },
         ])
+
         return fetch(`${this.url}/users/${this._userId}/tips`, {
             method: 'GET',
             headers: {
@@ -445,7 +447,7 @@ const logic = {
             .then(res => res.json())
             .then(res => {
                 if (res.error) throw Error(res.error)
-                
+
                 return res.data
             })
     }

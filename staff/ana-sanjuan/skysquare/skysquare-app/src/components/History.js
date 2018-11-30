@@ -3,15 +3,20 @@ import logic from '../logic/logic'
 import Place from './Place'
 
 class History extends Component {
-    state = { checkins: [] }
+    state = { error: null, checkins: [] }
     componentDidMount() {
-        logic.listCheckIns()
-            .then(res => this.setState({ checkins: res }))
+        try {
+            logic.listCheckIns()
+                .then(res => this.setState({ checkins: res, error: null }))
+                .catch(err => this.setState({ error: err.message }))
+        } catch (err) {
+            this.setState({ error: err.message })
+        }
     }
 
     render() {
         return <div className='history'>
-            <header className='history__header'>
+            <header className='blue__header'>
                 <h1>My history</h1>
             </header>
             <main className='history__main'>

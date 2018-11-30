@@ -2,39 +2,39 @@ import React, { Component } from 'react'
 import GoogleMapReact from 'google-map-react'
 
 require('dotenv').config()
-const {  REACT_APP_API_KEY }  = process.env
+const { REACT_APP_API_KEY } = process.env
 
 class AddMap extends Component {
-	state= {latitude: 0, longitude: 0}
+	state = { latitude: 0, longitude: 0 }
 
-  	componentDidMount() {
+	componentDidMount() {
 		this.getLocation()
 			.then(res => {
-				const {latitude, longitude} = res.coords
+				const { latitude, longitude } = res.coords
 
-				this.setState({latitude, longitude})
+				this.setState({ latitude, longitude })
 			})
-		  
+
 	}
 
 	getLocation = () => {
 		const geolocation = navigator.geolocation;
-		
+
 		const location = new Promise((resolve, reject) => {
-		  if (!geolocation) {
-			reject(new Error('Not Supported'));
-		  }
-		  
-		  geolocation.getCurrentPosition((position) => {
-			resolve(position);
-		  }, () => {
-			reject (new Error('Permission denied'));
-		  });
+			if (!geolocation) {
+				reject(new Error('Not Supported'));
+			}
+
+			geolocation.getCurrentPosition((position) => {
+				resolve(position);
+			}, () => {
+				reject(new Error('Permission denied'));
+			});
 		});
-		
+
 		return location
 	}
-		
+
 	handleMapClick = ({ x, y, lat, lng, event }) => {
 
 		new this.mapsApi.Marker({
@@ -42,15 +42,15 @@ class AddMap extends Component {
 			map: this.map
 		});
 
-		this.props.onMapClick(lat, lng)	
+		this.props.onMapClick(lat, lng)
 	}
 
 	setMapInstance = ({ map, maps }) => {
 		this.map = map
 		this.mapsApi = maps
 		this.map.markers = []
-		
 	}
+	
 	render = () => {
 		return (
 			// Important! Always set the container height explicitly

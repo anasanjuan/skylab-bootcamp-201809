@@ -36,8 +36,8 @@ class LogIn extends Component {
                 </header>
                 <main className="logIn__main">
                     <section className="inputs">
-                    <input className="input_box--logIn" placeholder='Email' onChange={this.handleEmailChange}></input>
-                    <input className="input_box--logIn" placeholder='Password' onChange={this.handlePasswordChange}></input>
+                    <input type='email' className="input_box--logIn" placeholder='Email' onChange={this.handleEmailChange}></input>
+                    <input type='password' className="input_box--logIn" placeholder='Password' onChange={this.handlePasswordChange}></input>
                     </section>
                 </main>
             </form>

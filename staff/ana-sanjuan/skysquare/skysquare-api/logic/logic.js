@@ -2,7 +2,7 @@ const { models: { User, Place, Picture, Tip } } = require('skysquare-data')
 const { AlreadyExistsError, AuthError, NotFoundError } = require('../errors')
 const validate = require('../utils/validate')
 var cloudinary = require('cloudinary')
-
+var moment = require('moment')
 
 cloudinary.config({
     cloud_name: 'dancing890',
@@ -136,33 +136,42 @@ const logic = {
 
         return (async () => {
 
-            let reg = RegExp({ name }, "i")
+            let placeReg = new RegExp(name, "i")
 
-            let places = await Place.find({ name: { $regex: reg } }, { userId: 0, __v: 0 }).lean()
+            let places = await Place.find({ name: { $regex: placeReg } }, { userId: 0, __v: 0 }).lean()
 
-            const listPlaces = await Promise.all(
-                places.map(async place => {
-                    const pictures = await Picture.find({ placeId: place.id })
+            let promises = places.map(async place => {
+                const pictures = await Picture.find({ placeId: place._id })
 
-                    if (pictures.length === 0) {
-                        const picture = "https://res.cloudinary.com/dancing890/image/upload/v1542807002/waxfi0xtcm5u48yltzxc.png"
+                if (pictures.length === 0) {
+                    const picture = "https://res.cloudinary.com/dancing890/image/upload/v1542807002/waxfi0xtcm5u48yltzxc.png"
 
-                        place.picture = picture
-                    } else {
-                        const picture = pictures[Math.floor(Math.random() * pictures.length)]
+                    place.picture = picture
+                } else {
+                    const picture = pictures[Math.floor(Math.random() * pictures.length)]
 
-                        place.picture = picture.url
-                    }
+                    place.picture = picture.url
+                }
 
-                    place.id = place._id.toString()
+                const tips = await Tip.find({ placeId: place._id })
 
-                    delete place._id
+                if (tips.length === 0) {
+                    place.tip = ''
 
-                    return place
-                })
-            )
+                } else {
+                    const tip = tips[Math.floor(Math.random() * tips.length)]
 
-            return listPlaces.map(({ id, name, scoring, picture }) => ({ id, name, scoring, picture }))
+                    place.tip = tip.text
+                }
+                place.id = place._id.toString()
+
+                delete place._id
+
+                return place
+            })
+            const listPlaces = await Promise.all(promises)
+
+            return listPlaces.map(({ id, name, address, scoring, picture, tip }) => ({ id, name, address, scoring, picture, tip }))
         })()
     },
 
@@ -188,7 +197,7 @@ const logic = {
                         place.picture = picture.url
                     }
 
-                    const tips = await Tip.find()
+                    const tips = await Tip.find({ placeId: place._id })
 
 
                     if (tips.length === 0) {
@@ -252,8 +261,9 @@ const logic = {
         })()
     },
 
-    updateScoring(placeId, score) {
+    updateScoring(userId, placeId, score) {
         validate([
+            { key: 'userId', value: userId, type: String },
             { key: 'placeId', value: placeId, type: String },
             { key: 'score', value: score, type: Number },
         ])
@@ -262,6 +272,12 @@ const logic = {
             let place = await Place.findById(placeId)
 
             if (!place) throw new NotFoundError(`place does not exist`)
+
+            const index = place.voters.findIndex(voter => voter.toString() === userId)
+debugger
+            if(index >= 0) throw new AlreadyExistsError(`user has already voted`)
+debugger
+            place.voters.push(userId)
 
             place.scores.push(score)
 
@@ -356,17 +372,16 @@ const logic = {
             { key: 'text', value: text, type: String },
 
         ])
-
         return (async () => {
-            let user = await User.findById(userId)
+            const user = await User.findById(userId)
 
             if (!user) throw new NotFoundError(`user does not exist`)
 
-            let place = await Place.findById(placeId)
+            const place = await Place.findById(placeId)
 
             if (!place) throw new NotFoundError(`place does not exist`)
 
-            let time = new Date()
+            const time = moment().format('D MMMM YYYY')
 
             const tip = new Tip({ userId, placeId, text, time })
 
@@ -414,7 +429,6 @@ const logic = {
         validate([
             { key: 'userId', value: userId, type: String },
         ])
-
         return (async () => {
             let user = await User.findById(userId)
 
@@ -556,7 +570,8 @@ const logic = {
             if (!user) throw new NotFoundError(`user does not exist`)
 
             let promises = user.checkIns.map(async check => {
-                let pictures = Picture.find({ placeid: check.id })
+                debugger
+                let pictures = await Picture.find({ placeId: check._id })
 
                 if (pictures.length === 0) {
                     const picture = "https://res.cloudinary.com/dancing890/image/upload/v1542807002/waxfi0xtcm5u48yltzxc.png"
@@ -565,7 +580,7 @@ const logic = {
                 } else {
                     const picture = pictures[Math.floor(Math.random() * pictures.length)]
 
-                    check.picture = picture
+                    check.picture = picture.url
                 }
 
                 check.placeId = check._id.toString()

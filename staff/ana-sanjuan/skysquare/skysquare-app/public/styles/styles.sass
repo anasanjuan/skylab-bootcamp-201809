@@ -5,7 +5,7 @@ $color-light-background: #EFEFF4
 $color-text-grey: #4E595E
 $color-text-light-grey: #BFC2C4
 $color-dark-blue: #0B30A4
-$color-light-blue: #152F9E
+$color-light-blue: #2E5BE3
 $header-height: 60px
 
 * 
@@ -21,9 +21,9 @@ $header-height: 60px
 *:visited 
     text-decoration: none
     color: $color-text-grey
-// *:hover 
-//     text-decoration: none
-//     color: blue
+*:hover 
+    text-decoration: none
+    color: blue
 *:active 
     text-decoration: none
 
@@ -51,6 +51,11 @@ $header-height: 60px
     text-align: center
     color: white
 
+%image_basics
+    width: 70px
+    height: 70px
+    background-color: $color-dark-blue
+    border-radius: 6px
 
 body 
     margin: 0
@@ -58,7 +63,8 @@ body
     font-family: 'Roboto', sans-serif
     background-size: 100%  100%
 
-
+.basic__img
+    @extend %image_basics
 
 // all 
 .title
@@ -133,7 +139,7 @@ body
         padding: 0
         color: white
         width: 100%
-        height: 70%
+        height: 80%
         background-color: #2E5BE3
         .add_picture
             background-color: #0B30A4
@@ -144,7 +150,7 @@ body
         align-items: flex-end
         background-color: #0B30A4
         width: 100%
-        height: 225px
+        height: 255px
         button
             font-size: 15px
             color: white
@@ -257,6 +263,10 @@ body
             color: $color-text-light-grey
         i
             font-size: 30px
+            .moon
+                font-size: 5px
+
+                
 .footer
     width: 100%
     font-size: 17px
@@ -302,6 +312,14 @@ body
         top: 0
         width: 100%
         z-index: 1
+        display: flex
+        padding: 20px 0
+        i 
+           color: white
+           padding: 5px 0 0 10px
+           font-size: 20px
+        .search__input
+            width: 90%
     &__main
         margin-top: 80px
     .input_box
@@ -311,6 +329,7 @@ body
         margin: 0 auto
         background-color: white
         border-radius: 9px
+        height: 2em
 
         
         
@@ -318,7 +337,6 @@ body
 .place
     border-bottom: 1px solid #C3C4C8
     color: black
-    height: 130px
     &__header
         display: flex
         h1 
@@ -333,11 +351,11 @@ body
         margin: 15px 10px 0 20px
         overflow: hidden
         .picture_img
-            background-size: cover 
             background-position: center center 
             background-repeat: no-repeat
-            width: 70px
-            height: 70px
+            background-size: cover
+            width: 80px
+            height: auto
             border-radius: 5px
             background-color: #2E5BE3
 
@@ -395,14 +413,16 @@ body
             z-index: 10
             width: 95%
             position: absolute
-            top: 200px
+            top: 210px
             font-weight: lighter
             text-transform: capitalize
+        .arrow
+            color: white
     &__nav
         color: white
         z-index: 10
         position: absolute
-        top: 226px
+        top: 250px
         padding: 0px 0px 10px 10px
         display: flex
         width: 98%
@@ -431,34 +451,54 @@ body
 
         a:active 
             text-decoration: underline
-        
+//info    
 .info
     color: $color-text-grey
     background-color: white
-    height: 45vh
+    height: 50vh
     width: 100%
     position: fixed
     top: 44vh
+    .info__text 
+        padding: 0px 2px
+        font-size: 10px
+        color: $color-text-grey
+        font-weight: lighter
+        margin: 0
+        padding-top: 10px
+        font-weight: lighter
+    .upper 
+        text-transform: uppercase
+
     .space
         border-top: 1px solid  $color-text-light-grey
         border-bottom: 1px solid  $color-text-light-grey
         background-color: $color-light-background
         height: 10px
     &__main
+        height: 36vh
         display: flex
-        margin-bottom: 20px
         justify-content: space-between
-    .current__scoring
-        display: flex
-        width: 55%
-        margin-bottom: 10px
-        &__score
-            width: 10%
-            .score
-                @extend %score
-                position: relative
-                top: 10px
-                left: 133px
+    .place__score
+        width: 100%
+        padding: 10px 0 0 10px
+        height: 230px
+        p
+            font-size: 12px
+        &__num
+            display: flex
+            width: 55%
+            margin-bottom: 10px
+           
+            &__box
+                width: 10%
+                .score
+                    @extend %score
+                    position: relative
+                    top: 10px
+                    left: 0px
+        &__bars
+            margin-left: 20px
     &__options
         display: flex
         justify-content: space-between
@@ -472,10 +512,6 @@ body
             text-align: center
             button 
                 margin: 0
-            h4 
-                font-weight: lighter
-                font-size: 12px
-                margin: 2px
             img
                 width: 30px
                 height: 25px
@@ -498,7 +534,7 @@ body
             padding-top: 0
             height: 0.5em
         progress 
-            height: 8px
+            height: 5px
             border-radius: 5px
             margin: 0
             padding: 0
@@ -510,19 +546,12 @@ body
             background-color: #02B552
             border-radius: 2px 
     .address
-        padding: 0px 20px
+        padding: 5px 8px
         border-top: 1px solid $color-text-light-grey
         color: $color-text-grey
         font-weight: lighter
         width: 100% 
-        h4 
-            text-transform: uppercase
-            font-size: 10px
-            color: $color-text-light-grey
-            font-weight: lighter
-            margin: 0
-            padding-top: 10px
-
+               
 
 .pictures
     @extend %place_section
@@ -550,24 +579,73 @@ body
 
 .tips
     @extend %place_section
-    
     &__main
         display: flex
         margin-bottom: 20px
+        justify-content: space-around
+.add__tip
+    background-color: #F5F5F7
+    padding: 5px 20px
+    width: 100vw
+    &__header
+        display: flex
+    h6 
+        width: 80%
+.textarea__tip
+    width: 100%
 
- 
 
-.map 
-   width: 160px
-   height: 200px
-   background-color: grey
+.tip
+    border-bottom: 1px solid $color-text-light-grey
+    padding: 10px
+    width: 100vw
+    
+    &__info
+        margin-left: 10px
+        margin-top: 0px
+        h5 
+            margin-top: 0px
+            font-size: 16px
+            font-weight: lighter
+            text-transform: capitalize
+        h6 
+            font-size: 12px
+            font-weight: lighter
+    .tip__text 
+        margin-left: 10px
+    .tip__info
+       width: 80%
+    &__top
+        display: flex
+        margin: 10px 
+        &__img
+            width: 70px
+            height: 70px
+            background-size: cover 
+            background-position: center center 
+            background-repeat: no-repeat
+            overflow: hidden
+            border-radius: 6px
+            img 
+                width: 90px
+                height: auto
+
+.map  
+    width: 160px
+    height: 252px
+    background-color: grey
 
 .profile
     color: black
     height: 90vh
     &__header
+        position: fixed
+        top: 0
+        width: 100%
+        z-index: 10
+    &__top
         height: $header-height
-        background-color: $color-light-blue
+        background-color: $color-header
         color: white
         font-weight: lighter
         display: flex
@@ -579,6 +657,25 @@ body
         button
             width: 10%
             color: white 
+    &__info
+        width: 100%
+        height: 125px
+        border-bottom: 1px solid #0B30A4
+        display: flex
+        background-color: white
+        &__tips
+            width: 60px
+            height: 60px
+            margin: 20px
+            border-right: 1px solid #0B30A4
+        &__pictures
+            width: 60px
+            height: 60px
+            margin: 20px
+        h4 
+            font-size: 10px
+    &__main
+        margin-top: 240px
     &__edit
         position: absolute
         display: none
@@ -587,20 +684,17 @@ body
         background-color: $color-light-blue
         &--open
             display: block
-    &__info
-        width: 100%
-        height: 150px
-        border-bottom: 1px solid #0B30A4
-        display: flex
     .profile__pic
         background-repeat: no-repeat
         background-size: cover
+    .score
+        @extend %score
+    .addPlace__button
+        height: 60px
+        width: 100%
+        border-bottom: 1px solid #0B30A4
 
 
-.addPlace__button
-    height: 100px
-    width: 100%
-    border-bottom: 1px solid #0B30A4
 .add-profile-picture
     img 
         margin: 20px
@@ -613,11 +707,15 @@ body
 .profilePicture__edit 
         position: absolute
         display: none
-        z-index: 1000
-        bottom: 80vh
-        background-color: white
+        z-index: 100
+        top: 10vh
         &--open
             display: block
+            z-index: 100
+            width: 200px
+            height: 100px
+            left: 130px
+            background-color: $color-light-blue
     
 .add__place
     color: black
@@ -649,20 +747,35 @@ body
 .favourites
     color: black
     &__main
+        margin-top: 60px
         img 
-            width: 60px
-            height: 60px
-            background-color: $color-dark-blue
+            @extend %image_basics
+.blue__header
+    background-color: $color-header
+    height: 60px
+    position: fixed
+    top: 0
+    width: 100%
+    z-index: 1
+    color: white
+    h1 
+        font-size: 18px
+        text-align: center
+        margin-top: 15px
+        font-weight: lighter
 
 .history
     color: black
     &__main
+        margin-top: 60px
         img 
-            width: 60px
-            height: 60px
-            background-color: $color-dark-blue
+            @extend %image_basics
 
- 
+
+.userTip
+    display: flex
+
+
     
 
     

@@ -2,8 +2,17 @@ import React, { Component } from 'react'
 import Map from './Map'
 
 class AddPlace extends Component {
-    state = { name: '', address: '', latitude: 0, longitud: 0, breakfast: false, lunch: false, dinner: false, coffee: false, nightLife: false, thingsToDo: false }
+    state = { error: null, name: '', address: '', latitude: 0, longitud: 0, breakfast: false, lunch: false, dinner: false, coffee: false, nightLife: false, thingsToDo: false }
 
+    getBoolean(target) {
+        let option
+        if (target === 'on') {
+           return option = true
+
+        } else {
+            return option = false
+        }
+    }
 
     handleMapClick = (latitude, longitud) => {
         this.setState({ latitude, longitud })
@@ -23,76 +32,55 @@ class AddPlace extends Component {
 
     handleOnChangeBreakfast = event => {
         const target = event.target.value
-        let option
-        if (target === 'on') {
-             option = true
-        } else {
-             option = false
-        }
+
+        let option = this.getBoolean(target)
+
         this.setState({ breakfast: option })
     }
+
     handleOnChangeLunch = event => {
         const target = event.target.value
 
-        let option
-        if (target === 'on') {
-             option = true
-        } else {
-             option = false
-        }
+        let option = this.getBoolean(target)
+
         this.setState({ lunch: option })
     }
     handleOnChangeDinner = event => {
         const target = event.target.value
 
-        let option
-        if (target === 'on') {
-             option = true
-        } else {
-             option = false
-        }
+        let option = this.getBoolean(target)
+
         this.setState({ dinner: option })
     }
     handleOnChangeCoffee = event => {
         const target = event.target.value
 
-        let option
-        if (target === 'on') {
-             option = true
-        } else {
-             option = false
-        }
+        let option = this.getBoolean(target)
+
         this.setState({ coffee: option })
     }
     handleOnChangeNightLife = event => {
         const target = event.target.value
 
-        let option
-        if (target === 'on') {
-             option = true
-        } else {
-             option = false
-        }
+        let option = this.getBoolean(target)
+
         this.setState({ nightLife: option })
     }
     handleOnChangeThingsToDo = event => {
         const target = event.target.value
 
-        let option
-        if (target === 'on') {
-             option = true
-        } else {
-             option = false
-        }
+        let option = this.getBoolean(target)
+
         this.setState({ thingsToDo: option })
     }
     handleSubmit = event => {
         event.preventDefault()
-        debugger
+
         const { name, address, latitude, longitud, breakfast, lunch, dinner, coffee, nightLife, thingsToDo } = this.state
 
         this.props.onAddPlace(name, address, latitude, longitud, breakfast, lunch, dinner, coffee, nightLife, thingsToDo)
     }
+
     render() {
         return <div className='add__place'>
             <h4>Add a new Place</h4>
