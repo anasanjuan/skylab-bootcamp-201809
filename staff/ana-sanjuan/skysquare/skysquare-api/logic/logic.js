@@ -274,9 +274,9 @@ const logic = {
             if (!place) throw new NotFoundError(`place does not exist`)
 
             const index = place.voters.findIndex(voter => voter.toString() === userId)
-debugger
+
             if(index >= 0) throw new AlreadyExistsError(`user has already voted`)
-debugger
+
             place.voters.push(userId)
 
             place.scores.push(score)
