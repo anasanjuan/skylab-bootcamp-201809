@@ -1,6 +1,8 @@
 const mongoose = require('mongoose')
 
-const {User, Place, Picture,Tip} = require('./schemas')
+const { User, Place, Picture, Tip } = require('./schemas')
+
+Place.index({ location: "2dsphere" })
 
 module.exports = {
     mongoose,

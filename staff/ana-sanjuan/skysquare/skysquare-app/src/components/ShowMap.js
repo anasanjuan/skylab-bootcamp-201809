@@ -5,13 +5,15 @@ require('dotenv').config()
 const {  REACT_APP_API_KEY  } = process.env
 
 class ShowMap extends Component {
+	static defaultProps = {
+		center: {
+			lat: 41.398623, 
+			lng:  2.199970
+		},
+		zoom: 14
+	};
+
 	state = {lat: this.props.lat, lng: this.props.lng}
-
-	componentWillReceiveProps(nextProps) {
-		if(nextProps !== this.props)
-
-		this.setState({ lat: nextProps.lat, lng: nextProps.lng })
-	}
 	
 	setMarker = ({ map, maps }) => {
 		this.map = map
@@ -19,7 +21,7 @@ class ShowMap extends Component {
 		this.map.markers = []
 
 		let marker = new this.mapsApi.Marker({
-			position: { lat: this.state.lat, lng: this.state.lng },
+			position: { lat: this.props.lat, lng: this.props.lng },
 			map: this.map
 		});
 		this.map.markers.push(marker)
@@ -28,10 +30,11 @@ class ShowMap extends Component {
 	render() {
 		return (
 			// Important! Always set the container height explicitly
-			<section className="map">
+			<section style={{ height: '226px', width: '160px' }} >
 				<GoogleMapReact
-					center={{ lat: this.state.lat, lng: this.state.lng }}
-					defaultZoom={14}
+					defaultCenter={this.props.center}
+					center={{ lat: this.props.lat, lng: this.props.lng }}
+					defaultZoom={this.props.zoom}
 					bootstrapURLKeys={{ key: REACT_APP_API_KEY, language: 'es', region: 'es' }}
 					onGoogleApiLoaded={this.setMarker}>
 				</GoogleMapReact>

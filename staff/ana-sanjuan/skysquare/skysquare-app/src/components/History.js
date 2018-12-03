@@ -1,17 +1,13 @@
 import React, { Component } from 'react'
-import logic from '../logic/logic'
+import logic from '../logic'
 import Place from './Place'
 
 class History extends Component {
     state = { error: null, checkins: [] }
     componentDidMount() {
-        try {
             logic.listCheckIns()
                 .then(res => this.setState({ checkins: res, error: null }))
                 .catch(err => this.setState({ error: err.message }))
-        } catch (err) {
-            this.setState({ error: err.message })
-        }
     }
 
     render() {

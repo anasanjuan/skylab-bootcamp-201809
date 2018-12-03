@@ -1,25 +1,25 @@
 import React, { Component } from 'react'
 
 class LogIn extends Component {
-    state = {email:'', password:''}
+    state = { email: '', password: ''}
 
     handleEmailChange = event => {
         const email = event.target.value
 
-        this.setState({email})
+        this.setState({ email })
     }
 
     handlePasswordChange = event => {
         const password = event.target.value
 
-        this.setState({password})
+        this.setState({ password })
     }
 
     handleSubmit = event => {
         event.preventDefault()
 
-        const {email, password} = this.state
-        
+        const { email, password } = this.state
+
         this.props.onLogIn(email, password)
     }
 
@@ -36,8 +36,8 @@ class LogIn extends Component {
                 </header>
                 <main className="logIn__main">
                     <section className="inputs">
-                    <input type='email' className="input_box--logIn" placeholder='Email' onChange={this.handleEmailChange}></input>
-                    <input type='password' className="input_box--logIn" placeholder='Password' onChange={this.handlePasswordChange}></input>
+                        <input type='email' className="input_box--logIn" placeholder='Email' onChange={this.handleEmailChange}></input>
+                        <input type='password' className="input_box--logIn" placeholder='Password' onChange={this.handlePasswordChange}></input>
                     </section>
                 </main>
             </form>

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import ShowMap from './ShowMap'
-import logic from '../logic/logic'
+import logic from '../logic'
 
 class Info extends Component {
     state = { error: null, scoring: 0, address: '', latitude: '', longitud: '', heart: '', meh: '', broken: '', visitors: null, checkIn: false, favourite: false }
@@ -9,7 +9,7 @@ class Info extends Component {
         try {
             logic.retrievePlace(this.props.id)
                 .then(place => {
-                    const { scoring, address, latitude, longitud, meh, heart, broken, scores, favourite, checkIn } = place
+                    const { scoring, address, location: { coordinates: [longitud, latitude] }, meh, heart, broken, scores, favourite, checkIn } = place
 
                     const visitors = scores.length
 
@@ -96,7 +96,7 @@ class Info extends Component {
             <section className='info__options'>
                 <section className='info__options__item' onClick={this.handleCheckIn}>
                     <h4 className='info__text' >Check-In</h4>
-                    <button><img src={this.state.checkIn ? require('../images/icons/green-checkIn.png') : require('../images/icons/grey-checkin.png')} alt='' /></button>
+                    <button><img src={this.state.checkIn ? require('../images/icons/green-checkIn1.png') : require('../images/icons/grey-checkin.png')} alt='' /></button>
                 </section>
                 <section className='info__options__item favourites' onClick={this.handleFavourites}>
                     <h4 className='info__text' >Favourites</h4>

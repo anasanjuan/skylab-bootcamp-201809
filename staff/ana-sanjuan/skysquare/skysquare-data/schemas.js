@@ -60,13 +60,9 @@ const Place = new Schema({
         type: String,
         required: true
     },
-    latitude: {
-        type: Number,
-        required: true
-    },
-    longitud: {
-        type: Number,
-        required: true
+    location: {
+        type: { type: String },
+        coordinates: []
     },
     address: {
         type: String,

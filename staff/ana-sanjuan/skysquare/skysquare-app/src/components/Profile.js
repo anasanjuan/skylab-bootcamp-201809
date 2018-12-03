@@ -1,25 +1,21 @@
 import React, { Component } from 'react'
 import AddProfilePicture from './AddProfilePicture'
 import UserTip from './UserTip'
-import logic from '../logic/logic'
+import logic from '../logic'
 
 class Profile extends Component {
     state = { error: null, user: {}, open: false, pictures: [], tips: [], listPictures: false }
 
     componentDidMount() {
-        try {
-            logic.retrieveUser()
-                .then(user => this.setState({ user }))
-                .then(() => logic.listUserPictures(this.state.user.id))
-                .then(pictures => this.setState({ pictures, error: null }))
-                .then(() => logic.listUserTips(this.state.user.id))
-                .then(tips =>  this.setState({ tips, error: null }))
-                .catch(err => this.setState({ error: err.message }))
-        } catch (err) {
-            this.setState({ error: err.message })
-        }
-
+        logic.retrieveUser()
+            .then(user => this.setState({ user }))
+            .then(() => logic.listUserTips(this.state.user.id))
+            .then(tips => this.setState({ tips }))
+            .then(() => logic.listUserPictures(this.state.user.id))
+            .then(pictures => this.setState({ pictures }))
+            .catch(err => this.setState({ error: err.message }))
     }
+
     handleClick = () => {
         this.setState({ open: !this.state.open })
     }
@@ -27,10 +23,10 @@ class Profile extends Component {
     handleListTips = () => {
         this.setState({ listPictures: false })
     }
+
     handleListPictures = () => {
         this.setState({ listPictures: true })
     }
-
 
     render() {
         return <div className="profile">
@@ -42,12 +38,12 @@ class Profile extends Component {
                         <p>{this.state.user.phone}</p>
                         <p>{this.state.user.birthday}</p>
                     </div>
-                    <h4>{`${this.state.user.name} ${this.state.user.surname}`}</h4>
+                    <h1>{`${this.state.user.name} ${this.state.user.surname}`}</h1>
                     <button onClick={this.props.onLogOutClick}>Log Out</button>
 
                 </div>
                 <section className='profile__info'>
-                    <AddProfilePicture id={this.state.user.id} profilePicture={this.state.user.profilePicture} />
+                    <AddProfilePicture profilePicture={this.state.user.profilePicture} />
                     <div className='profile__info__tips' onClick={this.handleListTips}>
                         <h5>{this.state.tips.length}</h5>
                         <h4>Tips</h4>
@@ -60,9 +56,9 @@ class Profile extends Component {
                 <button className='addPlace__button' onClick={this.props.onAddPlaceClick}>Add New Place</button>
             </header>
             <main className='profile__main'>
-                <section>
+                <section className='profile__list'>
                     {!this.state.listPictures && this.state.tips.map(tip => <UserTip key={tip.id} placeId={tip.placeId} text={tip.text} picture={tip.picture} placeName={tip.placeName} time={tip.time} scoring={tip.scoring} />)}
-                    {this.state.listPictures && this.state.pictures.map(picture => <img className='basic__img' src={`${picture}`} alt='#'></img>)}
+                    {this.state.listPictures && this.state.pictures.map((picture, index) => <img key={index} className='picture__item' src={`${picture}`} alt='#'></img>)}
                 </section>
             </main>
 

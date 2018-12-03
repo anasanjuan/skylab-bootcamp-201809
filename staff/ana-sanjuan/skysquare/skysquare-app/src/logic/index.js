@@ -87,12 +87,12 @@ const logic = {
         sessionStorage.removeItem('token')
     },
 
-    AddPlace(name, address, latitude, longitud, breakfast, lunch, dinner, coffee, nightLife, thingsToDo) {
+    AddPlace(name, address, latitude, longitude, breakfast, lunch, dinner, coffee, nightLife, thingsToDo) {
         validate([
             { key: 'name', value: name, type: String },
             { key: 'address', value: address, type: String },
             { key: 'latitude', value: latitude, type: Number },
-            { key: 'longitud', value: longitud, type: Number },
+            { key: 'longitude', value: longitude, type: Number },
             { key: 'breakfast', value: breakfast, type: Boolean },
             { key: 'lunch', value: lunch, type: Boolean },
             { key: 'dinner', value: dinner, type: Boolean },
@@ -100,27 +100,46 @@ const logic = {
             { key: 'nightLife', value: nightLife, type: Boolean },
             { key: 'thingsToDo', value: thingsToDo, type: Boolean }
         ])
-
         return fetch(`${this.url}/users/${this._userId}/places`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json; charset=utf-8',
                 'Authorization': `Bearer ${this._token}`
             },
-            body: JSON.stringify({ name, address, latitude, longitud, breakfast, lunch, dinner, coffee, nightLife, thingsToDo })
+            body: JSON.stringify({ name, address, latitude, longitude, breakfast, lunch, dinner, coffee, nightLife, thingsToDo })
         })
             .then(res => res.json())
             .then(res => {
+                debugger
                 if (res.error) throw Error(res.error)
             })
     },
 
-    listPlacesByFilter(filter) {
+    //‘Haversine’ formula.
+    _getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
+        var R = 6371; // Radius of the earth in km
+        var dLat = this._deg2rad(lat2-lat1);  // _deg2rad below
+        var dLon = this._deg2rad(lon2-lon1); 
+        var a = 
+          Math.sin(dLat/2) * Math.sin(dLat/2) +
+          Math.cos(this._deg2rad(lat1)) * Math.cos(this._deg2rad(lat2)) * 
+          Math.sin(dLon/2) * Math.sin(dLon/2)
+          ; 
+        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+        var d = R * c; // Distance in km
+        return d;
+      },
+      
+      _deg2rad(deg) {
+        return deg * (Math.PI/180)
+      },
+      
+    listPlacesByFilter(filter, longitude, latitude) {
         validate([
             { key: 'filter', value: filter, type: String },
         ])
 
-        return fetch(`${this.url}/users/${this._userId}/places/filter/${filter}`, {
+        return fetch(`${this.url}/users/${this._userId}/places/filter/${filter}/${longitude}/${latitude}`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${this._token}`
@@ -132,16 +151,21 @@ const logic = {
             .then(res => {
                 if (res.error) throw Error(res.error)
 
-                return res.data
+                let places = res.data
+
+                let placesDistance = places.map(place => {
+                    place.distance = (this._getDistanceFromLatLonInKm(latitude,longitude,place.latitude,place.longitude) *1000).toFixed(0)
+                    return place
+                })
+                return placesDistance
             })
     },
 
-    listPlacesByName(name) {
+    listPlacesByName(name, longitude, latitude) {
         validate([
             { key: 'name', value: name, type: String },
         ])
-        
-        return fetch(`${this.url}/users/${this._userId}/places/name/${name}`, {
+        return fetch(`${this.url}/users/${this._userId}/places/name/${name}/${longitude}/${latitude}`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${this._token}`
@@ -152,7 +176,14 @@ const logic = {
             })
             .then(res => {
                 if (res.error) throw Error(res.error)
-                return res.data
+                
+                let places = res.data
+
+                let placesDistance = places.map(place => {
+                    place.distance = (this._getDistanceFromLatLonInKm(latitude,longitude,place.latitude,place.longitude) *1000).toFixed(0)
+                    return place
+                })
+                return placesDistance
             })
 
     },
@@ -312,7 +343,7 @@ const logic = {
         let data = new FormData()
 
         data.append('picture', picture)
-
+        debugger
         return fetch(`${this.url}/users/${this._userId}/profilePicture`, {
             method: 'POST',
             headers: {
@@ -322,6 +353,7 @@ const logic = {
         })
             .then(res => res.json())
             .then(res => {
+                debugger
                 if (res.error) throw Error(res.error)
                 return res.data
             })

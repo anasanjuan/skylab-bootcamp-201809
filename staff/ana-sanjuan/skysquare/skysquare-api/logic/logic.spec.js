@@ -1,6 +1,6 @@
 const { mongoose, models: { User, Place, Picture, Tip } } = require('skysquare-data')
 const logic = require('./logic')
-const { AlreadyExistsError, AuthError } = require('../errors')
+const { AlreadyExistsError, AuthError, ValueError } = require('../errors')
 const fs = require('fs')
 
 const { expect } = require('chai')
@@ -61,6 +61,64 @@ describe('logic', () => {
             it('should fail on undefined name', () => {
                 expect(() => { logic.registerUser(undefined, surname, email, password, birthday, gender, phone) }).to.throw(TypeError, 'undefined is not a string')
             })
+
+            it('should fail on undefined surname', () => {
+                expect(() => { logic.registerUser(name, undefined, email, password, birthday, gender, phone) }).to.throw(TypeError, 'undefined is not a string')
+            })
+            it('should fail on undefined email', () => {
+                expect(() => { logic.registerUser(name, surname, undefined, password, birthday, gender, phone) }).to.throw(TypeError, 'undefined is not a string')
+            })
+            it('should fail on undefined password', () => {
+                expect(() => { logic.registerUser(name, surname, email, undefined, birthday, gender, phone) }).to.throw(TypeError, 'undefined is not a string')
+            })
+            it('should fail on undefined birthday', () => {
+                expect(() => { logic.registerUser(name, surname, email, password, undefined, gender, phone) }).to.throw(TypeError, 'undefined is not a string')
+            })
+            it('should succed on undefined gender', async () => {
+              
+                const res = await logic.registerUser(name, surname, email, password, birthday, undefined, phone)
+
+                expect(res).to.be.undefined
+
+                let users = await User.find()
+
+                expect(users.length).to.equal(1)
+
+                let [user] = users
+
+                expect(user.id).to.be.a('string')
+                expect(user.name).to.equal(name)
+                expect(user.surname).to.equal(surname)
+                expect(user.email).to.equal(email)
+                expect(user.password).to.equal(password)
+                expect(user.birthday).to.equal(birthday)
+                expect(user.gender).to.equal(undefined)
+                expect(user.phone).to.equal(phone)
+            
+            })
+
+            it('should succed on undefined gender', async() => {
+              
+                const res = await logic.registerUser(name, surname, email, password, birthday, gender, undefined)
+
+                expect(res).to.be.undefined
+
+                let users = await User.find()
+
+                expect(users.length).to.equal(1)
+
+                let [user] = users
+
+                expect(user.id).to.be.a('string')
+                expect(user.name).to.equal(name)
+                expect(user.surname).to.equal(surname)
+                expect(user.email).to.equal(email)
+                expect(user.password).to.equal(password)
+                expect(user.birthday).to.equal(birthday)
+                expect(user.gender).to.equal(gender)
+                expect(user.phone).to.equal(undefined)
+            
+            })
             it('should succed on null gender', async () => {
                 const res = await logic.registerUser(name, surname, email, password, birthday, null, phone)
 
@@ -81,6 +139,86 @@ describe('logic', () => {
                 expect(user.gender).to.equal(undefined)
                 expect(user.phone).to.equal(phone)
             })
+
+            it('should succed on null phone', async () => {
+                const res = await logic.registerUser(name, surname, email, password, birthday, gender, null)
+
+                expect(res).to.be.undefined
+
+                let users = await User.find()
+
+                expect(users.length).to.equal(1)
+
+                let [user] = users
+
+                expect(user.id).to.be.a('string')
+                expect(user.name).to.equal(name)
+                expect(user.surname).to.equal(surname)
+                expect(user.email).to.equal(email)
+                expect(user.password).to.equal(password)
+                expect(user.birthday).to.equal(birthday)
+                expect(user.gender).to.equal(gender)
+                expect(user.phone).to.equal(undefined)
+            })
+
+
+            it('should fail on empty name', () => {
+                expect(() => { logic.registerUser('', surname, email, password, birthday, gender, phone) }).to.throw(ValueError,`name is empty or blank`)
+            })
+
+            it('should fail on empty surname', () => {
+                expect(() => { logic.registerUser(name, '', email, password, birthday, gender, phone) }).to.throw(ValueError,`surname is empty or blank`)
+            })
+            it('should fail on empty email', () => {
+                expect(() => { logic.registerUser(name, surname, '', password, birthday, gender, phone) }).to.throw(ValueError,`email is empty or blank`)
+            })
+            it('should fail on empty password', () => {
+                expect(() => { logic.registerUser(name, surname, email, '', birthday, gender, phone) }).to.throw(ValueError,`password is empty or blank`)
+            })
+            it('should fail on empty birthday', () => {
+                expect(() => { logic.registerUser(name, surname, email, password, '', gender, phone) }).to.throw(ValueError,`birthday is empty or blank`)
+            })
+
+
+            it('should fail on non-string name(object)', () => {
+                expect(() => { logic.registerUser({name}, surname, email, password, birthday, gender, phone) }).to.throw(TypeError, '[object Object] is not a string')
+            })
+
+            it('should fail on non-string surname(object)', () => {
+                expect(() => { logic.registerUser(name, {surname}, email, password, birthday, gender, phone) }).to.throw(TypeError, '[object Object] is not a string')
+            })
+            it('should fail on non-string email(object)', () => {
+                expect(() => { logic.registerUser(name, surname, {email}, password, birthday, gender, phone) }).to.throw(TypeError, '[object Object] is not a string')
+            })
+            it('should fail on non-string password(object)', () => {
+                expect(() => { logic.registerUser(name, surname, email, {password}, birthday, gender, phone) }).to.throw(TypeError, '[object Object] is not a string')
+            })
+            it('should fail on non-string birthday(object)', () => {
+                expect(() => { logic.registerUser(name, surname, email, password, {birthday}, gender, phone) }).to.throw(TypeError, '[object Object] is not a string')
+            })
+
+            it('should fail on non-string name(object)', () => {
+                expect(() => { logic.registerUser({name}, surname, email, password, birthday, gender, phone) }).to.throw(TypeError, '[object Object] is not a string')
+            })
+
+            it('should fail on non-string surname(object)', () => {
+                expect(() => { logic.registerUser(name, {surname}, email, password, birthday, gender, phone) }).to.throw(TypeError, '[object Object] is not a string')
+            })
+            it('should fail on non-string email(object)', () => {
+                expect(() => { logic.registerUser(name, surname, {email}, password, birthday, gender, phone) }).to.throw(TypeError, '[object Object] is not a string')
+            })
+            it('should fail on non-string password(object)', () => {
+                expect(() => { logic.registerUser(name, surname, email, {password}, birthday, gender, phone) }).to.throw(TypeError, '[object Object] is not a string')
+            })
+            it('should fail on non-string birthday(object)', () => {
+                expect(() => { logic.registerUser(name, surname, email, password, {birthday}, gender, phone) }).to.throw(TypeError, '[object Object] is not a string')
+            })
+
+          
+
+          
+
+           
         })
 
         describe('log In', () => {

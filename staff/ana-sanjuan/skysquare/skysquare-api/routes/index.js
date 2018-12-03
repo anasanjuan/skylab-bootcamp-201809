@@ -65,15 +65,22 @@ router.post('/users/:id/profilePicture', [bearerTokenParser, jwtVerifier, jsonBo
         const { params: { id }, sub } = req
 
         if (id !== sub) throw Error('token sub does not match user id')
-
+debugger
         return new Promise((resolve, reject) => {
             const busboy = new Busboy({ headers: req.headers })
 
             busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
                 logic.addProfilePicture(id, file)
                     .then(url => {
+                        debugger
                         res.json({
-                         data: url
+                            data: url
+                        })
+                    })
+                    .catch(err => {
+                        debugger
+                        res.json({
+                            error: message
                         })
                     })
             })
@@ -84,7 +91,7 @@ router.post('/users/:id/profilePicture', [bearerTokenParser, jwtVerifier, jsonBo
 
             req.pipe(busboy)
         })
-        
+
 
     }, res)
 })
@@ -120,7 +127,6 @@ router.get('/users/:id/favourites', [bearerTokenParser, jwtVerifier, jsonBodyPar
 })
 router.post('/users/:id/check-ins', [bearerTokenParser, jwtVerifier, jsonBodyParser], (req, res) => {
     routeHandler(() => {
-        debugger
         const { params: { id }, body: { placeId }, sub } = req
 
         if (id !== sub) throw Error('token sub does not match user id')
@@ -151,11 +157,11 @@ router.get('/users/:id/check-ins', [bearerTokenParser, jwtVerifier, jsonBodyPars
 
 router.post('/users/:id/places', [bearerTokenParser, jwtVerifier, jsonBodyParser], (req, res) => {
     routeHandler(() => {
-        const { params: { id }, body: { name, latitude, longitud, address, breakfast, lunch, dinner, coffee, nigthLife, thingsToDo }, sub } = req
+        const { params: { id }, body: { name, latitude, longitude, address, breakfast, lunch, dinner, coffee, nigthLife, thingsToDo }, sub } = req
 
         if (id !== sub) throw Error('token sub does not match user id')
 
-        return logic.addPlace(name, latitude, longitud, address, id, breakfast, lunch, dinner, coffee, nigthLife, thingsToDo)
+        return logic.addPlace(name, latitude, longitude, address, id, breakfast, lunch, dinner, coffee, nigthLife, thingsToDo)
             .then(() =>
                 res.json({
                     message: 'place added'
@@ -164,28 +170,28 @@ router.post('/users/:id/places', [bearerTokenParser, jwtVerifier, jsonBodyParser
     }, res)
 })
 
-router.get('/users/:id/places/name/:name', [bearerTokenParser, jwtVerifier, jsonBodyParser], (req, res) => {
+router.get('/users/:id/places/name/:name/:longitude/:latitude', [bearerTokenParser, jwtVerifier, jsonBodyParser], (req, res) => {
     routeHandler(() => {
-        const { params: { id, name }, sub } = req
+        const { params: { id, name, longitude, latitude }, sub } = req
 
         if (id !== sub) throw Error('token sub does not match user id')
 
-        return logic.listPlacesByName(name)
-            .then(places =>
+        return logic.listPlacesByName(name, longitude, latitude)
+            .then(places => {
                 res.json({
                     data: places
                 })
-            )
+            })
     }, res)
 })
 
-router.get('/users/:id/places/filter/:filter', [bearerTokenParser, jwtVerifier, jsonBodyParser], (req, res) => {
+router.get('/users/:id/places/filter/:filter/:longitude/:latitude', [bearerTokenParser, jwtVerifier, jsonBodyParser], (req, res) => {
     routeHandler(() => {
-        const { params: { id, filter }, sub } = req
+        const { params: { id, filter, longitude, latitude }, sub } = req
 
         if (id !== sub) throw Error('token sub does not match user id')
 
-        return logic.listPlacesByFilter(filter)
+        return logic.listPlacesByFilter(filter, longitude, latitude)
             .then(places =>
                 res.json({
                     data: places

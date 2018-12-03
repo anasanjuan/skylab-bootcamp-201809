@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import logic from '../logic/logic'
+import logic from '../logic'
 import Tip from './Tip'
 
 class Tips extends Component {

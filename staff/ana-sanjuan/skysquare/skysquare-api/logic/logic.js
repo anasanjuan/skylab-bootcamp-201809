@@ -75,7 +75,7 @@ const logic = {
             { key: 'userId', value: userId, type: String },
 
         ])
-
+debugger
         return (async () => {
             let user = await User.findById(userId)
 
@@ -90,22 +90,23 @@ const logic = {
 
                 file.pipe(stream)
             })
+            debugger
             user.profilePicture = result.url
 
             user.profilePublicId = result.public_id
 
             await user.save()
-
+debugger
             return user.profilePicture
         })()
     },
 
 
-    addPlace(name, latitude, longitud, address, userId, breakfast, lunch, dinner, coffee, nigthLife, thingsToDo) {
+    addPlace(name, latitude, longitude, address, userId, breakfast, lunch, dinner, coffee, nigthLife, thingsToDo) {
         validate([
             { key: 'name', value: name, type: String },
             { key: 'latitude', value: latitude, type: Number },
-            { key: 'longitud', value: longitud, type: Number },
+            { key: 'longitud', value: longitude, type: Number },
             { key: 'address', value: address, type: String },
             { key: 'userId', value: userId, type: String },
             { key: 'breakfast', value: breakfast, type: Boolean, optional: true },
@@ -115,21 +116,23 @@ const logic = {
             { key: 'nigthLife', value: nigthLife, type: Boolean, optional: true },
             { key: 'thingsToDo', value: thingsToDo, type: Boolean, optional: true }
         ])
-
         return (async () => {
             let user = await User.findById(userId)
 
             if (!user) throw new NotFoundError(`user does not exist`)
 
-            let place = new Place({ name, latitude, longitud, address, userId, breakfast, lunch, dinner, coffee, nigthLife, thingsToDo })
+            const location = {
+                type: "Point",
+                coordinates: [longitude, latitude]
+            }
 
-            address != null && (user.address = address)
+            let place = new Place({ name, location, address, userId, breakfast, lunch, dinner, coffee, nigthLife, thingsToDo })
 
             await place.save()
         })()
     },
 
-    listPlacesByName(name) {
+    listPlacesByName(name, longitude, latitude) {
         validate([
             { key: 'name', value: name, type: String },
         ])
@@ -138,9 +141,25 @@ const logic = {
 
             let placeReg = new RegExp(name, "i")
 
-            let places = await Place.find({ name: { $regex: placeReg } }, { userId: 0, __v: 0 }).lean()
+            let places = await Place.find({
+                $and: [
+                    { name: { $regex: placeReg } },
+                    {
+                        location: {
+                            $near: {
+                                $maxDistance: 15000,
+                                $geometry: {
+                                    type: "Point",
+                                    coordinates: [longitude, latitude]
+                                }
+                            }
+                        }
+                    }
+                ]
+            }, { userId: 0, __v: 0 }).lean()
 
             let promises = places.map(async place => {
+
                 const pictures = await Picture.find({ placeId: place._id })
 
                 if (pictures.length === 0) {
@@ -163,6 +182,14 @@ const logic = {
 
                     place.tip = tip.text
                 }
+
+
+                const [longitude, latitude] = place.location.coordinates
+
+                place.longitude = longitude
+                place.latitude = latitude
+
+
                 place.id = place._id.toString()
 
                 delete place._id
@@ -171,17 +198,32 @@ const logic = {
             })
             const listPlaces = await Promise.all(promises)
 
-            return listPlaces.map(({ id, name, address, scoring, picture, tip }) => ({ id, name, address, scoring, picture, tip }))
+            return listPlaces.map(({ id, name, address, scoring, picture, tip, longitude, latitude }) => ({ id, name, address, scoring, picture, tip, longitude, latitude }))
         })()
     },
 
-    listPlacesByFilter(filter) {
+    listPlacesByFilter(filter, longitude, latitude) {
         validate([
             { key: 'filter', value: filter, type: String },
         ])
 
         return (async () => {
-            let places = await Place.find({ [filter]: true }, { userId: 0, __v: 0 }).lean()
+
+            let places = await Place.find({
+                $and: [
+                    { [filter]: true },
+                    {
+                        location: {
+                            $near: {
+                                $maxDistance: 15000,
+                                $geometry: {
+                                    type: "Point",
+                                    coordinates: [longitude, latitude]
+                                }
+                            }
+                        }
+                    }]
+            }, { userId: 0, __v: 0 }).lean()
 
             const listPlaces = await Promise.all(
                 places.map(async place => {
@@ -199,6 +241,10 @@ const logic = {
 
                     const tips = await Tip.find({ placeId: place._id })
 
+                    const [longitude, latitude] = place.location.coordinates
+
+                    place.longitude = longitude
+                    place.latitude = latitude
 
                     if (tips.length === 0) {
                         place.tip = ''
@@ -215,7 +261,7 @@ const logic = {
                     return place
                 })
             )
-            return listPlaces.map(({ id, name, address, scoring, picture, tip }) => ({ id, name, address, scoring, picture, tip }))
+            return listPlaces.map(({ id, name, address, scoring, picture, tip, longitude, latitude }) => ({ id, name, address, scoring, picture, tip, longitude, latitude }))
         })()
     },
 
@@ -275,7 +321,7 @@ const logic = {
 
             const index = place.voters.findIndex(voter => voter.toString() === userId)
 
-            if(index >= 0) throw new AlreadyExistsError(`user has already voted`)
+            if (index >= 0) throw new AlreadyExistsError(`user has already voted`)
 
             place.voters.push(userId)
 
@@ -301,7 +347,6 @@ const logic = {
             { key: 'placeId', value: placeId, type: String },
 
         ])
-
         return (async () => {
             let user = await User.findById(userId)
 
@@ -570,7 +615,6 @@ const logic = {
             if (!user) throw new NotFoundError(`user does not exist`)
 
             let promises = user.checkIns.map(async check => {
-                debugger
                 let pictures = await Picture.find({ placeId: check._id })
 
                 if (pictures.length === 0) {

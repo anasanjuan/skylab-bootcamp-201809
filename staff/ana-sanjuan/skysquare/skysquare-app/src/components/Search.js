@@ -26,7 +26,7 @@ class Search extends Component {
             </header>
             <main className="search__main" >
                 <form onSubmit={this.handleSearchSubmit}>
-                    <input className="search__box" type='text' placeholder="¿Qué estás buscando?" onChange={this.handleNameChange}></input>
+                    <input className="search__box" type='text' placeholder="What are you looking for?" onChange={this.handleNameChange}></input>
                     <button type='submit'></button>
                 </form>
                 <div className="filter">

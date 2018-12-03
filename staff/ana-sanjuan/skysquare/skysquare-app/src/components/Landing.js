@@ -13,7 +13,8 @@ function Landing(props) {
                 </section>
         </header>
         <main className="landing__main">
-            <button className="landing__register" onClick={props.onRegisterClick}>Register with your email</button>
+           
+            <button className="landing__register" onClick={props.onRegisterClick}> <i className="fas fa-envelope icon"></i> Register with your email</button>
         </main>
         <footer className="landing__footer">
             <button className="footer__logIn" onClick={props.onLogInClick}>¿Do you already have an account? <b>Log In now</b></button>

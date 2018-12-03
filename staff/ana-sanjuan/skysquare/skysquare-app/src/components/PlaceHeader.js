@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import logic from '../logic/logic'
+import logic from '../logic'
 
 class PlaceHeader extends Component {
     state = { error: null, place: [] }

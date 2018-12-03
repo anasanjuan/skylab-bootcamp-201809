@@ -1,11 +1,16 @@
 import React, { Component } from 'react'
-import logic from '../logic/logic'
-
+import logic from '../logic'
+import Error from './Error'
 class AddProfilePicture extends Component {
-    state = { error: null, profilePicture: this.props.profilePicture, previewPicture: null, open: false }
+    state = { error: null, profilePicture: this.props.profilePicture, previewPicture: null, editPictureOpen: false, uploadPictureOpen: false }
 
-    handleClick = () => {
-        this.setState({ open: !this.state.open })
+
+    componentWillReceiveProps(props) {
+        this.setState({ ...props })
+    }
+
+    handleEditPictureClick = () => {
+        this.setState({ editPictureOpen: !this.state.editPictureOpen })
     }
 
     handlePictureSelect = event => {
@@ -16,6 +21,7 @@ class AddProfilePicture extends Component {
             profilePicture: event.target.files[0],
             error: null
         })
+        this.setState({ uploadPictureOpen: true })
 
     }
 
@@ -24,21 +30,29 @@ class AddProfilePicture extends Component {
 
         try {
             logic.UploadProfilePicture(this.state.profilePicture)
-                .then(res => this.setState({ previewPicture: null, profilePicture: res, open: !this.state.open, error: null }))
+                .then(res => this.setState({ previewPicture: null, profilePicture: res, editPictureOpen: !this.state.editPictureOpen, error: null, uploadPictureOpen: false }))
                 .catch(err => this.setState({ error: err.message }))
         } catch (err) {
             this.setState({ error: err.message })
         }
     }
 
-
     render() {
-        return (<div className='add-profile-picture'>
-            <img onClick={this.handleClick} src={this.props.profilePicture} alt=''></img>
-            <form onSubmit={this.handlePictureLoad} className={this.state.open ? "profilePicture__edit profilePicture__edit--open" : "profilePicture__edit"} encType="multipart/form-data" >
-                <input type="file" name="pic" accept="image/*" onChange={this.handlePictureSelect}></input>
-                <button type='submit'>Load Picture</button>
+        return (<div className='add__profile__picture'>
+            <div className='pic__container'>
+                <img onClick={this.handleEditPictureClick} src={this.state.previewPicture ? this.state.previewPicture : this.state.profilePicture} alt=''></img>
+            </div>
+            <form onSubmit={this.handlePictureLoad} className={this.state.editPictureOpen ? "profilePicture__edit profilePicture__edit--open" : "profilePicture__edit"} encType="multipart/form-data" >
+                <div className='button__container' >
+                    <div className={!this.state.uploadPictureOpen ? "input__container" : "input__container input__container--close"} onClick={this.handleSelectImageClick}>
+                        <input className="input__hidden" type="file" name="file" id="file" accept="image/*" onChange={this.handlePictureSelect}></input>
+                        <label htmlFor="file">Select new pic</label>
+                    </div>
+                    <button className={this.state.uploadPictureOpen ? "upload__button upload__button--open" : "upload__button"} type='submit'>Load Picture</button>
+                </div>
             </form>
+            {this.state.error && <Error message={this.state.error} />}
+
         </div>
 
         )
