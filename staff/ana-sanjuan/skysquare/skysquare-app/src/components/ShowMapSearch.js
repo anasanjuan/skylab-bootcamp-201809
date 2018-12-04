@@ -31,7 +31,6 @@ class ShowMapSearch extends Component {
 			};
 		}
 
-
 		this.props.places.forEach(place => {
 			let marker = new this.mapsApi.Marker({
 				position: { lat: place.latitude, lng: place.longitude },
@@ -40,7 +39,7 @@ class ShowMapSearch extends Component {
 				icon: pinSymbol("#D7000D")
 			});
 
-			var contentString = `<a href=${`/#/home/place/${place.id}`}> 
+			let contentString = `<a href=${`/#/home/place/${place.id}`}> 
 				<div class='info__container'>
 					<div class='info__text'>	
 						<h1 class='info__text__title'>${place.name}</h1> 
@@ -48,35 +47,32 @@ class ShowMapSearch extends Component {
 					</div>
 				</div></a>`
 
-			var infowindow = new this.mapsApi.InfoWindow({
-				content: contentString,
-				closeBoxURL: '',
-			});
-
 			marker.addListener('click', function () {
-				infowindow.open(this.map, marker)
+				infowindow.close()
+        		infowindow.setContent(contentString)
+        		infowindow.open(map, marker)
 
-			});
+			})
 			this.map.markers.push(marker)
 		})
-
-
 
 		let marker = new this.mapsApi.Marker({
 			position: { lat: this.props.latitude, lng: this.props.longitude },
 			map: this.map,
 			icon: pinSymbol("#2E5BE3")
 		});
-		var contentString = `<div class='info__text'>	
+		let contentString = `<div class='info__text'>	
 				<h1 class='info__text__title'>You are here</h1> 
 			</div>`
 
-		var infowindow = new this.mapsApi.InfoWindow({
+		let infowindow = new this.mapsApi.InfoWindow({
 			content: contentString
 		});
 
 		marker.addListener('click', function () {
-			infowindow.open(this.map, marker)
+			infowindow.close()
+			infowindow.setContent(contentString)
+			infowindow.open(map, marker)
 		});
 
 		this.map.markers.push(marker)

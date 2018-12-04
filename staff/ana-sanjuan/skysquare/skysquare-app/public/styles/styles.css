@@ -882,14 +882,15 @@ body {
 }
 .profile__top h1 {
   font-size: 18px;
-  text-align: center;
-  margin-top: 15px;
   font-weight: lighter;
-  width: 90%;
+  width: 45%;
+  text-align: center;
+  padding: 5px 0;
 }
 .profile__top button {
-  width: 10%;
+  width: 30%;
   color: white;
+  padding-right: 10px;
 }
 .profile__info {
   width: 100%;
@@ -897,6 +898,7 @@ body {
   border-bottom: 1px solid #4E595E;
   display: flex;
   background-color: white;
+  text-align: center;
 }
 .profile__info__tips {
   width: 60px;
@@ -907,13 +909,13 @@ body {
 .profile__info__pictures {
   width: 60px;
   height: 60px;
-  margin: 20px;
+  margin: 20px 0;
 }
 .profile__info h4 {
   font-size: 10px;
 }
 .profile__main {
-  margin-top: 240px;
+  margin-top: 245px;
 }
 .profile .profile__list {
   display: flex;
@@ -1071,19 +1073,19 @@ body {
   margin: 10px;
 }
 .add__place__main .fields {
-  margin-top: 20px;
+  margin-top: 10px;
 }
 .add__place__main .fields .checkboxes {
   display: flex;
-  margin: 0 20px 10px 20px;
+  margin: 0 20px 8px 20px;
 }
-.add__place__main .label__text {
+.add__place__main .text__label {
   font-size: 15px;
   color: #4E595E;
-  padding: 10px 20px 0px 20px;
-  margin: 10px 0px 0px 0px;
+  padding: 5px 20px 0px 20px;
+  margin: 8px 0px 0px 0px;
 }
-.add__place__main .label__checkboxes {
+.add__place__main .checkboxes__label {
   font-size: 15px;
   color: #4E595E;
   padding: 0px 20px 0px 20px;

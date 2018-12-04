@@ -1,6 +1,6 @@
 const { mongoose, models: { User, Place, Picture, Tip } } = require('skysquare-data')
 const logic = require('./logic')
-const { AlreadyExistsError, AuthError, ValueError } = require('../errors')
+const { AlreadyExistsError, AuthError, ValueError, NotFoundError } = require('../errors')
 const fs = require('fs')
 
 const { expect } = require('chai')
@@ -58,6 +58,29 @@ describe('logic', () => {
                 expect(user.phone).to.equal(phone)
 
             })
+
+            it('should fail on already exist user', async () => {
+                const user = new User({ name, surname, email, password, birthday, gender, phone })
+
+                await user.save()
+
+                _name = 'Ada'
+                _surname = 'Lovelace'
+                _password = `ad-${Math.random()}`
+                _birthday = '10/12/1815'
+                _gender = 'Female'
+                _phone = `adPhone-${Math.random()}`
+
+                try {
+                    await logic.registerUser(_name, _surname, email, _password, _birthday, _gender, _phone)
+                    expect(true).to.be.false
+                } catch (error) {
+                    expect(error).to.be.instanceof(AlreadyExistsError)
+                    expect(error.message).to.equal(`user with email ${email} already exist`)
+                }
+
+            })
+
             it('should fail on undefined name', () => {
                 expect(() => { logic.registerUser(undefined, surname, email, password, birthday, gender, phone) }).to.throw(TypeError, 'undefined is not a string')
             })
@@ -75,7 +98,7 @@ describe('logic', () => {
                 expect(() => { logic.registerUser(name, surname, email, password, undefined, gender, phone) }).to.throw(TypeError, 'undefined is not a string')
             })
             it('should succed on undefined gender', async () => {
-              
+
                 const res = await logic.registerUser(name, surname, email, password, birthday, undefined, phone)
 
                 expect(res).to.be.undefined
@@ -94,11 +117,11 @@ describe('logic', () => {
                 expect(user.birthday).to.equal(birthday)
                 expect(user.gender).to.equal(undefined)
                 expect(user.phone).to.equal(phone)
-            
+
             })
 
-            it('should succed on undefined gender', async() => {
-              
+            it('should succed on undefined gender', async () => {
+
                 const res = await logic.registerUser(name, surname, email, password, birthday, gender, undefined)
 
                 expect(res).to.be.undefined
@@ -117,7 +140,7 @@ describe('logic', () => {
                 expect(user.birthday).to.equal(birthday)
                 expect(user.gender).to.equal(gender)
                 expect(user.phone).to.equal(undefined)
-            
+
             })
             it('should succed on null gender', async () => {
                 const res = await logic.registerUser(name, surname, email, password, birthday, null, phone)
@@ -163,62 +186,160 @@ describe('logic', () => {
 
 
             it('should fail on empty name', () => {
-                expect(() => { logic.registerUser('', surname, email, password, birthday, gender, phone) }).to.throw(ValueError,`name is empty or blank`)
+                expect(() => { logic.registerUser('', surname, email, password, birthday, gender, phone) }).to.throw(ValueError, `name is empty or blank`)
             })
 
             it('should fail on empty surname', () => {
-                expect(() => { logic.registerUser(name, '', email, password, birthday, gender, phone) }).to.throw(ValueError,`surname is empty or blank`)
+                expect(() => { logic.registerUser(name, '', email, password, birthday, gender, phone) }).to.throw(ValueError, `surname is empty or blank`)
             })
             it('should fail on empty email', () => {
-                expect(() => { logic.registerUser(name, surname, '', password, birthday, gender, phone) }).to.throw(ValueError,`email is empty or blank`)
+                expect(() => { logic.registerUser(name, surname, '', password, birthday, gender, phone) }).to.throw(ValueError, `email is empty or blank`)
             })
             it('should fail on empty password', () => {
-                expect(() => { logic.registerUser(name, surname, email, '', birthday, gender, phone) }).to.throw(ValueError,`password is empty or blank`)
+                expect(() => { logic.registerUser(name, surname, email, '', birthday, gender, phone) }).to.throw(ValueError, `password is empty or blank`)
             })
             it('should fail on empty birthday', () => {
-                expect(() => { logic.registerUser(name, surname, email, password, '', gender, phone) }).to.throw(ValueError,`birthday is empty or blank`)
+                expect(() => { logic.registerUser(name, surname, email, password, '', gender, phone) }).to.throw(ValueError, `birthday is empty or blank`)
+            })
+
+
+            it('should fail on blank name', () => {
+                expect(() => { logic.registerUser('     ', surname, email, password, birthday, gender, phone) }).to.throw(ValueError, `name is empty or blank`)
+            })
+
+            it('should fail on blank surname', () => {
+                expect(() => { logic.registerUser(name, '       ', email, password, birthday, gender, phone) }).to.throw(ValueError, `surname is empty or blank`)
+            })
+            it('should fail on blank email', () => {
+                expect(() => { logic.registerUser(name, surname, '      ', password, birthday, gender, phone) }).to.throw(ValueError, `email is empty or blank`)
+            })
+            it('should fail on blank password', () => {
+                expect(() => { logic.registerUser(name, surname, email, '       ', birthday, gender, phone) }).to.throw(ValueError, `password is empty or blank`)
+            })
+            it('should fail on blank birthday', () => {
+                expect(() => { logic.registerUser(name, surname, email, password, '     ', gender, phone) }).to.throw(ValueError, `birthday is empty or blank`)
             })
 
 
             it('should fail on non-string name(object)', () => {
-                expect(() => { logic.registerUser({name}, surname, email, password, birthday, gender, phone) }).to.throw(TypeError, '[object Object] is not a string')
+                expect(() => { logic.registerUser({ name }, surname, email, password, birthday, gender, phone) }).to.throw(TypeError, '[object Object] is not a string')
             })
 
             it('should fail on non-string surname(object)', () => {
-                expect(() => { logic.registerUser(name, {surname}, email, password, birthday, gender, phone) }).to.throw(TypeError, '[object Object] is not a string')
+                expect(() => { logic.registerUser(name, { surname }, email, password, birthday, gender, phone) }).to.throw(TypeError, '[object Object] is not a string')
             })
             it('should fail on non-string email(object)', () => {
-                expect(() => { logic.registerUser(name, surname, {email}, password, birthday, gender, phone) }).to.throw(TypeError, '[object Object] is not a string')
+                expect(() => { logic.registerUser(name, surname, { email }, password, birthday, gender, phone) }).to.throw(TypeError, '[object Object] is not a string')
             })
             it('should fail on non-string password(object)', () => {
-                expect(() => { logic.registerUser(name, surname, email, {password}, birthday, gender, phone) }).to.throw(TypeError, '[object Object] is not a string')
+                expect(() => { logic.registerUser(name, surname, email, { password }, birthday, gender, phone) }).to.throw(TypeError, '[object Object] is not a string')
             })
             it('should fail on non-string birthday(object)', () => {
-                expect(() => { logic.registerUser(name, surname, email, password, {birthday}, gender, phone) }).to.throw(TypeError, '[object Object] is not a string')
+                expect(() => { logic.registerUser(name, surname, email, password, { birthday }, gender, phone) }).to.throw(TypeError, '[object Object] is not a string')
             })
 
-            it('should fail on non-string name(object)', () => {
-                expect(() => { logic.registerUser({name}, surname, email, password, birthday, gender, phone) }).to.throw(TypeError, '[object Object] is not a string')
+            it('should fail on non-string gender(object)', () => {
+                expect(() => { logic.registerUser(name, surname, email, password, birthday, { gender }, phone) }).to.throw(TypeError, '[object Object] is not a string')
+            })
+            it('should fail on non-string phone(object)', () => {
+                expect(() => { logic.registerUser(name, surname, email, password, birthday, gender, { phone }) }).to.throw(TypeError, '[object Object] is not a string')
             })
 
-            it('should fail on non-string surname(object)', () => {
-                expect(() => { logic.registerUser(name, {surname}, email, password, birthday, gender, phone) }).to.throw(TypeError, '[object Object] is not a string')
-            })
-            it('should fail on non-string email(object)', () => {
-                expect(() => { logic.registerUser(name, surname, {email}, password, birthday, gender, phone) }).to.throw(TypeError, '[object Object] is not a string')
-            })
-            it('should fail on non-string password(object)', () => {
-                expect(() => { logic.registerUser(name, surname, email, {password}, birthday, gender, phone) }).to.throw(TypeError, '[object Object] is not a string')
-            })
-            it('should fail on non-string birthday(object)', () => {
-                expect(() => { logic.registerUser(name, surname, email, password, {birthday}, gender, phone) }).to.throw(TypeError, '[object Object] is not a string')
+
+
+
+            it('should fail on non-string name(boolean)', () => {
+                expect(() => { logic.registerUser(true, surname, email, password, birthday, gender, phone) }).to.throw(TypeError, 'true is not a string')
             })
 
-          
+            it('should fail on non-string surname(boolean)', () => {
+                expect(() => { logic.registerUser(name, true, email, password, birthday, gender, phone) }).to.throw(TypeError, 'true is not a string')
+            })
+            it('should fail on non-string email(boolean)', () => {
+                expect(() => { logic.registerUser(name, surname, true, password, birthday, gender, phone) }).to.throw(TypeError, 'true is not a string')
+            })
+            it('should fail on non-string password(boolean)', () => {
+                expect(() => { logic.registerUser(name, surname, email, true, birthday, gender, phone) }).to.throw(TypeError, 'true is not a string')
+            })
+            it('should fail on non-string birthday(boolean)', () => {
+                expect(() => { logic.registerUser(name, surname, email, password, true, gender, phone) }).to.throw(TypeError, 'true is not a string')
+            })
 
-          
+            it('should fail on non-string gender(boolean)', () => {
+                expect(() => { logic.registerUser(name, surname, email, password, birthday, true, phone) }).to.throw(TypeError, 'true is not a string')
+            })
+            it('should fail on non-string phone(boolean)', () => {
+                expect(() => { logic.registerUser(name, surname, email, password, birthday, gender, true) }).to.throw(TypeError, 'true is not a string')
+            })
 
-           
+
+
+
+
+            it('should fail on non-string name(array)', () => {
+                expect(() => { logic.registerUser([], surname, email, password, birthday, gender, phone) }).to.throw(TypeError, ' is not a string')
+            })
+
+            it('should fail on non-string surname(array)', () => {
+                expect(() => { logic.registerUser(name, [], email, password, birthday, gender, phone) }).to.throw(TypeError, ' is not a string')
+            })
+            it('should fail on non-string email(array)', () => {
+                expect(() => { logic.registerUser(name, surname, [], password, birthday, gender, phone) }).to.throw(TypeError, ' is not a string')
+            })
+            it('should fail on non-string password(array)', () => {
+                expect(() => { logic.registerUser(name, surname, email, [], birthday, gender, phone) }).to.throw(TypeError, ' is not a string')
+            })
+            it('should fail on non-string birthday(array)', () => {
+                expect(() => { logic.registerUser(name, surname, email, password, [], gender, phone) }).to.throw(TypeError, ' is not a string')
+            })
+
+            it('should fail on non-string gender(array)', () => {
+                expect(() => { logic.registerUser(name, surname, email, password, birthday, [], phone) }).to.throw(TypeError, ' is not a string')
+            })
+            it('should fail on non-string phone(array)', () => {
+                expect(() => { logic.registerUser(name, surname, email, password, birthday, gender, []) }).to.throw(TypeError, ' is not a string')
+            })
+
+
+
+
+            it('should fail on non-string name(number)', () => {
+                let number = Math.random()
+
+                expect(() => { logic.registerUser(number, surname, email, password, birthday, gender, phone) }).to.throw(TypeError, `${number} is not a string`)
+            })
+
+            it('should fail on non-string surname(number)', () => {
+                let number = Math.random()
+
+                expect(() => { logic.registerUser(name, number, email, password, birthday, gender, phone) }).to.throw(TypeError, `${number} is not a string`)
+            })
+            it('should fail on non-string email(number)', () => {
+                let number = Math.random()
+
+                expect(() => { logic.registerUser(name, surname, number, password, birthday, gender, phone) }).to.throw(TypeError, `${number} is not a string`)
+            })
+            it('should fail on non-string password(number)', () => {
+                let number = Math.random()
+
+                expect(() => { logic.registerUser(name, surname, email, number, birthday, gender, phone) }).to.throw(TypeError, `${number} is not a string`)
+            })
+            it('should fail on non-string birthday(number)', () => {
+                let number = Math.random()
+
+                expect(() => { logic.registerUser(name, surname, email, password, number, gender, phone) }).to.throw(TypeError, `${number} is not a string`)
+            })
+
+            it('should fail on non-string gender(number)', () => {
+                let number = Math.random()
+
+                expect(() => { logic.registerUser(name, surname, email, password, birthday, number, phone) }).to.throw(TypeError, `${number} is not a string`)
+            })
+            it('should fail on non-string phone(number)', () => {
+                let number = Math.random()
+
+                expect(() => { logic.registerUser(name, surname, email, password, birthday, gender, number) }).to.throw(TypeError, `${number} is not a string`)
+            })
         })
 
         describe('log In', () => {
@@ -246,9 +367,23 @@ describe('logic', () => {
 
             })
 
+            it('should fail on non existing user', async () => {
+                const email = `al-${Math.random()}@example.com`
+                const { password } = user
+
+                try {
+                    const id = await logic.authenticateUser(email, password)
+                    expect(true).to.be.false
+                } catch (error) {
+                    expect(error).to.be.instanceof(NotFoundError)
+
+                    expect(error.message).to.equal(`user with email ${email} not found`)
+                }
+            })
+
             it('should fail on incorrect password ', async () => {
                 const { email } = user
-                let wrongPassword = `jd-${Math.random()}`
+                let wrongPassword = `al-${Math.random()}`
 
                 try {
                     const id = await logic.authenticateUser(email, wrongPassword)
@@ -261,12 +396,51 @@ describe('logic', () => {
             })
 
             it('should fail on undefined email', () => {
-                expect(() => { logic.registerUser(undefined, password) }).to.throw(TypeError, 'undefined is not a string')
-
+                expect(() => { logic.authenticateUser(undefined, password) }).to.throw(TypeError, 'undefined is not a string')
             })
             it('should fail on undefined pasword', () => {
-                expect(() => { logic.registerUser(email, undefined) }).to.throw(TypeError, 'undefined is not a string')
+                expect(() => { logic.authenticateUser(email, undefined) }).to.throw(TypeError, 'undefined is not a string')
+            })
 
+            it('should fail on empty email', () => {
+                expect(() => { logic.authenticateUser('', password) }).to.throw(ValueError, `email is empty or blank`)
+            })
+            it('should fail on empty pasword', () => {
+                expect(() => { logic.authenticateUser(email, '') }).to.throw(ValueError, `password is empty or blank`)
+            })
+
+            it('should fail on blank email', () => {
+                expect(() => { logic.authenticateUser('', password) }).to.throw(ValueError, `email is empty or blank`)
+            })
+            it('should fail on blank pasword', () => {
+                expect(() => { logic.authenticateUser(email, '') }).to.throw(ValueError, `password is empty or blank`)
+            })
+
+
+            it('should fail on non-string email(boolean)', () => {
+                expect(() => { logic.authenticateUser(false, password) }).to.throw(TypeError, 'false is not a string')
+            })
+            it('should fail on non-string pasword(boolean)', () => {
+                expect(() => { logic.authenticateUser(email, false) }).to.throw(TypeError, 'false is not a string')
+            })
+
+
+            it('should fail on non-string email(array)', () => {
+                expect(() => { logic.authenticateUser([], password) }).to.throw(TypeError, ' is not a string')
+            })
+            it('should fail on non-string pasword(array)', () => {
+                expect(() => { logic.authenticateUser(email, []) }).to.throw(TypeError, ' is not a string')
+            })
+
+
+            it('should fail on non-string email(number)', () => {
+                let email = Math.random()
+                expect(() => { logic.authenticateUser(email, password) }).to.throw(TypeError, `${email} is not a string`)
+            })
+            it('should fail on non-string pasword(number)', () => {
+                let password = Math.random()
+
+                expect(() => { logic.authenticateUser(email, password) }).to.throw(TypeError, `${password} is not a string`)
             })
         })
 
@@ -284,8 +458,8 @@ describe('logic', () => {
                 user = new User({ name, surname, email, password, birthday, gender, phone })
 
                 return user.save()
-
             })
+
             it('should succed on correct data', async () => {
                 const _user = await logic.retrieveUser(user.id)
 
@@ -296,9 +470,26 @@ describe('logic', () => {
                 expect(_user.surname).to.equal(user.surname)
                 expect(_user.email).to.equal(user.email)
                 expect(_user.birthday).to.equal(user.birthday)
-                expect(_user.gender).to.equal(user.gender)
-                expect(_user.phone).to.equal(user.phone)
+                expect(_user.profilePicture).to.equal('https://res.cloudinary.com/dancing890/image/upload/v1542808705/i4lb8xdnpblbbhuvi7zv.png')
 
+            })
+
+
+            it('should fail on non existing user', async () => {
+                const id = user.id
+
+                await User.deleteMany()
+
+                debugger
+                try {
+                    const __user = await logic.retrieveUser(id)
+                    expect(true).to.be.false
+                } catch (error) {
+                    debugger
+                    expect(error).to.be.instanceof(NotFoundError)
+
+                    expect(error.message).to.equal(`user not found`)
+                }
             })
         })
 
@@ -316,15 +507,15 @@ describe('logic', () => {
                 user = new User({ name, surname, email, password, birthday, gender, phone })
 
                 return user.save()
-
             })
+
             it('should succed on correct data', async () => {
 
                 let image = './data/test-images/default-profile-pic.png'
 
                 var file = fs.createReadStream(image)
 
-                const res = await logic.uploadProfilePicture(user.id, file)
+                const res = await logic.addProfilePicture(user.id, file)
 
                 expect(res).to.be.undefined
 
@@ -404,7 +595,7 @@ describe('logic', () => {
     })
 
 
-    describe('places', () => {
+    false && describe('places', () => {
         let user
 
         beforeEach(() => {
@@ -623,7 +814,7 @@ describe('logic', () => {
             it('should succed on correct data', async () => {
                 let newScore = 10
 
-                const {scoring, scores} = await logic.updateScoring(place.id, newScore)
+                const { scoring, scores } = await logic.updateScoring(place.id, newScore)
 
                 expect(scoring).to.equal(7.5)
                 expect(scores.length).to.equal(2)
@@ -755,7 +946,7 @@ describe('logic', () => {
 
     })
 
-    describe('tips', () => {
+    false && describe('tips', () => {
         let user, place
         beforeEach(async () => {
             let name = 'John'
@@ -879,7 +1070,7 @@ describe('logic', () => {
             let nigthLife = true
             let thingsToDo = false
 
-            place = new Place({ name: placeName, latitude, longitud, userId,address, breakfast, lunch, dinner, coffee, nigthLife, thingsToDo })
+            place = new Place({ name: placeName, latitude, longitud, userId, address, breakfast, lunch, dinner, coffee, nigthLife, thingsToDo })
 
             await user.save()
             await place.save()
@@ -943,7 +1134,7 @@ describe('logic', () => {
             let nigthLife = true
             let thingsToDo = false
 
-            place = new Place({ name: placeName, latitude, longitud, userId,address, breakfast, lunch, dinner, coffee, nigthLife, thingsToDo })
+            place = new Place({ name: placeName, latitude, longitud, userId, address, breakfast, lunch, dinner, coffee, nigthLife, thingsToDo })
 
             await user.save()
             await place.save()

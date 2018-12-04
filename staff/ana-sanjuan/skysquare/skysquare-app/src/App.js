@@ -18,7 +18,7 @@ import PlaceHeader from './components/PlaceHeader'
 import { Route, withRouter, Redirect } from 'react-router-dom'
 
 // logic.url = 'http://192.168.0.37:5000/api'
-logic.url = 'http://localhost:5000/api'
+logic.url = process.env.REACT_APP_API_URL 
 
 class App extends Component {
     state = { errorLogIn: null, errorRegister: null, placesByName: [] }

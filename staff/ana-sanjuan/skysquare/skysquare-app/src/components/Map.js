@@ -63,7 +63,7 @@ class AddMap extends Component {
 	render = () => {
 		return (
 			// Important! Always set the container height explicitly
-			<section style={{ width: "100%", height: "230px" }}>
+			<section style={{ width: "100%", height: "220px" }}>
 				<GoogleMapReact
 					defaultCenter={this.props.center}
 					center={{ lat: this.state.latitude, lng: this.state.longitude }}

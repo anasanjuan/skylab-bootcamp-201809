@@ -57,8 +57,8 @@ const logic = {
         ])
         return (async () => {
             const user = await User.findById(id, { password: 0, postits: 0, __v: 0 }).lean()
-
-            if (!user) throw new NotFoundError(`user with email ${email} not found`)
+debugger
+            if (!user) throw new NotFoundError(`user not found`)
 
             user.id = user._id.toString()
 

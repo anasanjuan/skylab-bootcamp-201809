@@ -90,14 +90,14 @@ class AddPlace extends Component {
             </header>
             <main className='add__place__main'>
                 <form onSubmit={this.handleSubmit}>
-                    <h6 className='label__text' >Name</h6>
+                    <h6 className='text__label' >Name</h6>
                     <input className='text__input' type='text' placeholder='Add name' onChange={this.handleOnChangeName}></input><br />
-                    <h6 className='label__text' >Address</h6>
+                    <h6 className='text__label' >Address</h6>
                     <input className='text__input' type='text' placeholder='Add address' onChange={this.handleOnChangeAddress}></input><br />
-                    <h6 className='label__text' >Add a marker in the map</h6>
+                    <h6 className='text__label' >Add a marker in the map</h6>
                     <Map className='add__place__map' onMapClick={this.handleMapClick} />
                     <section className='fields'>
-                        <h6 className='label__checkboxes' >This place is good for:</h6>
+                        <h6 className='checkboxes__label' >This place is good for:</h6>
                         <section className='checkboxes'>
                             <div>
                                 <label><input type='checkbox' className='checkboxes__input' name='Breakfast' onChange={this.handleOnChangeBreakfast}></input>Breakfast</label>

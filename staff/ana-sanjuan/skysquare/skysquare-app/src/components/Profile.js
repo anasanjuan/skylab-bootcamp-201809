@@ -16,9 +16,9 @@ class Profile extends Component {
             .catch(err => this.setState({ error: err.message }))
     }
 
-    handleClick = () => {
-        this.setState({ open: !this.state.open })
-    }
+    // handleClick = () => {
+    //     this.setState({ open: !this.state.open })
+    // }
 
     handleListTips = () => {
         this.setState({ listPictures: false })
@@ -32,14 +32,14 @@ class Profile extends Component {
         return <div className="profile">
             <header className='profile__header'>
                 <div className='profile__top'>
-                    <button onClick={this.handleClick}><i className="fas fa-cog"></i></button>
+                    {/* <button onClick={this.handleClick}><i className="fas fa-cog"></i></button>
                     <div className={this.state.open ? "profile__edit profile__edit--open" : "profile__edit"}>
                         <p>{this.state.user.email}</p>
                         <p>{this.state.user.phone}</p>
                         <p>{this.state.user.birthday}</p>
-                    </div>
-                    <h1>{`${this.state.user.name} ${this.state.user.surname}`}</h1>
+                    </div> */}
                     <button onClick={this.props.onLogOutClick}>Log Out</button>
+                    <h1>{`${this.state.user.name} ${this.state.user.surname}`}</h1>
 
                 </div>
                 <section className='profile__info'>
