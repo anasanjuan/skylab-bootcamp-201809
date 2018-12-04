@@ -46,7 +46,7 @@ class ListPlaces extends Component {
     componentWillReceiveProps(nextProps) {
         if (nextProps.name !== this.props.name) {
             try {
-                logic.listPlacesByName(this.state.name)
+                logic.listPlacesByName(this.state.name, this.state.longitude, this.state.latitude)
                     .then(places => this.setState({ places, error: null }))
                     .catch(err => this.setState({ error: err.message }))
             } catch (err) {

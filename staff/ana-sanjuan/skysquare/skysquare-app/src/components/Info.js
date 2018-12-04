@@ -9,11 +9,11 @@ class Info extends Component {
         try {
             logic.retrievePlace(this.props.id)
                 .then(place => {
-                    const { scoring, address, location: { coordinates: [longitud, latitude] }, meh, heart, broken, scores, favourite, checkIn } = place
+                    const { scoring, address, location: { coordinates: [longitude, latitude] }, meh, heart, broken, scores, favourite, checkIn } = place
 
                     const visitors = scores.length
 
-                    this.setState({ scoring, address, latitude, longitud, meh, heart, broken, visitors, favourite, checkIn, error: null })
+                    this.setState({ scoring, address, latitude, longitude, meh, heart, broken, visitors, favourite, checkIn, error: null })
                 })
                 .catch(error => this.setState({ error: error.message }))
         } catch (err) {
@@ -89,7 +89,7 @@ class Info extends Component {
                     </div>
                 </section>
                 <aside className="info__map">
-                    <ShowMap lat={this.state.latitude} lng={this.state.longitud} />
+                    <ShowMap lat={this.state.latitude} lng={this.state.longitude} />
                 </aside>
             </section>
             <div className='space'></div>

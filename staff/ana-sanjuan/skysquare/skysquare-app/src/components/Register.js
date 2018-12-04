@@ -77,7 +77,7 @@ class Register extends Component {
                         <input type='email' className="input_box" placeholder="Email" onChange={this.handleEmailChange}></input>
                         <input type='password' className="input_box" placeholder="Password" onChange={this.handlePasswordChange}></input>
                         <input type='text' className="input_box" placeholder="Birthday(DD/MM/YYYY)" onChange={this.handleBirthdayChange}></input>
-                        <select className="input_box--opt" onChange={this.handleGenderChange} default="Gender">
+                        <select className=" input_box--opt input_box--opt--gender" onChange={this.handleGenderChange} default="Gender">
                             <option value="Gender">Gender(optional)</option>
                             <option value="Male">Male</option>
                             <option value="Female">Female</option>

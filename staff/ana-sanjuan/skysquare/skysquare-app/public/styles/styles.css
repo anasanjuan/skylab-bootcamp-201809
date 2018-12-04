@@ -207,15 +207,25 @@ body {
   background-color: #2E5BE3;
   display: block;
   width: 100%;
+  color: white;
+  font-weight: lighter;
 }
 .register .input_box--half {
   background-color: #2E5BE3;
   width: 50%;
+  color: white;
+  font-weight: lighter;
 }
 .register .input_box--opt {
   background-color: #1A46C1;
   display: block;
   width: 100%;
+  color: white;
+  font-weight: lighter;
+}
+.register .input_box--opt--gender {
+  color: #9FB3F3;
+  border-left: none;
 }
 
 .error__register {
@@ -465,14 +475,14 @@ body {
   margin: 15px 10px 0 20px;
 }
 .place__header h1 {
-  margin: 15px 0 5px 15px;
+  margin: 0px 0 5px 15px;
   color: blue;
-  font-size: 15px;
+  font-size: 16px;
   text-transform: capitalize;
 }
 .place__header h4 {
   margin: 5px 0px 0px 16px;
-  font-size: 12px;
+  font-size: 14px;
 }
 .place__picture {
   width: 70px;

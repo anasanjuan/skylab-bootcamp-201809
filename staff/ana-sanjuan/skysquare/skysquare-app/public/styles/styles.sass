@@ -194,15 +194,24 @@ body
         background-color: #2E5BE3
         display: block
         width: 100%
+        color: white
+        font-weight: lighter
         &--half
             @extend %input 
             background-color: #2E5BE3
             width: 50%
+            color: white
+            font-weight: lighter
         &--opt
             @extend %input 
             background-color: #1A46C1
             display: block
             width: 100%
+            color: white
+            font-weight: lighter
+        &--opt--gender
+            color: #9FB3F3
+            border-left: none
 .error__register
     background-color: white
     color: #0B30A4
@@ -419,13 +428,13 @@ body
         display: flex
         margin: 15px 10px 0 20px
         h1 
-            margin: 15px 0 5px 15px
+            margin: 0px 0 5px 15px
             color: blue 
-            font-size: 15px
+            font-size: 16px
             text-transform: capitalize
         h4 
             margin: 5px 0px 0px 16px
-            font-size: 12px
+            font-size: 14px
     &__picture 
         width: 70px
         height: 65px

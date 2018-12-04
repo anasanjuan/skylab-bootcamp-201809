@@ -29,6 +29,7 @@ const logic = {
             user = new User({ name, surname, email, password, birthday })
 
             gender != null && (user.gender = gender)
+
             phone != null && (user.phone = phone)
 
             await user.save()
@@ -57,7 +58,7 @@ const logic = {
         ])
         return (async () => {
             const user = await User.findById(id, { password: 0, postits: 0, __v: 0 }).lean()
-debugger
+
             if (!user) throw new NotFoundError(`user not found`)
 
             user.id = user._id.toString()
@@ -70,14 +71,13 @@ debugger
         })()
     },
 
-    addProfilePicture(userId, file) {
+    addProfilePicture(id, file) {
         validate([
-            { key: 'userId', value: userId, type: String },
-
+            { key: 'id', value: id, type: String },
         ])
-debugger
+
         return (async () => {
-            let user = await User.findById(userId)
+            let user = await User.findById(id)
 
             if (!user) throw new NotFoundError(`user does not exist`)
 
@@ -90,23 +90,23 @@ debugger
 
                 file.pipe(stream)
             })
-            debugger
             user.profilePicture = result.url
 
             user.profilePublicId = result.public_id
 
             await user.save()
-debugger
+
             return user.profilePicture
         })()
     },
+
 
 
     addPlace(name, latitude, longitude, address, userId, breakfast, lunch, dinner, coffee, nigthLife, thingsToDo) {
         validate([
             { key: 'name', value: name, type: String },
             { key: 'latitude', value: latitude, type: Number },
-            { key: 'longitud', value: longitude, type: Number },
+            { key: 'longitude', value: longitude, type: Number },
             { key: 'address', value: address, type: String },
             { key: 'userId', value: userId, type: String },
             { key: 'breakfast', value: breakfast, type: Boolean, optional: true },
@@ -135,6 +135,8 @@ debugger
     listPlacesByName(name, longitude, latitude) {
         validate([
             { key: 'name', value: name, type: String },
+            { key: 'latitude', value: latitude, type: String },
+            { key: 'longitud', value: longitude, type: String },
         ])
 
         return (async () => {
@@ -205,6 +207,8 @@ debugger
     listPlacesByFilter(filter, longitude, latitude) {
         validate([
             { key: 'filter', value: filter, type: String },
+            { key: 'latitude', value: latitude, type: String },
+            { key: 'longitud', value: longitude, type: String },
         ])
 
         return (async () => {
@@ -267,7 +271,8 @@ debugger
 
     retrievePlaceById(userId, placeId) {
         validate([
-            { key: 'placeId', value: placeId, type: String },
+            { key: 'userId', value: userId, type: String },
+            { key: 'placeId', value: placeId, type: String }
         ])
         return (async () => {
 
@@ -474,6 +479,7 @@ debugger
         validate([
             { key: 'userId', value: userId, type: String },
         ])
+
         return (async () => {
             let user = await User.findById(userId)
 
@@ -517,8 +523,8 @@ debugger
         validate([
             { key: 'userId', value: userId, type: String },
             { key: 'placeId', value: placeId, type: String },
-
         ])
+
         return (async () => {
             let user = await User.findById(userId)
 
@@ -539,7 +545,6 @@ debugger
             await user.save()
         })()
     },
-
 
     listFavourites(userId) {
         validate([
@@ -574,14 +579,12 @@ debugger
 
             return listFavourites.map(({ placeId, name, scoring, address, picture }) => ({ placeId, name, scoring, address, picture }))
         })()
-
     },
 
     uploadCheckIns(userId, placeId) {
         validate([
             { key: 'userId', value: userId, type: String },
             { key: 'placeId', value: placeId, type: String },
-
         ])
 
         return (async () => {
@@ -609,6 +612,7 @@ debugger
         validate([
             { key: 'userId', value: userId, type: String },
         ])
+
         return (async () => {
             let user = await User.findById(userId).populate('checkIns').lean().exec()
 
