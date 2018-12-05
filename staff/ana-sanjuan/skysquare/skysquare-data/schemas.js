@@ -55,6 +55,18 @@ const User = new Schema({
 
 })
 
+const Voter = new Schema({
+    user: {
+        type: ObjectId,
+        ref: 'User',
+        required: true
+    },
+    score: {
+        type: Number,
+        required: true
+    }
+})
+
 const Place = new Schema({
     name: {
         type: String,
@@ -97,7 +109,7 @@ const Place = new Schema({
     thingsToDo: {
         type: Boolean,
     },
-    voters: [],
+    voters: [Voter]
 })
 
 const Picture = new Schema({
