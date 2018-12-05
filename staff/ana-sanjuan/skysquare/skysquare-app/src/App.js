@@ -20,7 +20,7 @@ import { Route, withRouter, Redirect } from 'react-router-dom'
 logic.url = process.env.REACT_APP_API_URL 
 
 class App extends Component {
-    state = { errorLogIn: null, errorRegister: null, placesByName: [] }
+    state = { errorLogIn: null, errorRegister: null, placesByName: [], error: null }
 
     handleRegisterClick = () => this.props.history.push('/register')
 
@@ -28,22 +28,22 @@ class App extends Component {
 
 
     handleRegisterGoBack = () => {
-        this.setState({ error: null }, () => this.props.history.push('/'))
+        this.setState({ errorLogIn: null, errorRegister: null, error: null}, () => this.props.history.push('/'))
     }
 
     handleLogInGoBack = () => {
-        this.setState({ error: null }, () => this.props.history.push('/register'))
+        this.setState({ errorLogIn: null, errorRegister: null, error: null}, () => this.props.history.push('/register'))
     }
 
     handleLogoutClick = () => {
         logic.logOut()
 
-        this.setState({ error: null }, () => this.props.history.push('/'))
+        this.setState({ errorLogIn: null, errorRegister: null, error: null}, () => this.props.history.push('/'))
 
     }
 
     handleAddPlaceClick = () => {
-        this.setState({ error: null }, () => this.props.history.push('/home/add-place'))
+        this.setState({ errorLogIn: null, errorRegister: null, error: null}, () => this.props.history.push('/home/add-place'))
 
     }
 
@@ -51,7 +51,7 @@ class App extends Component {
         try {
             logic.AddPlace(name, address, latitude, longitude, breakfast, lunch, dinner, coffee, nightLife, thingsToDo)
                 .then(() => {
-                    this.setState({ error: null }, () => this.props.history.push('/home/profile'))
+                    this.setState({ errorLogIn: null, errorRegister: null, error: null}, () => this.props.history.push('/home/profile'))
                 })
                 .catch(error => this.setState({ error: error.message }))
 
@@ -62,11 +62,10 @@ class App extends Component {
 
     
     handleRegister = (name, surname, email, password, birthday, gender, phone) => {
-        debugger
         try {
             logic.register(name, surname, email, password, birthday, gender ? gender : null, phone ? phone : null)
                 .then(() => {
-                    this.setState({ errorRegister: null }, () => this.props.history.push('/logIn'))
+                    this.setState({ errorLogIn: null, errorRegister: null, error: null }, () => this.props.history.push('/logIn'))
                 })
                 .catch(error => {
                     if (error.message === `user with email ${email} already exist`
@@ -96,7 +95,7 @@ class App extends Component {
     handleLogIn = (email, password) => {
         try {
             logic.logIn(email, password)
-                .then(() => this.setState({ error: null }, () => this.props.history.push('/home')))
+                .then(() => this.setState({ errorLogIn: null, errorRegister: null, error: null}, () => this.props.history.push('/home')))
                 .catch(error => {
                     debugger
                     if (error.message === `user with email ${email} not found` || error.message === `incorrect user or password`
@@ -118,7 +117,7 @@ class App extends Component {
     }
 
     handleSearchSubmit = name => {
-        this.setState({ error: null }, () => this.props.history.push(`/home/name/${name}`))
+        this.setState({ errorLogIn: null, errorRegister: null, error: null}, () => this.props.history.push(`/home/name/${name}`))
     }
 
     

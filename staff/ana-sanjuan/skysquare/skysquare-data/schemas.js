@@ -97,10 +97,7 @@ const Place = new Schema({
     thingsToDo: {
         type: Boolean,
     },
-    voters: [{
-        type: ObjectId,
-        ref: 'User'
-    }],
+    voters: [],
 })
 
 const Picture = new Schema({

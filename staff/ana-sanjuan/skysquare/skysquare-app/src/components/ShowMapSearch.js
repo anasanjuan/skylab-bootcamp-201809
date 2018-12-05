@@ -20,23 +20,12 @@ class ShowMapSearch extends Component {
 		this.mapsApi = maps
 		this.map.markers = []
 
-		function pinSymbol(color) {
-			return {
-				path: 'M 0,0 C -2,-20 -10,-22 -10,-30 A 10,10 0 1,1 10,-30 C 10,-22 2,-20 0,0 z M -2,-30 a 2,2 0 1,1 4,0 2,2 0 1,1 -4,0',
-				fillColor: color,
-				fillOpacity: 1,
-				strokeColor: '#000',
-				strokeWeight: 2,
-				scale: 1,
-			};
-		}
-
 		this.props.places.forEach(place => {
 			let marker = new this.mapsApi.Marker({
 				position: { lat: place.latitude, lng: place.longitude },
 				map: this.map,
 				title: place.name,
-				icon: pinSymbol("#D7000D")
+				
 			});
 
 			let contentString = `<a href=${`/#/home/place/${place.id}`}> 
@@ -56,18 +45,25 @@ class ShowMapSearch extends Component {
 			this.map.markers.push(marker)
 		})
 
+
+		const icon = {
+				url: 'https://res.cloudinary.com/dancing890/image/upload/v1543998523/pbr6fxjtuipslui2mftf.png',
+				scaledSize: new this.mapsApi.Size(80, 80)
+		}
+
 		let marker = new this.mapsApi.Marker({
 			position: { lat: this.props.latitude, lng: this.props.longitude },
 			map: this.map,
-			icon: pinSymbol("#2E5BE3")
-		});
+			icon: icon
+		})
+
 		let contentString = `<div class='info__text'>	
 				<h1 class='info__text__title'>You are here</h1> 
 			</div>`
 
 		let infowindow = new this.mapsApi.InfoWindow({
 			content: contentString
-		});
+		})
 
 		marker.addListener('click', function () {
 			infowindow.close()
@@ -89,7 +85,6 @@ class ShowMapSearch extends Component {
 					defaultZoom={this.props.zoom}
 					bootstrapURLKeys={{ key: REACT_APP_API_KEY, language: 'es', region: 'es' }}
 					onGoogleApiLoaded={this.setMarker}>
-
 				</GoogleMapReact>
 			</section>
 		);

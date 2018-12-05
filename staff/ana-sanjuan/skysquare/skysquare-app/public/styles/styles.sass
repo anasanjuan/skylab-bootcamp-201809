@@ -194,15 +194,24 @@ body
         background-color: #2E5BE3
         display: block
         width: 100%
+        color: white
+        font-weight: lighter
         &--half
             @extend %input 
             background-color: #2E5BE3
             width: 50%
+            color: white
+            font-weight: lighter
         &--opt
             @extend %input 
             background-color: #1A46C1
             display: block
             width: 100%
+            color: white
+            font-weight: lighter
+        &--opt--gender
+            color: #9FB3F3
+            border-left: none
 .error__register
     background-color: white
     color: #0B30A4
@@ -419,13 +428,13 @@ body
         display: flex
         margin: 15px 10px 0 20px
         h1 
-            margin: 15px 0 5px 15px
+            margin: 0px 0 5px 15px
             color: blue 
-            font-size: 15px
+            font-size: 16px
             text-transform: capitalize
         h4 
             margin: 5px 0px 0px 16px
-            font-size: 12px
+            font-size: 14px
     &__picture 
         width: 70px
         height: 65px
@@ -572,7 +581,6 @@ body
             display: flex
             width: 55%
             margin-bottom: 10px
-           
             &__box
                 width: 10%
                 .score
@@ -604,7 +612,15 @@ body
             padding-left: 40px
         .scoring
             border-left: 1px solid $color-text-light-grey
-
+    .icon
+        font-size: 18px
+        color: #C8CED0
+        &__yellow
+            font-size: 18px
+            color: #ffcc00
+        &__green
+            font-size: 18px
+            color: #00b843
 
             
     .info__bar  
@@ -632,7 +648,7 @@ body
             background-color: #02B552
             border-radius: 2px 
     .address
-        padding: 5px 8px
+        padding: 5px 2px
         border-top: 1px solid $color-text-light-grey
         color: $color-text-grey
         font-weight: lighter
@@ -748,6 +764,8 @@ body
         margin-left: 10px
     .tip__info
        width: 80%
+       h5 
+           color: blue
     &__top
         display: flex
         margin: 10px 
@@ -759,17 +777,29 @@ body
             overflow: hidden
             border-radius: 6px
             position: relative
-            img 
-                position: absolute
-                top: -9999px
-                bottom: -9999px
-                left: -9999px
-                right: -9999px
-                margin: auto
-                width: 90px
-                height: auto
-                border-radius: 5px
-                 background-color: #2E5BE3
+        .placetip__img 
+            position: absolute
+            top: -9999px
+            bottom: -9999px
+            left: -9999px
+            right: -9999px
+            margin: auto
+            width: 65px
+            height: auto
+            border-radius: 5px
+            background-color: #2E5BE3
+
+        .usertip__img 
+            position: absolute
+            top: -9999px
+            bottom: -9999px
+            left: -9999px
+            right: -9999px
+            margin: auto
+            width: 90px
+            height: auto
+            border-radius: 5px
+            background-color: #2E5BE3
 
 .profile
     color: black
