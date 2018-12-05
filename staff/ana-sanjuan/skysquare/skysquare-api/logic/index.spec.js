@@ -482,6 +482,7 @@ describe('logic', () => {
                 expect(_user.birthday).to.equal(user.birthday)
                 expect(_user.password).to.be.undefined
                 expect(_user.profilePicture).to.equal('https://res.cloudinary.com/dancing890/image/upload/v1542808705/i4lb8xdnpblbbhuvi7zv.png')
+                
             })
 
 
@@ -1596,8 +1597,10 @@ describe('logic', () => {
 
             beforeEach(async () => {
                 const scoring = 10
-                debugger
-                place = new Place({ name: placeName, location, address, userId, scoring, breakfast, lunch, dinner, coffee, nightLife, thingsToDo })
+
+                const voters=[{userId: user.id, score: scoring}]
+
+                place = new Place({ name: placeName, location, address, userId, scoring, voters, breakfast, lunch, dinner, coffee, nightLife, thingsToDo })
 
                 await place.save()
             })
@@ -1620,7 +1623,9 @@ describe('logic', () => {
                 expect(_place.coffee).to.equal(place.coffee)
                 expect(_place.nigthLife).to.equal(place.nigthLife)
                 expect(_place.thingsToDo).to.equal(place.thingsToDo)
-                expect(_place.voters).to.equal(place.voters)
+                debugger
+                expect(_place.voters[0].userId).to.equal(user.id)
+                expect(_place.voters[0].score).to.equal(10)
 
             })
 
@@ -1762,7 +1767,8 @@ describe('logic', () => {
                 expect(_place.scores.length).to.equal(2)
                 expect(_place.scores[0]).to.equal(5)
                 expect(_place.scores[1]).to.equal(10)
-
+                expect(_place.voters[0].userId).to.equal(userId)
+                expect(_place.voters[0].score).to.equal(newScore)
 
             })
 

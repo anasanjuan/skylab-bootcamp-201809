@@ -3,17 +3,25 @@ import ShowMap from './ShowMap'
 import logic from '../logic'
 
 class Info extends Component {
-    state = { error: null, scoring: 0, address: '', latitude: '', longitud: '', heart: '', meh: '', broken: '', visitors: null, checkIn: false, favourite: false }
+    state = { error: null, scoring: 0, address: '', latitude: '', longitud: '', heart: '', meh: '', broken: '', visitors: null, checkIn: false, favourite: false, userScore: null, userScoreHeart: false, userScoreMeh: false, userScoreBroken: false }
 
     componentDidMount() {
         try {
             logic.retrievePlace(this.props.id)
                 .then(place => {
-                    const { scoring, address, location: { coordinates: [longitude, latitude] }, meh, heart, broken, scores, favourite, checkIn } = place
-
+                    const { scoring, address, location: { coordinates: [longitude, latitude] }, meh, heart, broken, scores, userScore, favourite, checkIn } = place
+                    debugger
                     const visitors = scores.length
+                    let userScoreHeart, userScoreMeh, userScoreBroken
+                    if (userScore === 10) {
+                        userScoreHeart = true
+                    } else if (userScore === 5) {
+                        userScoreMeh = true
+                    } else if (userScore === 0) {
+                        userScoreBroken = true
+                    }
 
-                    this.setState({ scoring, address, latitude, longitude, meh, heart, broken, visitors, favourite, checkIn, error: null })
+                    this.setState({ scoring, address, latitude, longitude, meh, heart, broken, visitors, favourite, userScoreHeart, userScoreMeh, userScoreBroken, checkIn, error: null })
                 })
                 .catch(error => this.setState({ error: error.message }))
         } catch (err) {
@@ -26,7 +34,7 @@ class Info extends Component {
             logic.updateScoring(this.props.id, scoring)
                 .then(res => {
                     const { scoring, meh, heart, broken, scores } = res
-
+                    debugger
                     const visitors = scores.length
 
                     this.setState({ scoring, meh, heart, broken, visitors, error: null })
@@ -100,7 +108,7 @@ class Info extends Component {
                 </section>
                 <section className='info__options__item favourites' onClick={this.handleFavourites}>
                     <h4 className='info__text' >Favourites</h4>
-                    <button>{this.state.favourite ? <i className="fas fa-star icon__yellow"></i> :  <i className="fas fa-star icon"></i>}</button>
+                    <button>{this.state.favourite ? <i className="fas fa-star icon__yellow"></i> : <i className="fas fa-star icon"></i>}</button>
                 </section>
                 <section className='info__options__item scoring'>
                     <h4 className='info__text'>Give a Score</h4>

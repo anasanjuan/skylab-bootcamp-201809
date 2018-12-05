@@ -259,13 +259,12 @@ const logic = {
                         place.tip = tip.text
                     }
                     place.id = place._id.toString()
-
                     delete place._id
 
                     return place
                 })
             )
-            return listPlaces.map(({ id, name, address, scoring, picture, tip, longitude, latitude }) => ({ id, name, address, scoring, picture, tip, longitude, latitude }))
+            return listPlaces.map(({ id, name, address, scoring, picture, tip, longitude, latitude }) => ({ id, name, address, scoring, picture, tip, longitude, latitude}))
         })()
     },
 
@@ -292,6 +291,10 @@ const logic = {
 
             place.checkIn = check ? true : false
 
+            const voter = place.voters.find(voter =>  voter.userId === userId)
+
+            place.userScore = voter.score? voter.score : null
+
             const pictures = await Picture.find({ placeId })
 
             if (pictures.length === 0) {
@@ -307,7 +310,7 @@ const logic = {
             place.id = place._id.toString()
 
             delete place._id
-debugger
+
             return place
         })()
     },
@@ -324,11 +327,11 @@ debugger
 
             if (!place) throw new NotFoundError(`place does not exist`)
 
-            const index = place.voters.findIndex(voter => voter.toString() === userId)
+            const index = place.voters.findIndex(voter => voter.userId.toString() === userId)
 
             if (index >= 0) throw new AlreadyExistsError(`user has already voted`)
 
-            place.voters.push(userId)
+            place.voters.push({userId, score})
 
             place.scores.push(score)
 
