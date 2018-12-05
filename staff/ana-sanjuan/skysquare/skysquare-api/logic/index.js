@@ -1,8 +1,8 @@
 const { models: { User, Place, Picture, Tip } } = require('skysquare-data')
 const { AlreadyExistsError, AuthError, NotFoundError } = require('../errors')
 const validate = require('../utils/validate')
-var cloudinary = require('cloudinary')
-var moment = require('moment')
+let cloudinary = require('cloudinary')
+const moment = require('moment')
 
 cloudinary.config({
     cloud_name: 'dancing890',
@@ -307,7 +307,7 @@ const logic = {
             place.id = place._id.toString()
 
             delete place._id
-
+debugger
             return place
         })()
     },

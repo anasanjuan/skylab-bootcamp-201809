@@ -9,7 +9,7 @@ const Busboy = require('busboy')
 
 const router = express.Router()
 
-const jsonBodyParser = bodyParser.json({limit: '50mb'})
+const jsonBodyParser = bodyParser.json({ limit: '100mb' })
 
 const { env: { JWT_SECRET } } = process
 
@@ -65,7 +65,7 @@ router.post('/users/:id/profilePicture', [bearerTokenParser, jwtVerifier, jsonBo
         const { params: { id }, sub } = req
 
         if (id !== sub) throw Error('token sub does not match user id')
-debugger
+        debugger
         return new Promise((resolve, reject) => {
             const busboy = new Busboy({ headers: req.headers })
 
@@ -80,7 +80,7 @@ debugger
                     .catch(err => {
                         debugger
                         res.json({
-                            error: message
+                            error: err.message
                         })
                     })
             })

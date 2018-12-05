@@ -19,7 +19,7 @@ function Footer(props) {
                 </Link>
                 <Link to={'/home/favourites'} className="nav-item">
                     <li >
-                    <i className="fas fa-heart icon"></i>
+                        <i className="fas fa-star icon"></i>
                         <h5>Favourites</h5>
                     </li>
                 </Link>

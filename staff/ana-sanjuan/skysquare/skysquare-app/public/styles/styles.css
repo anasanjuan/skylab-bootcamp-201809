@@ -683,6 +683,18 @@ body {
 .info__options .scoring {
   border-left: 1px solid #BFC2C4;
 }
+.info .icon {
+  font-size: 18px;
+  color: #C8CED0;
+}
+.info .icon__yellow {
+  font-size: 18px;
+  color: #ffcc00;
+}
+.info .icon__green {
+  font-size: 18px;
+  color: #00b843;
+}
 .info .info__bar {
   margin-left: 20px;
   height: 30px;
@@ -713,7 +725,7 @@ body {
   border-radius: 2px;
 }
 .info .address {
-  padding: 5px 8px;
+  padding: 5px 2px;
   border-top: 1px solid #BFC2C4;
   color: #4E595E;
   font-weight: lighter;
@@ -847,6 +859,9 @@ body {
 .tip .tip__info {
   width: 80%;
 }
+.tip .tip__info h5 {
+  color: blue;
+}
 .tip__top {
   display: flex;
   margin: 10px;
@@ -860,7 +875,19 @@ body {
   border-radius: 6px;
   position: relative;
 }
-.tip__top__img img {
+.tip__top .placetip__img {
+  position: absolute;
+  top: -9999px;
+  bottom: -9999px;
+  left: -9999px;
+  right: -9999px;
+  margin: auto;
+  width: 65px;
+  height: auto;
+  border-radius: 5px;
+  background-color: #2E5BE3;
+}
+.tip__top .usertip__img {
   position: absolute;
   top: -9999px;
   bottom: -9999px;
@@ -870,7 +897,7 @@ body {
   width: 90px;
   height: auto;
   border-radius: 5px;
-  border-radius-background-color: #2E5BE3;
+  background-color: #2E5BE3;
 }
 
 .profile {

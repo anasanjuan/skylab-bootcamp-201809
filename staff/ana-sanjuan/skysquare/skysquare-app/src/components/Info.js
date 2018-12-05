@@ -96,11 +96,11 @@ class Info extends Component {
             <section className='info__options'>
                 <section className='info__options__item' onClick={this.handleCheckIn}>
                     <h4 className='info__text' >Check-In</h4>
-                    <button><img src={this.state.checkIn ? require('../images/icons/green-checkIn1.png') : require('../images/icons/grey-checkin.png')} alt='' /></button>
+                    <button>{this.state.checkIn ? <i className="fas fa-check-circle icon__green"></i> : <i className="fas fa-check-circle icon"></i>}</button>
                 </section>
                 <section className='info__options__item favourites' onClick={this.handleFavourites}>
                     <h4 className='info__text' >Favourites</h4>
-                    <button><img src={this.state.favourite ? require('../images/icons/red-heart.png') : require('../images/icons/grey-heart.png')} alt='' /></button>
+                    <button>{this.state.favourite ? <i className="fas fa-star icon__yellow"></i> :  <i className="fas fa-star icon"></i>}</button>
                 </section>
                 <section className='info__options__item scoring'>
                     <h4 className='info__text'>Give a Score</h4>

@@ -581,7 +581,6 @@ body
             display: flex
             width: 55%
             margin-bottom: 10px
-           
             &__box
                 width: 10%
                 .score
@@ -613,7 +612,15 @@ body
             padding-left: 40px
         .scoring
             border-left: 1px solid $color-text-light-grey
-
+    .icon
+        font-size: 18px
+        color: #C8CED0
+        &__yellow
+            font-size: 18px
+            color: #ffcc00
+        &__green
+            font-size: 18px
+            color: #00b843
 
             
     .info__bar  
@@ -641,7 +648,7 @@ body
             background-color: #02B552
             border-radius: 2px 
     .address
-        padding: 5px 8px
+        padding: 5px 2px
         border-top: 1px solid $color-text-light-grey
         color: $color-text-grey
         font-weight: lighter
@@ -757,6 +764,8 @@ body
         margin-left: 10px
     .tip__info
        width: 80%
+       h5 
+           color: blue
     &__top
         display: flex
         margin: 10px 
@@ -768,17 +777,29 @@ body
             overflow: hidden
             border-radius: 6px
             position: relative
-            img 
-                position: absolute
-                top: -9999px
-                bottom: -9999px
-                left: -9999px
-                right: -9999px
-                margin: auto
-                width: 90px
-                height: auto
-                border-radius: 5px
-                 background-color: #2E5BE3
+        .placetip__img 
+            position: absolute
+            top: -9999px
+            bottom: -9999px
+            left: -9999px
+            right: -9999px
+            margin: auto
+            width: 65px
+            height: auto
+            border-radius: 5px
+            background-color: #2E5BE3
+
+        .usertip__img 
+            position: absolute
+            top: -9999px
+            bottom: -9999px
+            left: -9999px
+            right: -9999px
+            margin: auto
+            width: 90px
+            height: auto
+            border-radius: 5px
+            background-color: #2E5BE3
 
 .profile
     color: black
