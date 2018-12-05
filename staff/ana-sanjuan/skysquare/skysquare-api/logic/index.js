@@ -264,7 +264,7 @@ const logic = {
                     return place
                 })
             )
-            return listPlaces.map(({ id, name, address, scoring, picture, tip, longitude, latitude }) => ({ id, name, address, scoring, picture, tip, longitude, latitude}))
+            return listPlaces.map(({ id, name, address, scoring, picture, tip, longitude, latitude }) => ({ id, name, address, scoring, picture, tip, longitude, latitude }))
         })()
     },
 
@@ -275,11 +275,11 @@ const logic = {
         ])
         return (async () => {
 
-            let place = await Place.findById(placeId, { userId: 0, __v: 0 }).lean()
+            let place = await Place.findById(placeId, { __v: 0 }).lean()
 
             if (!place) throw new NotFoundError(`place does not exist`)
 
-            let user = await User.findById(userId, { userId: 0, __v: 0 }).lean()
+            let user = await User.findById(userId, { __v: 0 }).lean()
 
             if (!user) throw new NotFoundError(`user does not exist`)
 
@@ -291,9 +291,9 @@ const logic = {
 
             place.checkIn = check ? true : false
 
-            const voter = place.voters.find(voter =>  voter.userId === userId)
+            const voter = place.voters.find(voter => voter.userId === userId)
 
-            place.userScore = voter.score? voter.score : null
+            place.userScore = voter.score ? voter.score : null
 
             const pictures = await Picture.find({ placeId })
 
@@ -310,6 +310,8 @@ const logic = {
             place.id = place._id.toString()
 
             delete place._id
+
+            place.userId = place.userId.toString()
 
             return place
         })()
@@ -331,7 +333,7 @@ const logic = {
 
             if (index >= 0) throw new AlreadyExistsError(`user has already voted`)
 
-            place.voters.push({userId, score})
+            place.voters.push({ userId, score })
 
             place.scores.push(score)
 

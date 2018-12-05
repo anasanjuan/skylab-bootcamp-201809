@@ -482,7 +482,7 @@ describe('logic', () => {
                 expect(_user.birthday).to.equal(user.birthday)
                 expect(_user.password).to.be.undefined
                 expect(_user.profilePicture).to.equal('https://res.cloudinary.com/dancing890/image/upload/v1542808705/i4lb8xdnpblbbhuvi7zv.png')
-                
+
             })
 
 
@@ -1527,7 +1527,6 @@ describe('logic', () => {
                 expect(_place.tip).to.be.a('string')
             })
 
-
             it('should fail on undefined place name', () => {
 
                 expect(() => logic.listPlacesByFilter(undefined, _longitude, _latitude)).to.throw(TypeError, `undefined is not a string`)
@@ -1548,6 +1547,7 @@ describe('logic', () => {
             it('should fail on non-string longitude (object)', () => {
                 expect(() => logic.listPlacesByFilter(place.name, {}, _latitude)).to.throw(TypeError, '[object Object] is not a string')
             })
+
             it('should fail on non-string latitude (object)', () => {
                 expect(() => logic.listPlacesByFilter(place.name, _longitude, {})).to.throw(TypeError, '[object Object] is not a string')
             })
@@ -1559,6 +1559,7 @@ describe('logic', () => {
             it('should fail on non-string longitude (boolean)', () => {
                 expect(() => logic.listPlacesByFilter(place.name, false, _latitude)).to.throw(TypeError, 'false is not a string')
             })
+
             it('should fail on non-string latitude (boolean)', () => {
                 expect(() => logic.listPlacesByFilter(place.name, _longitude, true)).to.throw(TypeError, 'true is not a string')
             })
@@ -1570,6 +1571,7 @@ describe('logic', () => {
             it('should fail on non-string longitude (array)', () => {
                 expect(() => logic.listPlacesByFilter(place.name, [], _latitude)).to.throw(TypeError, ' is not a string')
             })
+
             it('should fail on non-string latitude (array)', () => {
                 expect(() => logic.listPlacesByFilter(place.name, _longitude, [])).to.throw(TypeError, ' is not a string')
             })
@@ -1584,6 +1586,7 @@ describe('logic', () => {
 
                 expect(() => logic.listPlacesByFilter(place.name, _longitude, _latitude)).to.throw(TypeError, `${_longitude} is not a string`)
             })
+
             it('should fail on non-string latitude (number)', () => {
                 const _latitude = Math.random()
 
@@ -1598,12 +1601,13 @@ describe('logic', () => {
             beforeEach(async () => {
                 const scoring = 10
 
-                const voters=[{userId: user.id, score: scoring}]
+                const voters = [{ userId: user.id, score: scoring }]
 
                 place = new Place({ name: placeName, location, address, userId, scoring, voters, breakfast, lunch, dinner, coffee, nightLife, thingsToDo })
 
                 await place.save()
             })
+
             it('should succed on correct id', async () => {
                 const _place = await logic.retrievePlaceById(user.id, place.id)
 
@@ -1613,17 +1617,15 @@ describe('logic', () => {
                 expect(_place.location.coordinates[0]).to.equal(place.location.coordinates[0])
                 expect(_place.location.coordinates[1]).to.equal(place.location.coordinates[1])
                 expect(_place.address).to.equal(place.address)
-                debugger
                 expect(_place.userId).to.equal(user.id)
                 expect(_place.scoring).to.equal(place.scoring)
-                expect(_place.scores).to.equal(place.scores)
+                expect(_place.scores).to.deep.equal(place.scores)
                 expect(_place.breakfast).to.equal(place.breakfast)
                 expect(_place.lunch).to.equal(place.lunch)
                 expect(_place.dinner).to.equal(place.dinner)
                 expect(_place.coffee).to.equal(place.coffee)
                 expect(_place.nigthLife).to.equal(place.nigthLife)
                 expect(_place.thingsToDo).to.equal(place.thingsToDo)
-                debugger
                 expect(_place.voters[0].userId).to.equal(user.id)
                 expect(_place.voters[0].score).to.equal(10)
 
