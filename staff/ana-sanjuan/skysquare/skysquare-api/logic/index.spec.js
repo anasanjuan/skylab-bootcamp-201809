@@ -1550,8 +1550,6 @@ describe('logic', () => {
                 expect(_place.tip).to.be.a('string')
             })
 
-
-
             it('should fail on undefined place name', () => {
 
                 expect(() => logic.listPlacesByFilter(undefined, _longitude, _latitude)).to.throw(TypeError, `undefined is not a string`)
@@ -1572,6 +1570,7 @@ describe('logic', () => {
             it('should fail on non-string longitude (object)', () => {
                 expect(() => logic.listPlacesByFilter(place.name, {}, _latitude)).to.throw(TypeError, '[object Object] is not a string')
             })
+
             it('should fail on non-string latitude (object)', () => {
                 expect(() => logic.listPlacesByFilter(place.name, _longitude, {})).to.throw(TypeError, '[object Object] is not a string')
             })
@@ -1583,6 +1582,7 @@ describe('logic', () => {
             it('should fail on non-string longitude (boolean)', () => {
                 expect(() => logic.listPlacesByFilter(place.name, false, _latitude)).to.throw(TypeError, 'false is not a string')
             })
+
             it('should fail on non-string latitude (boolean)', () => {
                 expect(() => logic.listPlacesByFilter(place.name, _longitude, true)).to.throw(TypeError, 'true is not a string')
             })
@@ -1594,6 +1594,7 @@ describe('logic', () => {
             it('should fail on non-string longitude (array)', () => {
                 expect(() => logic.listPlacesByFilter(place.name, [], _latitude)).to.throw(TypeError, ' is not a string')
             })
+
             it('should fail on non-string latitude (array)', () => {
                 expect(() => logic.listPlacesByFilter(place.name, _longitude, [])).to.throw(TypeError, ' is not a string')
             })
@@ -1608,6 +1609,7 @@ describe('logic', () => {
 
                 expect(() => logic.listPlacesByFilter(place.name, _longitude, _latitude)).to.throw(TypeError, `${_longitude} is not a string`)
             })
+
             it('should fail on non-string latitude (number)', () => {
                 const _latitude = Math.random()
 
@@ -1630,6 +1632,7 @@ describe('logic', () => {
 
                 await place.save()
             })
+
             it('should succed on correct id', async () => {
                 const _place = await logic.retrievePlaceById(user.id, place.id)
 
@@ -1648,10 +1651,8 @@ describe('logic', () => {
                 expect(_place.coffee).to.equal(place.coffee)
                 expect(_place.nigthLife).to.equal(place.nigthLife)
                 expect(_place.thingsToDo).to.equal(place.thingsToDo)
-
                 expect(_place.scores).to.deep.equal([10])
-                
-
+      
             })
 
             it('should fail on non existing user', async () => {

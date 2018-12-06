@@ -302,7 +302,6 @@ const logic = {
             { key: 'placeId', value: placeId, type: String }
         ])
         return (async () => {
-debugger
             let place = await Place.findById(placeId, { __v: 0 }).lean()
 
             if (!place) throw new NotFoundError(`place does not exist`)
@@ -320,6 +319,7 @@ debugger
             place.checkIn = check ? true : false
 
             const voter = place.voters.find(voter =>  voter.userId.toString() === userId)
+
             if(voter) place.userScore = voter.score
 
             place.visitors = place.voters.length
