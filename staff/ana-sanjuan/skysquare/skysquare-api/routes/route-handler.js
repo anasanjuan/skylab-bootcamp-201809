@@ -1,3 +1,5 @@
+'use strict'
+
 const { AlreadyExistsError, AuthError, NotFoundError, ValueError } = require('../errors')
 
 function routeHandler(callback, res) {

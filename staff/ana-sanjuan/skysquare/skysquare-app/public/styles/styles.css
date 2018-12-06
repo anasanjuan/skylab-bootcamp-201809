@@ -35,7 +35,7 @@
   overflow-y: scroll;
 }
 
-.list__places .input_box, .input_box--logIn, .register .input_box--opt, .register .input_box--half, .register .input_box {
+.list__places .input_box, .input_box--logIn, .register .input_box {
   font-size: 16px;
   height: 2.5em;
   border: 1px solid #0B30A4;
@@ -147,19 +147,19 @@ body {
 }
 .register__header {
   width: 100%;
-  height: 10%;
+  height: 10vh;
 }
 .register__main {
   margin: 0;
   padding: 0;
   color: white;
   width: 100%;
-  height: 80%;
+  height: 58.55vh;
   background-color: #2E5BE3;
 }
 .register__main .add_picture {
   background-color: #0B30A4;
-  height: 130px;
+  height: 110px;
   text-align: center;
 }
 .register__footer {
@@ -167,21 +167,25 @@ body {
   align-items: flex-end;
   background-color: #0B30A4;
   width: 100%;
-  height: 255px;
+  height: 31.5vh;
 }
 .register__footer button {
-  font-size: 15px;
+  font-size: 4vw;
   color: white;
-  width: 90%;
-  margin: 20px auto;
-  font-weight: 10;
+  width: 100%;
+  height: 50px;
+  padding: 10px 0;
+  text-align: center;
+  font-weight: lighter;
+  border: none;
+  background-color: #2E5BE3;
 }
 .register .navbar {
   padding: 10px 10px;
   display: flex;
   background-color: #2E5BE3;
   color: white;
-  font-size: 20px;
+  font-size: 5vw;
   font-weight: 200;
   padding-top: 35px;
 }
@@ -195,7 +199,10 @@ body {
 }
 .register .navbar__button {
   color: white;
-  font-size: 20px;
+  font-size: 4vw;
+  margin: 0;
+  border: none;
+  background-color: transparent;
 }
 .register .fullname {
   display: flex;
@@ -204,24 +211,20 @@ body {
   width: 100%;
 }
 .register .input_box {
+  height: 7vh;
   background-color: #2E5BE3;
   display: block;
   width: 100%;
   color: white;
   font-weight: lighter;
+  font-size: 4.5vw;
 }
 .register .input_box--half {
-  background-color: #2E5BE3;
+  display: inline;
   width: 50%;
-  color: white;
-  font-weight: lighter;
 }
 .register .input_box--opt {
-  background-color: #1A46C1;
-  display: block;
-  width: 100%;
-  color: white;
-  font-weight: lighter;
+  background-color: #2E5BE3;
 }
 .register .input_box--opt--gender {
   color: #9FB3F3;
@@ -231,10 +234,12 @@ body {
 .error__register {
   background-color: white;
   color: #0B30A4;
-  padding: 10px;
+  padding: 15px;
   position: absolute;
-  top: 166px;
+  top: 127px;
   width: 100%;
+  font-size: 16px;
+  height: 3em;
 }
 
 .logIn {
@@ -293,16 +298,29 @@ body {
   width: 100%;
 }
 .error__container .error__login {
-  font-size: 15px;
-  height: 2.5em;
+  font-size: 16px;
+  height: 3em;
   border: 1px solid #0B30A4;
   padding-left: 25px;
-  padding-top: 5px;
+  padding-top: 10px;
   background-color: white;
   border-radius: 10px;
   width: 90%;
   margin: 10px 20px;
   color: #0B30A4;
+}
+
+.containerClass {
+  position: relative;
+  top: 18px;
+  background-color: #F5F5F7;
+  height: 50px;
+  padding: 14px;
+  color: black;
+  border-radius: 10px;
+  width: 90%;
+  margin: 0 auto;
+  text-align: center;
 }
 
 .search {
@@ -314,15 +332,23 @@ body {
   background-size: 150% 130%;
   background-color: #F0F0F5;
   width: 100%;
-  height: 45%;
+  height: 50%;
 }
 .search__main {
   background-color: #EFEEF3;
-  height: 55%;
+  height: 50%;
   width: 100%;
   font-size: 25px;
   font-weigth: lighter;
   color: black;
+}
+.search__main input {
+  padding-left: 10px;
+  position: relative;
+  top: -20px;
+}
+.search__main form {
+  height: 60px;
 }
 .search__box {
   font-size: 15px;
@@ -342,7 +368,7 @@ body {
   background-color: #EFEEF3;
   justify-content: space-around;
   border-bottom: 1px solid #C0C1C5;
-  padding: 20px 0px 30px 0px;
+  padding: 0px 0px 30px 0px;
 }
 .search .filter__bottom {
   width: 100%;
@@ -541,6 +567,7 @@ body {
   background-size: cover;
   background-position: center center;
   color: white;
+  background-color: #2E5BE3;
 }
 .place-header__main {
   color: white;
@@ -550,6 +577,7 @@ body {
   margin-left: 20px;
 }
 .place-header__main h1 {
+  font-size: 8vw;
   color: white;
   z-index: 10;
   width: 95%;
@@ -670,6 +698,8 @@ body {
 }
 .info__options__item button {
   margin: 0;
+  border: none;
+  background-color: transparent;
 }
 .info__options__item img {
   width: 30px;
@@ -768,10 +798,16 @@ body {
 .pictures .add__pic__container .buttons__container .upload__pic__button--show {
   display: block;
   text-align: left;
-  width: 100%;
-  margin-left: 20px;
+  display: block;
+  width: 70%;
+  margin: 10px 0 0 20px;
   padding: 0;
-  height: 1.5em;
+  background-color: white;
+  color: black;
+  height: 2em;
+  border-radius: 5px;
+  padding: 5px;
+  border: none;
 }
 .pictures .add__pic__container .buttons__container .choose__label {
   display: none;
@@ -780,9 +816,15 @@ body {
   display: block;
   text-align: left;
   display: block;
-  width: 100%;
-  margin-left: 20px;
+  width: 70%;
+  margin: 10px 0 0 20px;
   padding: 0;
+  background-color: white;
+  color: black;
+  height: 2em;
+  border-radius: 5px;
+  padding: 5px;
+  border: none;
 }
 .pictures .add__pic__container .buttons__container button {
   color: white;
@@ -859,7 +901,7 @@ body {
 .tip .tip__info {
   width: 80%;
 }
-.tip .tip__info h5 {
+.tip .tip__info .usertip__name {
   color: blue;
 }
 .tip__top {

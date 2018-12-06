@@ -9,7 +9,7 @@ function UserTip(props) {
                     <img className='usertip__img' src={props.picture} alt='#'></img>
                 </div>
                 <div className='tip__info'>
-                    <h5>{props.placeName}</h5>
+                    <h5 className= 'usertip__name'>{props.placeName}</h5>
                     <h6>{props.time}</h6>
                 </div>
                 <div >

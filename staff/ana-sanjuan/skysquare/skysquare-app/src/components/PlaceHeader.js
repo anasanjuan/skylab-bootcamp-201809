@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import logic from '../logic'
+import Swal from 'sweetalert2'
 
 class PlaceHeader extends Component {
     state = { error: null, place: [] }
@@ -8,8 +9,21 @@ class PlaceHeader extends Component {
     componentDidMount() {
         try {
             logic.retrievePlace(this.props.id)
-                .then(place => this.setState({ place, error: null }))
-                .catch(err => this.setState({ error: err.message }))
+                .then(place => {
+                    debugger
+                    this.setState({ place, error: null })
+                })
+                .catch(err => 
+                    Swal({
+                        title: 'Oops...',
+                        html: "Something went wrong!" +
+                            " Try again later",
+                        customClass: 'swal-wide',
+                        showCancelButton: false,
+                        showConfirmButton:false,
+                        showCloseButton: true,
+                        animation: false
+                    }))
         } catch (err) {
             this.setState({ error: err.message })
         }
@@ -17,7 +31,7 @@ class PlaceHeader extends Component {
 
     render() {
         // return <header className='place-header'>
-        return <header className='place-header' style={{ backgroundImage: `url(${this.state.place.picture})` }}>
+        return <header className='place-header' style={{ backgroundImage: `url(${this.state.place.picture})`}}>
             <section className='place-header__main'>
                 <Link to={'/home'}><i className="fas fa-arrow-left arrow" onClick={this.props.OnGoBack}></i></Link>
                 <h1>{this.state.place.name}</h1>

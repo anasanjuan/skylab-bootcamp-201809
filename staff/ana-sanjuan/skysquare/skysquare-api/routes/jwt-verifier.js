@@ -1,3 +1,5 @@
+'use strict'
+
 const { env: { JWT_SECRET } } = process
 
 const jwt = require('jsonwebtoken')

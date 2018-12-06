@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 
 class Search extends Component {
-    state = { error: null, name: '' }
+    state = { name: '' }
 
     handleNameChange = event => {
         const name = event.target.value

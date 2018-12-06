@@ -1,13 +1,31 @@
 import React, { Component } from 'react'
 import logic from '../logic'
 import Place from './Place'
+import Swal from 'sweetalert2'
+import Error from './Error'
 
 class History extends Component {
     state = { error: null, checkins: [] }
     componentDidMount() {
-            logic.listCheckIns()
-                .then(res => this.setState({ checkins: res, error: null }))
-                .catch(err => this.setState({ error: err.message }))
+        logic.listCheckIns()
+            .then(res => {
+                if (res.length === 0) {
+                    this.setState({ error: 'No history yet!' })
+                } else {
+                    this.setState({ checkins: res, error: null })
+                }
+            })
+            .catch(err =>
+                Swal({
+                    title: 'Oops...',
+                    html: "Something went wrong!" +
+                        " Try again later",
+                    customClass: 'swal-wide',
+                    showCancelButton: false,
+                    showConfirmButton: false,
+                    showCloseButton: true,
+                    animation: false
+                }))
     }
 
     render() {
@@ -16,12 +34,7 @@ class History extends Component {
                 <h1>My history</h1>
             </header>
             <main className='history__main'>
-                {/* {this.state.checkins.map(check => <div>
-                    <img src={check.picture} alt=''></img>
-                    <h1>{check.name}</h1>
-                    <h6>{check.address}</h6>
-                    <div className='score'>{check.scoring}</div>
-                </div>)} */}
+                {this.state.error && <Error className='error__home' containerClass='containerClass' message={this.state.error} />}
                 {this.state.checkins.map(check => <Place key={check.placeId} id={check.placeId} name={check.name} scoring={check.scoring} picture={check.picture} tip={check.tip} address={check.address} />)}
             </main>
         </div>

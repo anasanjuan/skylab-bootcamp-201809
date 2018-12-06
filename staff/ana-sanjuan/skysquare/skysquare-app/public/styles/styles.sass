@@ -141,36 +141,41 @@ body
     heigth: 100vh
     &__header
         width: 100%
-        height: 10%
+        height: 10vh
     &__main
         margin: 0
         padding: 0
         color: white
         width: 100%
-        height: 80%
+        height: 58.55vh
         background-color: #2E5BE3
         .add_picture
             background-color: #0B30A4
-            height: 130px
+            height: 110px
             text-align: center
     &__footer
         display: flex
         align-items: flex-end
         background-color: #0B30A4
         width: 100%
-        height: 255px
+        height: 31.5vh
         button
-            font-size: 15px
+            font-size: 4vw
             color: white
-            width: 90%
-            margin: 20px auto
-            font-weight: 10
+            width: 100%
+            height: 50px
+            padding: 10px 0
+            text-align: center
+            font-weight: lighter
+            border: none
+            background-color: #2E5BE3 
+            
     .navbar
         padding: 10px 10px
         display: flex
         background-color: #2E5BE3
         color: white
-        font-size: 20px
+        font-size: 5vw
         font-weight: 200
         padding-top: 35px 
         &__ul 
@@ -182,7 +187,10 @@ body
             justify-content: space-between
         &__button
             color: white
-            font-size: 20px
+            font-size: 4vw
+            margin: 0
+            border: none
+            background-color: transparent 
     .fullname
         display: flex
         margin: 0
@@ -191,34 +199,30 @@ body
 
     .input_box
         @extend %input 
+        height: 7vh
         background-color: #2E5BE3
         display: block
         width: 100%
         color: white
         font-weight: lighter
+        font-size: 4.5vw
         &--half
-            @extend %input 
-            background-color: #2E5BE3
+            display: inline
             width: 50%
-            color: white
-            font-weight: lighter
         &--opt
-            @extend %input 
-            background-color: #1A46C1
-            display: block
-            width: 100%
-            color: white
-            font-weight: lighter
+            background-color: #2E5BE3
         &--opt--gender
             color: #9FB3F3
             border-left: none
 .error__register
     background-color: white
     color: #0B30A4
-    padding: 10px  
+    padding: 15px  
     position: absolute
-    top: 166px
+    top: 127px
     width: 100%
+    font-size: 16px
+    height: 3em
         
 
 
@@ -266,17 +270,29 @@ body
     top: 168px
     width: 100%
     .error__login
-        font-size: 15px
-        height: 2.5em
+        font-size: 16px
+        height: 3em
         border: 1px solid #0B30A4
         padding-left: 25px
-        padding-top: 5px
+        padding-top: 10px
         background-color: white
         border-radius: 10px
         width: 90%
         margin: 10px 20px
         color: #0B30A4
 
+
+.containerClass
+    position: relative
+    top: 18px
+    background-color: #F5F5F7
+    height: 50px
+    padding: 14px
+    color: black
+    border-radius: 10px
+    width: 90%
+    margin: 0 auto
+    text-align: center
 
 //search 
 .search
@@ -287,15 +303,21 @@ body
         background-size: 150% 130%
         background-color: #F0F0F5
         width: 100%
-        height: 45%
+        height: 50%
 
     &__main 
         background-color: #EFEEF3
-        height: 55%
+        height: 50%
         width: 100%
         font-size: 25px
         font-weigth: lighter
         color: black
+        input
+            padding-left: 10px
+            position: relative
+            top: -20px
+        form 
+            height: 60px
     &__box
         font-size: 15px
         background-color: #FFFFFF
@@ -304,6 +326,8 @@ body
         display: block
         margin: 0 auto
         border-radius: 10px
+    
+
     .filter
         font-size: 15px
         &__top
@@ -312,7 +336,7 @@ body
             background-color: #EFEEF3
             justify-content: space-around
             border-bottom: 1px solid #C0C1C5
-            padding: 20px 0px 30px 0px
+            padding: 0px 0px 30px 0px
 
         &__bottom
             width: 100%
@@ -493,6 +517,7 @@ body
     background-size: cover
     background-position: center center
     color: white
+    background-color: #2E5BE3
     &__main
         color: white
         z-index: 10
@@ -500,6 +525,7 @@ body
         margin-top: 20px 
         margin-left: 20px
         h1 
+            font-size: 8vw
             color: white
             z-index: 10
             width: 95%
@@ -603,6 +629,8 @@ body
             text-align: center
             button 
                 margin: 0
+                border: none
+                background-color: transparent 
             img
                 width: 30px
                 height: 25px
@@ -686,19 +714,31 @@ body
                 &--show
                     display: block
                     text-align: left
-                    width: 100%
-                    margin-left: 20px
+                    display: block
+                    width: 70%
+                    margin: 10px 0 0 20px
                     padding: 0
-                    height: 1.5em
+                    background-color: white
+                    color: black
+                    height: 2em
+                    border-radius: 5px
+                    padding: 5px
+                    border: none
             .choose__label
                 display: none
                 &--show
                     display: block
                     text-align: left
                     display: block
-                    width: 100%
-                    margin-left: 20px
+                    width: 70%
+                    margin: 10px 0 0 20px
                     padding: 0
+                    background-color: white
+                    color: black
+                    height: 2em
+                    border-radius: 5px
+                    padding: 5px
+                    border: none
             button
                 color: white
         .preview__container
@@ -763,8 +803,8 @@ body
     .tip__text 
         margin-left: 10px
     .tip__info
-       width: 80%
-       h5 
+        width: 80%
+        .usertip__name
            color: blue
     &__top
         display: flex

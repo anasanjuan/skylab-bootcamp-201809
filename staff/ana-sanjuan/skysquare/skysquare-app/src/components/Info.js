@@ -1,40 +1,57 @@
 import React, { Component } from 'react'
 import ShowMap from './ShowMap'
 import logic from '../logic'
+import Swal from 'sweetalert2'
+
 
 class Info extends Component {
     state = { error: null, scoring: 0, address: '', latitude: '', longitud: '', heart: '', meh: '', broken: '', visitors: null, checkIn: false, favourite: false, userScore: null }
 
     componentDidMount() {
-        try {debugger
+        try {
             logic.retrievePlace(this.props.id)
                 .then(place => {
-                    const { scoring, address, location: { coordinates: [longitude, latitude] }, meh, heart, broken, scores, userScore, favourite, checkIn } = place
+                    const { scoring, address, location: { coordinates: [latitude, longitude] }, meh, heart, broken, scores, userScore, favourite, checkIn } = place
 
                     const visitors = scores.length
 
                     this.setState({ scoring, address, latitude, longitude, meh, heart, broken, visitors, favourite, userScore, checkIn, error: null })
                 })
-                .catch(error =>this.setState({ error: error.message }))
+                .catch(error => 
+                    Swal({
+                        title: 'Oops...',
+                        html: "Something went wrong!" +
+                            " Try again later",
+                        customClass: 'swal-wide',
+                        showCancelButton: false,
+                        showConfirmButton:false,
+                        showCloseButton: true,
+                        animation: false
+                    }))
         } catch (err) {
             this.setState({ error: err.message })
         }
     }
 
     handleClickScoring = scoring => {
-        try {debugger
+        try {
             logic.updateScoring(this.props.id, scoring)
                 .then(res => {
-                    debugger
-                    const { scoring, meh, heart, broken, scores } = res
-                    debugger
-                    const visitors = scores.length
+                    const { scoring, meh, heart, broken, userScore, visitors } = res
 
-                    this.setState({ scoring, meh, heart, broken, visitors, error: null })
+                    this.setState({ scoring, meh, heart, broken, userScore, visitors, error: null })
                 })
-                .catch(err => {
-                    debugger
-                    this.setState({ error: err.message })})
+                .catch(err => 
+                    Swal({
+                        title: 'Oops...',
+                        html: "Something went wrong!" +
+                            " Try again later",
+                        customClass: 'swal-wide',
+                        showCancelButton: false,
+                        showConfirmButton:false,
+                        showCloseButton: true,
+                        animation: false
+                    }))
         } catch (err) {
             this.setState({ error: err.message })
         }
@@ -45,7 +62,17 @@ class Info extends Component {
         try {
             logic.uploadCheckin(this.props.id)
                 .then(res => this.setState({ checkIn: !this.state.checkIn, error: null }))
-                .catch(err => this.setState({ error: err.message }))
+                .catch(err => 
+                    Swal({
+                        title: 'Oops...',
+                        html: "Something went wrong!" +
+                            " Try again later",
+                        customClass: 'swal-wide',
+                        showCancelButton: false,
+                        showConfirmButton:false,
+                        showCloseButton: true,
+                        animation: false
+                    }))
         } catch (err) {
             this.setState({ error: err.message })
         }
@@ -55,7 +82,17 @@ class Info extends Component {
         try {
             logic.uploadFavourites(this.props.id)
                 .then(res => this.setState({ favourite: !this.state.favourite, error: null }))
-                .catch(err => this.setState({ error: err.message }))
+                .catch(err => 
+                    Swal({
+                        title: 'Oops...',
+                        html: "Something went wrong!" +
+                            " Try again later",
+                        customClass: 'swal-wide',
+                        showCancelButton: false,
+                        showConfirmButton:false,
+                        showCloseButton: true,
+                        animation: false
+                    }))
         } catch (err) {
             this.setState({ error: err.message })
         }
@@ -66,7 +103,7 @@ class Info extends Component {
             <section className='info__main'>
                 <section className='place__score'>
                     <h4 className='info__text upper'>Scoring</h4>
-                    <p>{`${this.state.scoring} out of 10 based on ${this.state.visitors} visitors`}</p>
+                    <p>{`${this.state.scoring} out of 10 based on ${this.state.visitors} ${this.state.visitors === 1? 'visitor': 'visitors'}`}</p>
                     <div className='place__score__num'>
                         <div className='place__score__num__box'>
                             <div className='score'>{this.state.scoring}</div>

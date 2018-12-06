@@ -49,7 +49,7 @@ class App extends Component {
 
     handleOnAddPlaceSubmit = (name, address, latitude, longitude, breakfast, lunch, dinner, coffee, nightLife, thingsToDo) => {
         try {
-            logic.AddPlace(name, address, latitude, longitude, breakfast, lunch, dinner, coffee, nightLife, thingsToDo)
+            logic.addPlace(name, address, latitude, longitude, breakfast, lunch, dinner, coffee, nightLife, thingsToDo)
                 .then(() => {
                     this.setState({ errorLogIn: null, errorRegister: null, error: null}, () => this.props.history.push('/home/profile'))
                 })
@@ -68,7 +68,7 @@ class App extends Component {
                     this.setState({ errorLogIn: null, errorRegister: null, error: null }, () => this.props.history.push('/logIn'))
                 })
                 .catch(error => {
-                    if (error.message === `user with email ${email} already exist`
+                    if (error.message === `${email} already exist`
                         || error.message === `${name} is not a string` || error.message === `${name} is empty or blank`
                         || error.message === `${surname} is not a string` || error.message === `${surname} is empty or blank`
                         || error.message === `${email} is not a string` || error.message === `${email} is empty or blank`
@@ -80,7 +80,7 @@ class App extends Component {
                         debugger
                         this.setState({ errorRegister: error.message })
                     } else {
-                        this.setState({ errorRegister: 'Oops! Something went wrong! Try again later' })
+                        this.setState({ errorRegister: 'Oops! Something went wrong! Try later!' })
                     }
                 })
         } catch (err) {
@@ -98,13 +98,13 @@ class App extends Component {
                 .then(() => this.setState({ errorLogIn: null, errorRegister: null, error: null}, () => this.props.history.push('/home')))
                 .catch(error => {
                     debugger
-                    if (error.message === `user with email ${email} not found` || error.message === `incorrect user or password`
+                    if (error.message === `user not found` || error.message === `incorrect user or password`
                         || error.message === `${email} is not a string` || error.message === `${email} is empty or blank`
                         || error.message === `${password} is not a string` || error.message === `${password} is empty or blank`) {
 
                         this.setState({ errorLogIn: error.message })
                     } else {
-                        this.setState({ errorLogIn: 'Oops! Something went wrong! Try again later' })
+                        this.setState({ errorLogIn: 'Oops! Something went wrong! Try later!' })
                     }
                 })
         } catch (err) {
@@ -132,8 +132,8 @@ class App extends Component {
     }
     renderHome() {
         return (<div className='home'>
+            {this.state.error && <Error className='error__home' message={this.state.error} />}
             <div className='main'>
-                {this.state.error && <Error message={this.state.error} />}
                 <Route exact path='/home' render={() => logic.loggedIn ? <Search onSearchSubmit={this.handleSearchSubmit} /> : <Redirect to="/logIn" />} />
                 <Route path='/home/filter/:filter' render={props => logic.loggedIn ? <ListPlaces type={'filter'} filter={props.match.params.filter} onSearchSubmit={this.handleSearchSubmit} /> : <Redirect to="/logIn" />} />
                 <Route path='/home/name/:name' render={props => logic.loggedIn ? <ListPlaces type={'name'} name={props.match.params.name} onSearchSubmit={this.handleSearchSubmit} /> : <Redirect to="/logIn" />} />

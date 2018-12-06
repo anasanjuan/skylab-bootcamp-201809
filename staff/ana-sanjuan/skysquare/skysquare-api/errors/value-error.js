@@ -1,3 +1,5 @@
+'use strict'
+
 class ValueError extends Error {
     constructor(message, extra) {
         super()

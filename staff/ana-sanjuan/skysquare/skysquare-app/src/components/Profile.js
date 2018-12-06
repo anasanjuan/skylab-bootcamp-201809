@@ -2,23 +2,44 @@ import React, { Component } from 'react'
 import AddProfilePicture from './AddProfilePicture'
 import UserTip from './UserTip'
 import logic from '../logic'
+import Swal from 'sweetalert2'
+import Error from './Error'
+
 
 class Profile extends Component {
-    state = { error: null, user: {}, open: false, pictures: [], tips: [], listPictures: false }
+    state = { tipError: null, picError: null, user: {}, open: false, pictures: [], tips: [], listPictures: false }
 
     componentDidMount() {
         logic.retrieveUser()
             .then(user => this.setState({ user }))
             .then(() => logic.listUserTips(this.state.user.id))
-            .then(tips => this.setState({ tips }))
+            .then(tips => {
+                if (tips.length === 0) {
+                    this.setState({ tipError: "You don't have any tip yet!" })
+                } else {
+                    this.setState({ tips, tipError: null, picError: null, })
+                }
+            })
             .then(() => logic.listUserPictures(this.state.user.id))
-            .then(pictures => this.setState({ pictures }))
-            .catch(err => this.setState({ error: err.message }))
+            .then(pictures => {
+                if (pictures.length === 0) {
+                    this.setState({ picError: "You don't have any picture yet!" })
+                } else {
+                    this.setState({ pictures, picError: null, tipError: null })
+                }
+            })
+            .catch(err =>
+                Swal({
+                    title: 'Oops...',
+                    html: "Something went wrong!" +
+                        " Try again later",
+                    customClass: 'swal-wide',
+                    showCancelButton: false,
+                    showConfirmButton: false,
+                    showCloseButton: true,
+                    animation: false
+                }))
     }
-
-    // handleClick = () => {
-    //     this.setState({ open: !this.state.open })
-    // }
 
     handleListTips = () => {
         this.setState({ listPictures: false })
@@ -32,12 +53,6 @@ class Profile extends Component {
         return <div className="profile">
             <header className='profile__header'>
                 <div className='profile__top'>
-                    {/* <button onClick={this.handleClick}><i className="fas fa-cog"></i></button>
-                    <div className={this.state.open ? "profile__edit profile__edit--open" : "profile__edit"}>
-                        <p>{this.state.user.email}</p>
-                        <p>{this.state.user.phone}</p>
-                        <p>{this.state.user.birthday}</p>
-                    </div> */}
                     <button onClick={this.props.onLogOutClick}>Log Out</button>
                     <h1>{`${this.state.user.name} ${this.state.user.surname}`}</h1>
 
@@ -57,11 +72,12 @@ class Profile extends Component {
             </header>
             <main className='profile__main'>
                 <section className='profile__list'>
+                    {this.state.listPictures && this.state.picError && <Error className='error__tips' containerClass='containerClass' message={this.state.picError} />}
+                    {!this.state.listPictures && this.state.tipError && <Error className='error__tips' containerClass='containerClass' message={this.state.tipError} />}
                     {!this.state.listPictures && this.state.tips.map(tip => <UserTip key={tip.id} placeId={tip.placeId} text={tip.text} picture={tip.picture} placeName={tip.placeName} time={tip.time} scoring={tip.scoring} />)}
                     {this.state.listPictures && this.state.pictures.map((picture, index) => <img key={index} className='picture__item' src={`${picture}`} alt='#'></img>)}
                 </section>
             </main>
-
         </div>
     }
 }

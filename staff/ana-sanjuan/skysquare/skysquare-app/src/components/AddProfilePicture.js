@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import logic from '../logic'
-import Error from './Error'
+import Swal from 'sweetalert2'
+
+
 class AddProfilePicture extends Component {
     state = { error: null, profilePicture: this.props.profilePicture, previewPicture: null, editPictureOpen: false, uploadPictureOpen: false }
 
@@ -29,9 +31,19 @@ class AddProfilePicture extends Component {
         event.preventDefault()
 
         try {
-            logic.UploadProfilePicture(this.state.profilePicture)
+            logic.uploadProfilePicture(this.state.profilePicture)
                 .then(res => this.setState({ previewPicture: null, profilePicture: res, editPictureOpen: !this.state.editPictureOpen, error: null, uploadPictureOpen: false }))
-                .catch(err => this.setState({ error: err.message }))
+                .catch(err =>
+                    Swal({
+                        title: 'Oops...',
+                        html: "Something went wrong!" +
+                            " Try again later",
+                        customClass: 'swal-wide',
+                        showCancelButton: false,
+                        showConfirmButton:false,
+                        showCloseButton: true,
+                        animation: false
+                    }))
         } catch (err) {
             this.setState({ error: err.message })
         }
@@ -51,8 +63,6 @@ class AddProfilePicture extends Component {
                     <button className={this.state.uploadPictureOpen ? "upload__button upload__button--open" : "upload__button"} type='submit'>Load Picture</button>
                 </div>
             </form>
-            {this.state.error && <Error message={this.state.error} />}
-
         </div>
 
         )

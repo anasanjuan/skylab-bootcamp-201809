@@ -18,7 +18,6 @@ class AddMap extends Component {
 	componentDidMount() {
 		this.getLocation()
 			.then(res => {
-
 				const { latitude, longitude } = res.coords
 
 				this.setState({ latitude, longitude })

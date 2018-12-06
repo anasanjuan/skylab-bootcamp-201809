@@ -1,3 +1,5 @@
+'use strict'
+
 const { models: { User, Voter, Place, Picture, Tip, } } = require('skysquare-data')
 const { AlreadyExistsError, AuthError, NotFoundError } = require('../errors')
 const validate = require('../utils/validate')
@@ -11,6 +13,60 @@ cloudinary.config({
 })
 
 const logic = {
+
+    _returnPlacePicture(pictures) {
+        let pictureUrl = 'https://res.cloudinary.com/dancing890/image/upload/v1542807002/waxfi0xtcm5u48yltzxc.png'
+
+        if (pictures.length > 0) {
+            const picture = pictures[Math.floor(Math.random() * pictures.length)]
+
+            pictureUrl = picture.url
+        }
+        return pictureUrl
+    },
+
+    _returnPlaceTip(tips) {
+        let tipText = ''
+
+        if (tips.length > 0) {
+            const tip = tips[Math.floor(Math.random() * tips.length)]
+
+            tipText = tip.text
+        }
+        return tipText
+    },
+
+    _returnPlaceScoring(voters) {
+        let scoring = '?'
+
+        if (voters.length === 1) {
+            return scoring = voters[0].score
+
+        } else if (voters.length > 1) {
+            const scores = voters.map(voter => voter.score)
+
+            const sum = scores.reduce((a, b) => a + b, 0)
+
+            const average = +(sum / scores.length).toFixed(1)
+
+            return average
+        }
+        return scoring
+    },
+
+    /**
+     * @param {String} name 
+     * @param {String} surname 
+     * @param {String} email 
+     * @param {String} password 
+     * @param {String} birthday 
+     * @param {String} gender 
+     * @param {String} phone 
+     * 
+     * @throws {AlreadyExistsError} when user with input email already exist
+     * 
+     * @returns {Promise} resolves on correct data, rejects on incorrect data 
+     */
     registerUser(name, surname, email, password, birthday, gender, phone) {
         validate([
             { key: 'name', value: name, type: String },
@@ -21,10 +77,11 @@ const logic = {
             { key: 'gender', value: gender, type: String, optional: true },
             { key: 'phone', value: phone, type: String, optional: true }
         ])
+
         return (async () => {
             let user = await User.findOne({ email })
 
-            if (user) throw new AlreadyExistsError(`user with email ${email} already exist`)
+            if (user) throw new AlreadyExistsError(`${email} already exist`)
 
             user = new User({ name, surname, email, password, birthday })
 
@@ -36,15 +93,25 @@ const logic = {
         })()
     },
 
+    /**
+     * @param {String} email 
+     * @param {String} password 
+     * 
+     * @throws {NotFoundError} when user with input email does not exist
+     * @throws {AuthError} when password is incorrect 
+     * 
+     * @returns {Promise} resolves on correct data, rejects on incorrect data 
+     */
     authenticateUser(email, password) {
         validate([
             { key: 'email', value: email, type: String },
             { key: 'password', value: password, type: String },
         ])
+
         return (async () => {
             let user = await User.findOne({ email })
 
-            if (!user) throw new NotFoundError(`user with email ${email} not found`)
+            if (!user) throw new NotFoundError(`user not found`)
 
             if (user.password !== password) throw new AuthError(`incorrect user or password`)
 
@@ -52,10 +119,18 @@ const logic = {
         })()
     },
 
+    /**
+     * @param {String} id 
+     * 
+     * @throws {NotFoundError} when user with input email does not exist
+     * 
+     * @returns {Promise} resolves on correct data, rejects on incorrect data 
+     */
     retrieveUser(id) {
         validate([
             { key: 'id', value: id, type: String }
         ])
+
         return (async () => {
             const user = await User.findById(id, { password: 0, postits: 0, __v: 0 }).lean()
 
@@ -71,6 +146,14 @@ const logic = {
         })()
     },
 
+    /**
+     * @param {String} id 
+     * @param {Stream} file 
+     * 
+     * @throws {NotFoundError} when user with input email does not exist
+     * 
+     * @returns {Promise} resolves on correct data, rejects on incorrect data 
+     */
     addProfilePicture(id, file) {
         validate([
             { key: 'id', value: id, type: String },
@@ -100,8 +183,23 @@ const logic = {
         })()
     },
 
-
-
+    /**
+     * @param {String} name 
+     * @param {Number} latitude 
+     * @param {Number} longitude 
+     * @param {String} address 
+     * @param {String} userId 
+     * @param {Boolean} breakfast 
+     * @param {Boolean} lunch 
+     * @param {Boolean} dinner 
+     * @param {Boolean} coffee 
+     * @param {Boolean} nigthLife 
+     * @param {Boolean} thingsToDo 
+     * 
+     * @throws {NotFoundError} when user with input email does not exist
+     * 
+     * @returns {Promise} resolves on correct data, rejects on incorrect data 
+     */
     addPlace(name, latitude, longitude, address, userId, breakfast, lunch, dinner, coffee, nigthLife, thingsToDo) {
         validate([
             { key: 'name', value: name, type: String },
@@ -123,7 +221,7 @@ const logic = {
 
             const location = {
                 type: "Point",
-                coordinates: [longitude, latitude]
+                coordinates: [latitude, longitude]
             }
 
             let place = new Place({ name, location, address, userId, breakfast, lunch, dinner, coffee, nigthLife, thingsToDo })
@@ -132,6 +230,13 @@ const logic = {
         })()
     },
 
+    /**
+     * @param {String} name 
+     * @param {String} longitude 
+     * @param {String} latitude 
+     * 
+     * @returns {Promise} resolves on correct data, rejects on incorrect data 
+     */
     listPlacesByName(name, longitude, latitude) {
         validate([
             { key: 'name', value: name, type: String },
@@ -140,23 +245,21 @@ const logic = {
         ])
 
         return (async () => {
-
             let placeReg = new RegExp(name, "i")
 
             let places = await Place.find({
-                $and: [
-                    { name: { $regex: placeReg } },
-                    {
-                        location: {
-                            $near: {
-                                $maxDistance: 15000,
-                                $geometry: {
-                                    type: "Point",
-                                    coordinates: [longitude, latitude]
-                                }
+                $and: [{ name: { $regex: placeReg } },
+                {
+                    location: {
+                        $near: {
+                            $maxDistance: 15000,
+                            $geometry: {
+                                type: "Point",
+                                coordinates: [latitude, longitude]
                             }
                         }
                     }
+                }
                 ]
             }, { userId: 0, __v: 0 }).lean()
 
@@ -164,46 +267,20 @@ const logic = {
 
                 const pictures = await Picture.find({ placeId: place._id })
 
-                if (pictures.length === 0) {
-                    const picture = "https://res.cloudinary.com/dancing890/image/upload/v1542807002/waxfi0xtcm5u48yltzxc.png"
+                place.picture = this._returnPlacePicture(pictures)
 
-                    place.picture = picture
-                } else {
-                    const picture = pictures[Math.floor(Math.random() * pictures.length)]
-
-                    place.picture = picture.url
-                }
 
                 const tips = await Tip.find({ placeId: place._id })
 
-                if (tips.length === 0) {
-                    place.tip = ''
-
-                } else {
-                    const tip = tips[Math.floor(Math.random() * tips.length)]
-
-                    place.tip = tip.text
-                }
+                place.tip = this._returnPlaceTip(tips)
 
 
-                const [longitude, latitude] = place.location.coordinates
+                const [latitude, longitude] = place.location.coordinates
 
                 place.longitude = longitude
                 place.latitude = latitude
 
-
-                place.scoring = '?'
-
-                if (place.voters.length === 1) {
-                    place.scoring = place.voters[0].score
-
-                } else if (place.voters.length > 1) {
-                    const scores = place.voters.map(voter => voter.score)
-
-                    const sum = scores.reduce((a, b) => a + b, 0)
-
-                    place.scoring = +(sum / scores.length).toFixed(1)
-                }
+                place.scoring = this._returnPlaceScoring(place.voters)
 
                 place.id = place._id.toString()
 
@@ -217,6 +294,14 @@ const logic = {
         })()
     },
 
+    /**
+     * 
+     * @param {String} filter 
+     * @param {String} longitude 
+     * @param {String} latitude 
+     * 
+     * @returns {Promise} resolves on correct data, rejects on incorrect data 
+     */
     listPlacesByFilter(filter, longitude, latitude) {
         validate([
             { key: 'filter', value: filter, type: String },
@@ -235,7 +320,7 @@ const logic = {
                                 $maxDistance: 15000,
                                 $geometry: {
                                     type: "Point",
-                                    coordinates: [longitude, latitude]
+                                    coordinates: [latitude, longitude]
                                 }
                             }
                         }
@@ -246,48 +331,22 @@ const logic = {
                 places.map(async place => {
                     const pictures = await Picture.find({ placeId: place._id.toString() })
 
-                    if (pictures.length === 0) {
-                        const picture = "https://res.cloudinary.com/dancing890/image/upload/v1542807002/waxfi0xtcm5u48yltzxc.png"
-
-                        place.picture = picture
-                    } else {
-                        const picture = pictures[Math.floor(Math.random() * pictures.length)]
-
-                        place.picture = picture.url
-                    }
+                    place.picture = this._returnPlacePicture(pictures)
 
                     const tips = await Tip.find({ placeId: place._id })
 
-                    const [longitude, latitude] = place.location.coordinates
+                    const [latitude, longitude] = place.location.coordinates
 
                     place.longitude = longitude
                     place.latitude = latitude
 
-                    if (tips.length === 0) {
-                        place.tip = ''
-
-                    } else {
-                        const tip = tips[Math.floor(Math.random() * tips.length)]
-
-                        place.tip = tip.text
-                    }
+                    place.tip = this._returnPlaceTip(tips)
 
                     place.id = place._id.toString()
 
                     delete place._id
 
-                    place.scoring = '?'
-
-                    if (place.voters.length === 1) {
-                        place.scoring = place.voters[0].score
-
-                    } else if (place.voters.length > 1) {
-                        const scores = place.voters.map(voter => voter.score)
-
-                        const sum = scores.reduce((a, b) => a + b, 0)
-
-                        place.scoring = +(sum / scores.length).toFixed(1)
-                    }
+                    place.scoring = this._returnPlaceScoring(place.voters)
 
                     return place
                 })
@@ -296,6 +355,14 @@ const logic = {
         })()
     },
 
+    /**
+     * @param {String} userId 
+     * @param {String} placeId 
+     * 
+     *  @throws {NotFoundError} when user with input email does not exist
+     * 
+     * @returns {Promise} resolves on correct data, rejects on incorrect data 
+     */
     retrievePlaceById(userId, placeId) {
         validate([
             { key: 'userId', value: userId, type: String },
@@ -310,46 +377,39 @@ const logic = {
 
             if (!user) throw new NotFoundError(`user does not exist`)
 
+            //check if it is a user favorites
             const fav = user.favourites.find(fav => fav.toString() === placeId)
 
             place.favourite = fav ? true : false
 
+            //check if it is a user check in
             const check = user.checkIns.find(check => check.toString() === placeId)
 
             place.checkIn = check ? true : false
 
-            const voter = place.voters.find(voter =>  voter.userId.toString() === userId)
+            //find user score and visitors 
+            const voter = place.voters.find(voter => voter.userId.toString() === userId)
 
-            if(voter) place.userScore = voter.score
+            if (voter) place.userScore = voter.score
 
             place.visitors = place.voters.length
 
+            //get one picture
             const pictures = await Picture.find({ placeId })
 
-            if (pictures.length === 0) {
-                const picture = "http://res.cloudinary.com/dancing890/image/upload/b_rgb:2e5be3/v1542807002/waxfi0xtcm5u48yltzxc.png"
+            place.picture = this._returnPlacePicture(pictures)
 
-                place.picture = picture
-            } else {
-                const picture = pictures[Math.floor(Math.random() * pictures.length)]
+            //get scoring and scores
+            place.scoring = this._returnPlaceScoring(place.voters)
 
-                place.picture = picture.url
-            }
-
-            place.scoring = '?'
             place.scores = []
 
             if (place.voters.length === 1) {
-                place.scoring = place.voters[0].score
 
                 place.scores = [place.scoring]
 
             } else if (place.voters.length > 1) {
                 const scores = place.voters.map(voter => voter.score)
-
-                const sum = scores.reduce((a, b) => a + b, 0)
-
-                place.scoring = +(sum / scores.length).toFixed(1)
 
                 place.scores = scores
             }
@@ -366,6 +426,15 @@ const logic = {
         })()
     },
 
+    /**
+     * @param {String} userId 
+     * @param {String} placeId 
+     * @param {Number} score 
+     * 
+     * @throws {NotFoundError} when user with input email does not exist
+     * 
+     * @returns {Promise} resolves on correct data, rejects on incorrect data 
+     */
     updateScoring(userId, placeId, score) {
         validate([
             { key: 'userId', value: userId, type: String },
@@ -374,41 +443,59 @@ const logic = {
         ])
 
         return (async () => {
+            let user = await User.findById(userId)
+
+            if (!user) throw new NotFoundError(`user does not exist`)
+
             let place = await Place.findById(placeId)
 
             if (!place) throw new NotFoundError(`place does not exist`)
 
             const index = place.voters.findIndex(voter => voter.userId.toString() === userId)
 
-            if (index >= 0) throw new AlreadyExistsError(`user has already voted`)
+            if (index < 0) {
+                const voter = new Voter({ userId, score })
 
-            const voter = new Voter({ userId, score })
+                place.voters.push(voter)
+            } else {
 
-            place.voters.push(voter)
+                place.voters.splice(index, 1)
+
+                const voter = new Voter({ userId, score })
+
+                place.voters.push(voter)
+            }
 
             await place.save()
 
-            let scoring
+            let userScore = score
+
+            let scoring = this._returnPlaceScoring(place.voters)
+
             let scores
 
             if (place.voters.length === 1) {
-                scoring = place.voters[0].score
                 scores = [scoring]
 
             } else {
                 scores = place.voters.map(voter => voter.score)
-
-                const sum = scores.reduce((a, b) => a + b, 0)
-
-                scoring = +(sum / scores.length).toFixed(1)
             }
 
             let visitors = place.voters.length
 
-            return { scoring, visitors, scores }
+            return { scoring, visitors, scores, userScore }
         })()
     },
 
+    /**
+     * @param {String} userId 
+     * @param {String} placeId 
+     * @param {Stream} file 
+     * 
+     * @throws {NotFoundError} when user with input email does not exist
+     * 
+     * @returns {Promise} resolves on correct data, rejects on incorrect data 
+     */
     addPlacePicture(userId, placeId, file) {
         validate([
             { key: 'userId', value: userId, type: String },
@@ -434,7 +521,7 @@ const logic = {
                 file.pipe(stream)
             })
 
-            picture = new Picture({ url: result.url, public_id: result.public_id, userId, placeId })
+            let picture = new Picture({ url: result.url, public_id: result.public_id, userId, placeId })
 
             await picture.save()
 
@@ -442,6 +529,12 @@ const logic = {
         })()
     },
 
+    /**
+     * @param {String} placeId 
+     * * @throws {NotFoundError} when user with input email does not exist
+     * 
+     * @returns {Promise} resolves on correct data, rejects on incorrect data 
+     */
     listPlacePictures(placeId) {
         validate([
             { key: 'placeId', value: placeId, type: String },
@@ -460,6 +553,13 @@ const logic = {
         })()
     },
 
+    /**
+     * @param {String} userId 
+     * 
+     * * @throws {NotFoundError} when user with input email does not exist
+     * 
+     * @returns {Promise} resolves on correct data, rejects on incorrect data 
+     */
     listUserPictures(userId) {
         validate([
             { key: 'userId', value: userId, type: String },
@@ -478,6 +578,15 @@ const logic = {
         })()
     },
 
+    /**
+     * @param {String} userId 
+     * @param {String} placeId 
+     * @param {String} text 
+     * 
+     * * @throws {NotFoundError} when user with input email does not exist
+     * 
+     * @returns {Promise} resolves on correct data, rejects on incorrect data 
+     */
     addTip(userId, placeId, text) {
         validate([
             { key: 'userId', value: userId, type: String },
@@ -504,6 +613,13 @@ const logic = {
         })()
     },
 
+    /**
+     * @param {String} placeId 
+     * 
+     * * @throws {NotFoundError} when user with input email does not exist
+     * 
+     * @returns {Promise} resolves on correct data, rejects on incorrect data 
+     */
     listPlaceTips(placeId) {
         validate([
             { key: 'placeId', value: placeId, type: String },
@@ -537,7 +653,13 @@ const logic = {
             return listTips.map(({ id, text, userPicture, userName, userSurname, time }) => ({ id, text, userPicture, userName, userSurname, time }))
         })()
     },
-
+    /**
+     * @param {String} userId 
+     * 
+     * * @throws {NotFoundError} when user with input email does not exist
+     * 
+     * @returns {Promise} resolves on correct data, rejects on incorrect data 
+     */
     listUserTips(userId) {
         validate([
             { key: 'userId', value: userId, type: String },
@@ -559,26 +681,9 @@ const logic = {
 
                 const pictures = await Picture.find({ placeId: tip.placeId })
 
-                if (pictures.length === 0) {
-                    const picture = "http://res.cloudinary.com/dancing890/image/upload/b_rgb:2e5be3/v1542807002/waxfi0xtcm5u48yltzxc.png"
+                tip.picture = this._returnPlacePicture(pictures)
 
-                    tip.picture = picture
-                } else {
-                    const picture = pictures[Math.floor(Math.random() * pictures.length)]
-
-                    tip.picture = picture.url
-                }
-
-                if (place.voters.length === 1) {
-                    tip.scoring = place.voters[0].score
-
-                } else if (place.voters.length > 1) {
-                    const scores = place.voters.map(voter => voter.score)
-
-                    const sum = scores.reduce((a, b) => a + b, 0)
-
-                    tip.scoring = +(sum / scores.length).toFixed(1)
-                }
+                tip.scoring = this._returnPlaceScoring(place.voters) 
 
                 tip.id = tip._id.toString()
 
@@ -593,6 +698,14 @@ const logic = {
         })()
     },
 
+    /**
+     * @param {String} userId 
+     * @param {String} placeId 
+     * 
+     * * @throws {NotFoundError} when user with input email does not exist
+     * 
+     * @returns {Promise} resolves on correct data, rejects on incorrect data 
+     */
     uploadFavourites(userId, placeId) {
         validate([
             { key: 'userId', value: userId, type: String },
@@ -620,6 +733,13 @@ const logic = {
         })()
     },
 
+    /**
+     * @param {String} userId 
+     * 
+     * * @throws {NotFoundError} when user with input email does not exist
+     * 
+     * @returns {Promise} resolves on correct data, rejects on incorrect data 
+     */
     listFavourites(userId) {
         validate([
             { key: 'userId', value: userId, type: String },
@@ -633,30 +753,13 @@ const logic = {
             const promises = user.favourites.map(async fav => {
                 const pictures = await Picture.find({ placeId: fav._id })
 
-                if (pictures.length === 0) {
-                    const picture = "https://res.cloudinary.com/dancing890/image/upload/v1542807002/waxfi0xtcm5u48yltzxc.png"
-
-                    fav.picture = picture
-                } else {
-                    const picture = pictures[Math.floor(Math.random() * pictures.length)]
-
-                    fav.picture = picture.url
-                }
+                fav.picture = this._returnPlacePicture(pictures)
 
                 fav.placeId = fav._id.toString()
 
                 delete fav._id
 
-                if (fav.voters.length === 1) {
-                    fav.scoring = fav.voters[0].score
-    
-                } else {
-                    const scores = fav.voters.map(voter => voter.score)
-    
-                    const sum = scores.reduce((a, b) => a + b, 0)
-    
-                    fav.scoring = +(sum / scores.length).toFixed(1)
-                }
+                fav.scoring = this._returnPlaceScoring(fav.voters)
 
                 return fav
             })
@@ -666,6 +769,14 @@ const logic = {
         })()
     },
 
+    /**
+     * @param {String} userId 
+     * @param {String} placeId 
+     * 
+     * * @throws {NotFoundError} when user with input email does not exist
+     * 
+     * @returns {Promise} resolves on correct data, rejects on incorrect data 
+     */
     uploadCheckIns(userId, placeId) {
         validate([
             { key: 'userId', value: userId, type: String },
@@ -693,6 +804,13 @@ const logic = {
         })()
     },
 
+    /**
+     * @param {String} userId 
+     * 
+     * @throws {NotFoundError} when user with input email does not exist
+     * 
+     * @returns {Promise} resolves on correct data, rejects on incorrect data 
+     */
     listCheckIns(userId) {
         validate([
             { key: 'userId', value: userId, type: String },
@@ -706,26 +824,9 @@ const logic = {
             let promises = user.checkIns.map(async check => {
                 let pictures = await Picture.find({ placeId: check._id })
 
-                if (pictures.length === 0) {
-                    const picture = "https://res.cloudinary.com/dancing890/image/upload/v1542807002/waxfi0xtcm5u48yltzxc.png"
+                check.picture = this._returnPlacePicture(pictures)
 
-                    check.picture = picture
-                } else {
-                    const picture = pictures[Math.floor(Math.random() * pictures.length)]
-
-                    check.picture = picture.url
-                }
-
-                if (check.voters.length === 1) {
-                    check.scoring = check.voters[0].score
-    
-                } else {
-                    const scores = check.voters.map(voter => voter.score)
-    
-                    const sum = scores.reduce((a, b) => a + b, 0)
-    
-                    check.scoring = +(sum / scores.length).toFixed(1)
-                }
+                check.scoring = this._returnPlaceScoring(check.voters)
 
                 check.placeId = check._id.toString()
 
@@ -739,7 +840,6 @@ const logic = {
             return listCheckIns.map(({ placeId, name, scoring, address, picture }) => ({ placeId, name, scoring, address, picture }))
         })()
     },
-
 }
 
 module.exports = logic

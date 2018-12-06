@@ -4,8 +4,8 @@ import Place from './Place'
 import logic from '../logic'
 import LoadingSpinner from './LoadingSpinner'
 import ShowMapSearch from './ShowMapSearch'
-import { userInfo } from 'os';
-
+import Error from './Error'
+import Swal from 'sweetalert2'
 
 class ListPlaces extends Component {
     state = { error: null, places: [], name: '', longitude: 0, latitude: 0, loading: true, mapOn: false }
@@ -25,16 +25,48 @@ class ListPlaces extends Component {
             if (this.props.type === 'filter') {
                 try {
                     logic.listPlacesByFilter(this.props.filter, this.state.longitude, this.state.latitude)
-                        .then(places => this.setState({ places, error: null }))
-                        .catch(err => this.setState({ error: err.message }))
+                        .then(places => {
+                            if (places.length === 0) {
+                                this.setState({ error: 'Sorry... No places found for your search!' })
+                            } else {
+                                this.setState({ places, error: null })
+                            }
+                        })
+                        .catch(err =>
+                            Swal({
+                                title: 'Oops...',
+                                html: "Something went wrong!" +
+                                    " Try again later",
+                                customClass: 'swal-wide',
+                                showCancelButton: false,
+                                showConfirmButton: false,
+                                showCloseButton: true,
+                                animation: false
+                            }))
                 } catch (err) {
                     this.setState({ error: err.message })
                 }
             } else if (this.props.type === 'name') {
                 try {
                     logic.listPlacesByName(this.props.name, this.state.longitude, this.state.latitude)
-                        .then(places => this.setState({ places, error: null }))
-                        .catch(err => this.setState({ error: err.message }))
+                        .then(places => {
+                            if (places.length === 0) {
+                                this.setState({ error: 'Sorry... No places found for your search!' })
+                            } else {
+                                this.setState({ places, error: null })
+                            }
+                        })
+                        .catch(err =>
+                            Swal({
+                                title: 'Oops...',
+                                html: "Something went wrong!" +
+                                    " Try again later",
+                                customClass: 'swal-wide',
+                                showCancelButton: false,
+                                showConfirmButton: false,
+                                showCloseButton: true,
+                                animation: false
+                            }))
                 } catch (err) {
                     this.setState({ error: err.message })
                 }
@@ -47,8 +79,24 @@ class ListPlaces extends Component {
         if (nextProps.name !== this.props.name) {
             try {
                 logic.listPlacesByName(this.state.name, this.state.longitude, this.state.latitude)
-                    .then(places => this.setState({ places, error: null }))
-                    .catch(err => this.setState({ error: err.message }))
+                    .then(places => {
+                        if (places.length === 0) {
+                            this.setState({ error: 'Sorry... No places found for your search!' })
+                        } else {
+                            this.setState({ places, error: null })
+                        }
+                    })
+                    .catch(err =>
+                        Swal({
+                            title: 'Oops...',
+                            html: "Something went wrong!" +
+                                " Try again later",
+                            customClass: 'swal-wide',
+                            showCancelButton: false,
+                            showConfirmButton: false,
+                            showCloseButton: true,
+                            animation: false
+                        }))
             } catch (err) {
                 this.setState({ error: err.message })
             }
@@ -86,13 +134,13 @@ class ListPlaces extends Component {
         this.props.onSearchSubmit(this.state.name)
     }
 
-    
 
-    onMapClick = event => {
+
+    onMapClick = () => {
         this.setState({ mapOn: true })
     }
 
-    onListClick = event => {
+    onListClick = () => {
 
         this.setState({ mapOn: false })
 
@@ -115,6 +163,7 @@ class ListPlaces extends Component {
                     (this.state.mapOn ?
                         <ShowMapSearch places={this.state.places} latitude={this.state.latitude} longitude={this.state.longitude} /> :
                         <section >
+                            {this.state.error && <Error className='error__home' containerClass='containerClass' message={this.state.error} />}
                             {this.state.places.map(place => <Place key={place.id} id={place.id} name={place.name} scoring={place.scoring} picture={place.picture} tip={place.tip} address={place.address} distance={place.distance} />)}
                         </section>
                     )}

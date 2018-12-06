@@ -3,7 +3,7 @@ import Map from './Map'
 import { Link } from 'react-router-dom'
 
 class AddPlace extends Component {
-    state = { error: null, name: '', address: '', latitude: 0, longitude: 0, breakfast: false, lunch: false, dinner: false, coffee: false, nightLife: false, thingsToDo: false }
+    state = { name: '', address: '', latitude: 0, longitude: 0, breakfast: false, lunch: false, dinner: false, coffee: false, nightLife: false, thingsToDo: false }
 
     getBoolean(target) {
         let option

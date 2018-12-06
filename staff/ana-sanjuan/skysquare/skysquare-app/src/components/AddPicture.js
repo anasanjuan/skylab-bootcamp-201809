@@ -1,5 +1,7 @@
 import React, {Component} from 'react'
 import logic from '../logic'
+import Swal from 'sweetalert2'
+
 
 class AddPicture extends Component {
     state={ picture: null, previewPicture: null, error: null}
@@ -23,7 +25,17 @@ class AddPicture extends Component {
             .then(res => {
                 this.setState({previewPicture: null, error: null})
             })
-            .catch(err => this.setState({ error: err.message }))
+            .catch(err => 
+                Swal({
+                    title: 'Oops...',
+                    html: "Something went wrong!" +
+                        " Try again later",
+                    customClass: 'swal-wide',
+                    showCancelButton: false,
+                    showConfirmButton:false,
+                    showCloseButton: true,
+                    animation: false
+                }))
         } catch (err) {
             this.setState({ error: err.message })
         }

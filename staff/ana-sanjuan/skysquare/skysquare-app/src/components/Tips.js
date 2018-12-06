@@ -1,14 +1,32 @@
 import React, { Component } from 'react'
 import logic from '../logic'
 import Tip from './Tip'
+import Swal from 'sweetalert2'
+import Error from './Error'
 
 class Tips extends Component {
     state = { error: null, tips: [], text: '' }
     componentDidMount() {
         try {
             logic.listPlaceTips(this.props.id)
-                .then(tips => this.setState({ tips, error: null }))
-                .catch(err => this.setState({ error: err.message }))
+                .then(tips => {
+                    if (tips.length === 0) {
+                        this.setState({ error: 'No tips yet! Be the first to add one!' })
+                    } else {
+                        this.setState({ tips, error: null })
+                    }
+                })
+                .catch(err =>
+                    Swal({
+                        title: 'Oops...',
+                        html: "Something went wrong!" +
+                            " Try again later",
+                        customClass: 'swal-wide',
+                        showCancelButton: false,
+                        showConfirmButton: false,
+                        showCloseButton: true,
+                        animation: false
+                    }))
         } catch (err) {
             this.setState({ error: err.message })
         }
@@ -26,10 +44,20 @@ class Tips extends Component {
             logic.addTip(this.props.id, this.state.text)
                 .then(res => {
                     let newTips = this.state.tips
-                    
+
                     this.setState({ text: '', tips: [...newTips, res], error: null })
                 })
-                .catch(err => this.setState({ error: err.message }))
+                .catch(err =>
+                    Swal({
+                        title: 'Oops...',
+                        html: "Something went wrong!" +
+                            " Try again later",
+                        customClass: 'swal-wide',
+                        showCancelButton: false,
+                        showConfirmButton: false,
+                        showCloseButton: true,
+                        animation: false
+                    }))
         } catch (err) {
             this.setState({ error: err.message })
         }
@@ -47,7 +75,8 @@ class Tips extends Component {
                 </form>
             </section>
             <section>
-                {this.state.tips.map(tip => <Tip key={tip.id} text={tip.text} userName={tip.userName} userSurname={tip.userSurname} time={tip.time} userPicture={tip.userPicture} />)}
+                {this.state.error && <Error className='error__tips' containerClass='containerClass' message={this.state.error} />}
+                {this.state.tips.map(tip => <Tip key={tip.text} text={tip.text} userName={tip.userName} userSurname={tip.userSurname} time={tip.time} userPicture={tip.userPicture} />)}
             </section>
 
         </main>)

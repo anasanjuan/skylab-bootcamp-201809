@@ -1,10 +1,11 @@
 import validate from '../utils/validate'
+// const validate = require('../utils/validate')
 
 const logic = {
     _userId: sessionStorage.getItem('userId') || null,
     _token: sessionStorage.getItem('token') || null,
 
-    // url:'http://localhost:5000/api',
+    
     url: 'NO-URL', //todo pasar a .env
 
     register(name, surname, email, password, birthday, gender, phone) {
@@ -87,7 +88,7 @@ const logic = {
         sessionStorage.removeItem('token')
     },
 
-    AddPlace(name, address, latitude, longitude, breakfast, lunch, dinner, coffee, nightLife, thingsToDo) {
+    addPlace(name, address, latitude, longitude, breakfast, lunch, dinner, coffee, nightLife, thingsToDo) {
         validate([
             { key: 'name', value: name, type: String },
             { key: 'address', value: address, type: String },
@@ -164,7 +165,6 @@ const logic = {
         validate([
             { key: 'name', value: name, type: String },
         ])
-        debugger
         return fetch(`${this.url}/users/${this._userId}/places/name/${name}/${longitude}/${latitude}`, {
             method: 'GET',
             headers: {
@@ -205,7 +205,6 @@ const logic = {
                 if (res.error) throw Error(res.error)
 
                 const { scores } = res.data
-debugger
                 const brokenScore = scores.filter(score => score === 0)
                 const mehScore = scores.filter(score => score === 5)
                 const heartScore = scores.filter(score => score === 10)
@@ -315,7 +314,7 @@ debugger
     },
 
 
-    UploadPicture(placeId, picture) {
+    uploadPicture(placeId, picture) {
         validate([
             { key: 'placeId', value: placeId, type: String },
         ])
@@ -339,7 +338,7 @@ debugger
             })
     },
 
-    UploadProfilePicture(picture) {
+    uploadProfilePicture(picture) {
         let data = new FormData()
 
         data.append('picture', picture)
@@ -488,4 +487,4 @@ debugger
 }
 
 export default logic
-//module.exports = logic
+// module.exports = logic

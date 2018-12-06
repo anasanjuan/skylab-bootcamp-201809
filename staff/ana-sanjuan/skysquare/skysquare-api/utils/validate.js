@@ -1,3 +1,5 @@
+'use strict'
+
 const { ValueError } = require('../errors')
 
 function validate(params) {

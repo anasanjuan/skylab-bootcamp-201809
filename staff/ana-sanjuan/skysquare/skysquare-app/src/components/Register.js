@@ -71,19 +71,19 @@ class Register extends Component {
                     </section>
                     <section>
                         <div className="fullname">
-                            <input className="input_box--half" placeholder="Name" onChange={this.handleNameChange}></input>
-                            <input className="input_box--half" placeholder="Surname" onChange={this.handleSurnameChange}></input>
+                            <input className="input_box input_box--half" placeholder="Name" onChange={this.handleNameChange}></input>
+                            <input className="input_box input_box--half" placeholder="Surname" onChange={this.handleSurnameChange}></input>
                         </div>
                         <input type='email' className="input_box" placeholder="Email" onChange={this.handleEmailChange}></input>
                         <input type='password' className="input_box" placeholder="Password" onChange={this.handlePasswordChange}></input>
                         <input type='text' className="input_box" placeholder="Birthday(DD/MM/YYYY)" onChange={this.handleBirthdayChange}></input>
-                        <select className=" input_box--opt input_box--opt--gender" onChange={this.handleGenderChange} default="Gender">
+                        <select className=" input_box input_box--opt input_box--opt--gender" onChange={this.handleGenderChange} default="Gender">
                             <option value="Gender">Gender(optional)</option>
                             <option value="Male">Male</option>
                             <option value="Female">Female</option>
                             <option value="I prefer not to say it">I prefer not to say it</option>
                         </select>
-                        <input className="input_box--opt" placeholder="Phone number(optional)" onChange={this.handlePhoneChange}></input>
+                        <input className="input_box input_box--opt" placeholder="Phone number(optional)" onChange={this.handlePhoneChange}></input>
                     </section>
                 </main>
                 <footer className="register__footer">
