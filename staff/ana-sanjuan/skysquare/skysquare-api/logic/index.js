@@ -1,4 +1,4 @@
-const { models: { User, Place, Picture, Tip } } = require('skysquare-data')
+const { models: { User, Voter, Place, Picture, Tip, } } = require('skysquare-data')
 const { AlreadyExistsError, AuthError, NotFoundError } = require('../errors')
 const validate = require('../utils/validate')
 let cloudinary = require('cloudinary')
@@ -192,6 +192,19 @@ const logic = {
                 place.latitude = latitude
 
 
+                place.scoring = '?'
+
+                if (place.voters.length === 1) {
+                    place.scoring = place.voters[0].score
+
+                } else if (place.voters.length > 1) {
+                    const scores = place.voters.map(voter => voter.score)
+
+                    const sum = scores.reduce((a, b) => a + b, 0)
+
+                    place.scoring = +(sum / scores.length).toFixed(1)
+                }
+
                 place.id = place._id.toString()
 
                 delete place._id
@@ -258,13 +271,28 @@ const logic = {
 
                         place.tip = tip.text
                     }
+
                     place.id = place._id.toString()
+
                     delete place._id
+
+                    place.scoring = '?'
+
+                    if (place.voters.length === 1) {
+                        place.scoring = place.voters[0].score
+
+                    } else if (place.voters.length > 1) {
+                        const scores = place.voters.map(voter => voter.score)
+
+                        const sum = scores.reduce((a, b) => a + b, 0)
+
+                        place.scoring = +(sum / scores.length).toFixed(1)
+                    }
 
                     return place
                 })
             )
-            return listPlaces.map(({ id, name, address, scoring, picture, tip, longitude, latitude }) => ({ id, name, address, scoring, picture, tip, longitude, latitude}))
+            return listPlaces.map(({ id, name, address, scoring, picture, tip, longitude, latitude }) => ({ id, name, address, scoring, picture, tip, longitude, latitude }))
         })()
     },
 
@@ -274,12 +302,12 @@ const logic = {
             { key: 'placeId', value: placeId, type: String }
         ])
         return (async () => {
-
-            let place = await Place.findById(placeId, { userId: 0, __v: 0 }).lean()
+debugger
+            let place = await Place.findById(placeId, { __v: 0 }).lean()
 
             if (!place) throw new NotFoundError(`place does not exist`)
 
-            let user = await User.findById(userId, { userId: 0, __v: 0 }).lean()
+            let user = await User.findById(userId, { __v: 0 }).lean()
 
             if (!user) throw new NotFoundError(`user does not exist`)
 
@@ -291,9 +319,10 @@ const logic = {
 
             place.checkIn = check ? true : false
 
-            const voter = place.voters.find(voter =>  voter.userId === userId)
+            const voter = place.voters.find(voter =>  voter.userId.toString() === userId)
+            if(voter) place.userScore = voter.score
 
-            place.userScore = voter.score? voter.score : null
+            place.visitors = place.voters.length
 
             const pictures = await Picture.find({ placeId })
 
@@ -307,9 +336,31 @@ const logic = {
                 place.picture = picture.url
             }
 
+            place.scoring = '?'
+            place.scores = []
+
+            if (place.voters.length === 1) {
+                place.scoring = place.voters[0].score
+
+                place.scores = [place.scoring]
+
+            } else if (place.voters.length > 1) {
+                const scores = place.voters.map(voter => voter.score)
+
+                const sum = scores.reduce((a, b) => a + b, 0)
+
+                place.scoring = +(sum / scores.length).toFixed(1)
+
+                place.scores = scores
+            }
+
             place.id = place._id.toString()
 
             delete place._id
+
+            place.userId = place.userId.toString()
+
+            delete place.voters
 
             return place
         })()
@@ -331,21 +382,30 @@ const logic = {
 
             if (index >= 0) throw new AlreadyExistsError(`user has already voted`)
 
-            place.voters.push({userId, score})
+            const voter = new Voter({ userId, score })
 
-            place.scores.push(score)
-
-            if (place.scores.length === 1) {
-                place.scoring = score
-            } else {
-                const sum = place.scores.reduce((a, b) => a + b, 0)
-
-                place.scoring = +(sum / place.scores.length).toFixed(1)
-            }
+            place.voters.push(voter)
 
             await place.save()
 
-            return { scoring: place.scoring, scores: place.scores }
+            let scoring
+            let scores
+
+            if (place.voters.length === 1) {
+                scoring = place.voters[0].score
+                scores = [scoring]
+
+            } else {
+                scores = place.voters.map(voter => voter.score)
+
+                const sum = scores.reduce((a, b) => a + b, 0)
+
+                scoring = +(sum / scores.length).toFixed(1)
+            }
+
+            let visitors = place.voters.length
+
+            return { scoring, visitors, scores }
         })()
     },
 
@@ -509,6 +569,17 @@ const logic = {
                     tip.picture = picture.url
                 }
 
+                if (place.voters.length === 1) {
+                    tip.scoring = place.voters[0].score
+
+                } else if (place.voters.length > 1) {
+                    const scores = place.voters.map(voter => voter.score)
+
+                    const sum = scores.reduce((a, b) => a + b, 0)
+
+                    tip.scoring = +(sum / scores.length).toFixed(1)
+                }
+
                 tip.id = tip._id.toString()
 
                 delete tip._id
@@ -576,6 +647,17 @@ const logic = {
 
                 delete fav._id
 
+                if (fav.voters.length === 1) {
+                    fav.scoring = fav.voters[0].score
+    
+                } else {
+                    const scores = fav.voters.map(voter => voter.score)
+    
+                    const sum = scores.reduce((a, b) => a + b, 0)
+    
+                    fav.scoring = +(sum / scores.length).toFixed(1)
+                }
+
                 return fav
             })
             let listFavourites = await Promise.all(promises)
@@ -632,6 +714,17 @@ const logic = {
                     const picture = pictures[Math.floor(Math.random() * pictures.length)]
 
                     check.picture = picture.url
+                }
+
+                if (check.voters.length === 1) {
+                    check.scoring = check.voters[0].score
+    
+                } else {
+                    const scores = check.voters.map(voter => voter.score)
+    
+                    const sum = scores.reduce((a, b) => a + b, 0)
+    
+                    check.scoring = +(sum / scores.length).toFixed(1)
                 }
 
                 check.placeId = check._id.toString()

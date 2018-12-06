@@ -205,7 +205,7 @@ const logic = {
                 if (res.error) throw Error(res.error)
 
                 const { scores } = res.data
-
+debugger
                 const brokenScore = scores.filter(score => score === 0)
                 const mehScore = scores.filter(score => score === 5)
                 const heartScore = scores.filter(score => score === 10)

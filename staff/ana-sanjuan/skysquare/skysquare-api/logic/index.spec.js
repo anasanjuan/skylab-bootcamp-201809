@@ -1,6 +1,6 @@
 'use strict'
 
-const { mongoose, models: { User, Place, Picture, Tip } } = require('skysquare-data')
+const { mongoose, models: { User, Voter, Place, Picture, Tip } } = require('skysquare-data')
 const logic = require('.')
 const { AlreadyExistsError, AuthError, ValueError, NotFoundError } = require('../errors')
 const fs = require('fs')
@@ -482,7 +482,7 @@ describe('logic', () => {
                 expect(_user.birthday).to.equal(user.birthday)
                 expect(_user.password).to.be.undefined
                 expect(_user.profilePicture).to.equal('https://res.cloudinary.com/dancing890/image/upload/v1542808705/i4lb8xdnpblbbhuvi7zv.png')
-                
+
             })
 
 
@@ -811,6 +811,8 @@ describe('logic', () => {
                 await place.save()
             })
             it('it should succedd on correct data', async () => {
+               // add new voter and scoring
+
                 user.favourites.push(place.id)
 
                 await user.save()
@@ -1162,7 +1164,6 @@ describe('logic', () => {
                 expect(place.location.coordinates[0]).to.equal(longitude)
                 expect(place.location.coordinates[1]).to.equal(latitude)
                 expect(place.userId.toString()).to.equal(user.id)
-                expect(place.scoring).to.equal(0)
                 expect(place.breakfast).to.equal(breakfast)
                 expect(place.lunch).to.equal(lunch)
                 expect(place.dinner).to.equal(dinner)
@@ -1388,9 +1389,7 @@ describe('logic', () => {
             let place, _latitude, _longitude
 
             beforeEach(async () => {
-                const scoring = 10
-
-                place = new Place({ name: placeName, location, address, userId, scoring, breakfast, lunch, dinner, coffee, nightLife, thingsToDo })
+                place = new Place({ name: placeName, location, address, userId, breakfast, lunch, dinner, coffee, nightLife, thingsToDo })
 
                 await place.save()
 
@@ -1407,7 +1406,7 @@ describe('logic', () => {
                 expect(_place.id).to.be.a('string')
                 expect(_place.name).to.equal(place.name)
                 expect(_place.address).to.equal(place.address)
-                expect(_place.scoring).to.equal(place.scoring)
+                expect(_place.scoring).to.equal('?')
                 expect(_place.picture).to.equal('https://res.cloudinary.com/dancing890/image/upload/v1542807002/waxfi0xtcm5u48yltzxc.png')
                 expect(_place.tip).to.equal('')
                 expect(_place.longitude).to.equal(place.location.coordinates[0])
@@ -1481,7 +1480,7 @@ describe('logic', () => {
             beforeEach(async () => {
                 const scoring = 10
 
-                place = new Place({ name: placeName, location, address, userId, scoring, breakfast, lunch, dinner, coffee, nightLife, thingsToDo })
+                place = new Place({ name: placeName, location, address, userId, breakfast, lunch, dinner, coffee, nightLife, thingsToDo })
 
                 let placeName2 = 'Costa Dorada2'
                 let latitude2 = 41.399469
@@ -1501,7 +1500,13 @@ describe('logic', () => {
                     coordinates: [longitude2, latitude2]
                 }
 
-                place2 = new Place({ name: placeName2, location: location2, addres: address2, userId: userId2, scoring: scoring2, breakfast: breakfast2, lunch: lunch2, dinner: dinner2, coffee: coffee2, nightLife: nightLife2, thingsToDo: thingsToDo2 })
+                const voter1 = new Voter({ userId: user.id, score: 10 })
+
+                const voter2 = new Voter({ userId: user.id, score: 5 })
+
+                const voters = [voter1, voter2]
+
+                place2 = new Place({ name: placeName2, location: location2, addres: address2, userId: userId2, voters, breakfast: breakfast2, lunch: lunch2, dinner: dinner2, coffee: coffee2, nightLife: nightLife2, thingsToDo: thingsToDo2 })
 
                 await place.save()
                 await place2.save()
@@ -1520,12 +1525,31 @@ describe('logic', () => {
                 expect(_place.id).to.be.a('string')
                 expect(_place.name).to.equal(place.name)
                 expect(_place.address).to.equal(place.address)
-                expect(_place.scoring).to.be.a('number')
+                expect(_place.scoring).to.equal('?')
                 expect(_place.longitude).to.equal(place.location.coordinates[0])
                 expect(_place.latitude).to.equal(place.location.coordinates[1])
                 expect(_place.picture).to.be.a('string')
                 expect(_place.tip).to.be.a('string')
             })
+
+            it('should succed on correct name and voters', async () => {
+                let filter = 'lunch'
+
+                const places = await logic.listPlacesByFilter(filter, _longitude, _latitude)
+
+                const [_place] = places
+
+                expect(_place).not.to.be.instanceof(Place)
+                expect(_place.id).to.be.a('string')
+                expect(_place.name).to.equal(place2.name)
+                expect(_place.address).to.equal(place2.address)
+                expect(_place.scoring).to.equal(7.5)
+                expect(_place.longitude).to.equal(place2.location.coordinates[0])
+                expect(_place.latitude).to.equal(place2.location.coordinates[1])
+                expect(_place.picture).to.be.a('string')
+                expect(_place.tip).to.be.a('string')
+            })
+
 
 
             it('should fail on undefined place name', () => {
@@ -1596,11 +1620,13 @@ describe('logic', () => {
             let place
 
             beforeEach(async () => {
-                const scoring = 10
+                const score = 10
 
-                const voters=[{userId: user.id, score: scoring}]
+                const voter1 = new Voter({ userId: user.id, score })
 
-                place = new Place({ name: placeName, location, address, userId, scoring, voters, breakfast, lunch, dinner, coffee, nightLife, thingsToDo })
+                const voters = [voter1]
+
+                place = new Place({ name: placeName, location, address, userId, voters, breakfast, lunch, dinner, coffee, nightLife, thingsToDo })
 
                 await place.save()
             })
@@ -1613,19 +1639,18 @@ describe('logic', () => {
                 expect(_place.location.coordinates[0]).to.equal(place.location.coordinates[0])
                 expect(_place.location.coordinates[1]).to.equal(place.location.coordinates[1])
                 expect(_place.address).to.equal(place.address)
-                debugger
                 expect(_place.userId).to.equal(user.id)
-                expect(_place.scoring).to.equal(place.scoring)
-                expect(_place.scores).to.equal(place.scores)
+                expect(_place.scoring).to.equal(10)
+                expect(_place.visitors).to.equal(1)
                 expect(_place.breakfast).to.equal(place.breakfast)
                 expect(_place.lunch).to.equal(place.lunch)
                 expect(_place.dinner).to.equal(place.dinner)
                 expect(_place.coffee).to.equal(place.coffee)
                 expect(_place.nigthLife).to.equal(place.nigthLife)
                 expect(_place.thingsToDo).to.equal(place.thingsToDo)
-                debugger
-                expect(_place.voters[0].userId).to.equal(user.id)
-                expect(_place.voters[0].score).to.equal(10)
+
+                expect(_place.scores).to.deep.equal([10])
+                
 
             })
 
@@ -1732,22 +1757,18 @@ describe('logic', () => {
             let place
 
             beforeEach(async () => {
-                const scoring = 5
 
-                const scores = [5]
-                place = new Place({ name: placeName, location, address, userId, scoring, scores, breakfast, lunch, dinner, coffee, nightLife, thingsToDo })
+                place = new Place({ name: placeName, location, address, userId, breakfast, lunch, dinner, coffee, nightLife, thingsToDo })
 
                 await place.save()
             })
             it('should succed on correct data', async () => {
-                let newScore = 10
+                let newScore = 5
 
-                const { scoring, scores } = await logic.updateScoring(user.id, place.id, newScore)
+                const { scoring, visitors } = await logic.updateScoring(user.id, place.id, newScore)
 
-                expect(scoring).to.equal(7.5)
-                expect(scores.length).to.equal(2)
-                expect(scores[0]).to.equal(5)
-                expect(scores[1]).to.equal(10)
+                expect(scoring).to.equal(5)
+                expect(visitors).to.equal(1)
 
                 const _place = await Place.findById(place.id)
 
@@ -1761,17 +1782,9 @@ describe('logic', () => {
                 expect(_place.coffee).to.equal(place.coffee)
                 expect(_place.nigthLife).to.equal(place.nigthLife)
                 expect(_place.thingsToDo).to.equal(place.thingsToDo)
-
-                expect(_place.scoring).to.be.a('number')
-                expect(_place.scoring).to.equal(7.5)
-                expect(_place.scores.length).to.equal(2)
-                expect(_place.scores[0]).to.equal(5)
-                expect(_place.scores[1]).to.equal(10)
-                expect(_place.voters[0].userId).to.equal(userId)
+                expect(_place.voters[0].userId.toString()).to.equal(userId)
                 expect(_place.voters[0].score).to.equal(newScore)
-
             })
-
         })
     })
 

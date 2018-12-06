@@ -55,6 +55,18 @@ const User = new Schema({
 
 })
 
+const Voter = new Schema({
+    userId: {
+        type: ObjectId,
+        ref: 'User',
+        required: true
+    },
+    score: {
+        type: Number,
+        required: true
+    }
+})
+
 const Place = new Schema({
     name: {
         type: String,
@@ -72,13 +84,8 @@ const Place = new Schema({
         ref: 'User',
         required: true
     },
-    scoring: {
-        type: Number,
-        default: 0
-    },
-    scores: [{
-        type: Number,
-    }],
+    voters: [Voter]
+    ,
     breakfast: {
         type: Boolean,
     },
@@ -96,8 +103,7 @@ const Place = new Schema({
     },
     thingsToDo: {
         type: Boolean,
-    },
-    voters: [],
+    }
 })
 
 const Picture = new Schema({
@@ -134,13 +140,14 @@ const Tip = new Schema({
         type: ObjectId,
         red: 'Place'
     },
-    time: { 
+    time: {
         type: String
     }
 })
 
 module.exports = {
     User,
+    Voter,
     Place,
     Picture,
     Tip

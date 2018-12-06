@@ -3,43 +3,38 @@ import ShowMap from './ShowMap'
 import logic from '../logic'
 
 class Info extends Component {
-    state = { error: null, scoring: 0, address: '', latitude: '', longitud: '', heart: '', meh: '', broken: '', visitors: null, checkIn: false, favourite: false, userScore: null, userScoreHeart: false, userScoreMeh: false, userScoreBroken: false }
+    state = { error: null, scoring: 0, address: '', latitude: '', longitud: '', heart: '', meh: '', broken: '', visitors: null, checkIn: false, favourite: false, userScore: null }
 
     componentDidMount() {
-        try {
+        try {debugger
             logic.retrievePlace(this.props.id)
                 .then(place => {
                     const { scoring, address, location: { coordinates: [longitude, latitude] }, meh, heart, broken, scores, userScore, favourite, checkIn } = place
-                    debugger
-                    const visitors = scores.length
-                    let userScoreHeart, userScoreMeh, userScoreBroken
-                    if (userScore === 10) {
-                        userScoreHeart = true
-                    } else if (userScore === 5) {
-                        userScoreMeh = true
-                    } else if (userScore === 0) {
-                        userScoreBroken = true
-                    }
 
-                    this.setState({ scoring, address, latitude, longitude, meh, heart, broken, visitors, favourite, userScoreHeart, userScoreMeh, userScoreBroken, checkIn, error: null })
+                    const visitors = scores.length
+
+                    this.setState({ scoring, address, latitude, longitude, meh, heart, broken, visitors, favourite, userScore, checkIn, error: null })
                 })
-                .catch(error => this.setState({ error: error.message }))
+                .catch(error =>this.setState({ error: error.message }))
         } catch (err) {
             this.setState({ error: err.message })
         }
     }
 
     handleClickScoring = scoring => {
-        try {
+        try {debugger
             logic.updateScoring(this.props.id, scoring)
                 .then(res => {
+                    debugger
                     const { scoring, meh, heart, broken, scores } = res
                     debugger
                     const visitors = scores.length
 
                     this.setState({ scoring, meh, heart, broken, visitors, error: null })
                 })
-                .catch(err => this.setState({ error: err.message }))
+                .catch(err => {
+                    debugger
+                    this.setState({ error: err.message })})
         } catch (err) {
             this.setState({ error: err.message })
         }
@@ -112,9 +107,9 @@ class Info extends Component {
                 </section>
                 <section className='info__options__item scoring'>
                     <h4 className='info__text'>Give a Score</h4>
-                    <button type='submit' onClick={() => this.handleClickScoring('heart')}><img src={require('../images/icons/grey-heart.png')} alt='' /></button>
-                    <button type='submit' onClick={() => this.handleClickScoring('meh')}><img src={require('../images/icons/grey-meh-face.png')} alt='' /></button>
-                    <button type='submit' onClick={() => this.handleClickScoring('brokenHeart')}><img src={require('../images/icons/grey-broken-heart.png')} alt='' /></button>
+                    <button type='submit' onClick={() => this.handleClickScoring('heart')}><img src={(this.state.userScore === 10)? require('../images/icons/red-heart.png'): require('../images/icons/grey-heart.png')} alt='' /></button>
+                    <button type='submit' onClick={() => this.handleClickScoring('meh')}><img src={(this.state.userScore === 5)? require('../images/icons/black-meh-face.png'): require('../images/icons/grey-meh-face.png')} alt='' /></button>
+                    <button type='submit' onClick={() => this.handleClickScoring('brokenHeart')}><img src={(this.state.userScore === 0)? require('../images/icons/black-broken-heart.png'): require('../images/icons/grey-broken-heart.png')} alt='' /></button>
                 </section>
             </section>
         </main>)
