@@ -3,7 +3,7 @@
 ## **Introduction**
 
 #### *Skysquare makes easy to enjoy the city.* 
-#### *With our app, you can look for the best spots around you, add your awesome pictures and give tips to other experience hunters. Restaurants, coffee places, clubs, parks, cinemas, teathres,...   you can find everything you are looking for!*
+#### *With our app, you can look for the best spots around you, add your awesome pictures and give tips to other experience hunters. Restaurants, coffee places, clubs, parks, cinemas, ...   you can find everything you are looking for!*
 #### *Welcome to the best city hightlights and enjoy with skysquare city guide!*
 
 ## **Functional description**
