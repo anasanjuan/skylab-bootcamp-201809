@@ -103,8 +103,7 @@ const Place = new Schema({
     },
     thingsToDo: {
         type: Boolean,
-    },
-    voters: [Voter]
+    }
 })
 
 const Picture = new Schema({

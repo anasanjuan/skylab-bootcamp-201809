@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import Map from './Map'
+import AddMap from './AddMap'
 import { Link } from 'react-router-dom'
 
 class AddPlace extends Component {
@@ -95,7 +95,7 @@ class AddPlace extends Component {
                     <h6 className='text__label' >Address</h6>
                     <input className='text__input' type='text' placeholder='Add address' onChange={this.handleOnChangeAddress}></input><br />
                     <h6 className='text__label' >Add a marker in the map</h6>
-                    <Map className='add__place__map' onMapClick={this.handleMapClick} />
+                    <AddMap className='add__place__map' onMapClick={this.handleMapClick} />
                     <section className='fields'>
                         <h6 className='checkboxes__label' >This place is good for:</h6>
                         <section className='checkboxes'>

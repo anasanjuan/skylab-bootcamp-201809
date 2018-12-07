@@ -4,7 +4,7 @@ import GoogleMapReact from 'google-map-react'
 require('dotenv').config()
 const { REACT_APP_API_KEY } = process.env
 
-class ShowMapSearch extends Component {
+class ListPlacesMap extends Component {
 	static defaultProps = {
 		center: {
 			lat: 41.398623,
@@ -91,6 +91,6 @@ class ShowMapSearch extends Component {
 	}
 }
 
-export default ShowMapSearch
+export default ListPlacesMap
 
 

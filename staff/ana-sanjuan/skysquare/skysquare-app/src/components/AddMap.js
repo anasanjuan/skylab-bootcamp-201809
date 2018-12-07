@@ -76,6 +76,6 @@ class AddMap extends Component {
 	}
 }
 
-export default AddMap;
+export default AddMap
 
 

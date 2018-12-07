@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import Place from './Place'
 import logic from '../logic'
 import LoadingSpinner from './LoadingSpinner'
-import ShowMapSearch from './ShowMapSearch'
+import ListPlacesMap from './ListPlacesMap'
 import Error from './Error'
 import Swal from 'sweetalert2'
 
@@ -161,7 +161,7 @@ class ListPlaces extends Component {
             <main className='list__places__main'>
                 {this.state.loading ? <LoadingSpinner /> :
                     (this.state.mapOn ?
-                        <ShowMapSearch places={this.state.places} latitude={this.state.latitude} longitude={this.state.longitude} /> :
+                        <ListPlacesMap places={this.state.places} latitude={this.state.latitude} longitude={this.state.longitude} /> :
                         <section >
                             {this.state.error && <Error className='error__home' containerClass='containerClass' message={this.state.error} />}
                             {this.state.places.map(place => <Place key={place.id} id={place.id} name={place.name} scoring={place.scoring} picture={place.picture} tip={place.tip} address={place.address} distance={place.distance} />)}

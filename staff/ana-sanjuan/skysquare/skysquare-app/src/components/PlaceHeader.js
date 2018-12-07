@@ -10,7 +10,6 @@ class PlaceHeader extends Component {
         try {
             logic.retrievePlace(this.props.id)
                 .then(place => {
-                    debugger
                     this.setState({ place, error: null })
                 })
                 .catch(err => 
