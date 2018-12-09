@@ -7,7 +7,7 @@ import Error from './Error'
 
 
 class Profile extends Component {
-    state = { tipError: null, picError: null, user: {}, open: false, pictures: [], tips: [], listPictures: false }
+    state = { tipError: null, picError: null, user: { profilePicture: '' }, open: false, pictures: [], tips: [], listPictures: false }
 
     componentDidMount() {
         logic.retrieveUser()
@@ -58,7 +58,7 @@ class Profile extends Component {
 
                 </div>
                 <section className='profile__info'>
-                    <AddProfilePicture profilePicture={this.state.user.profilePicture} />
+                    <AddProfilePicture profilePicture={this.state.user.profilePicture.replace('http:', 'https:')} />
                     <div className='profile__info__tips' onClick={this.handleListTips}>
                         <h5>{this.state.tips.length}</h5>
                         <h4>Tips</h4>
@@ -75,7 +75,7 @@ class Profile extends Component {
                     {this.state.listPictures && this.state.picError && <Error className='error__tips' containerClass='containerClass' message={this.state.picError} />}
                     {!this.state.listPictures && this.state.tipError && <Error className='error__tips' containerClass='containerClass' message={this.state.tipError} />}
                     {!this.state.listPictures && this.state.tips.map(tip => <UserTip key={tip.id} placeId={tip.placeId} text={tip.text} picture={tip.picture} placeName={tip.placeName} time={tip.time} scoring={tip.scoring} />)}
-                    {this.state.listPictures && this.state.pictures.map((picture, index) => <img key={index} className='picture__item' src={`${picture}`} alt='#'></img>)}
+                    {this.state.listPictures && this.state.pictures.map((picture, index) => <img key={index} className='picture__item' src={`${picture.replace('http:', 'https:')}`} alt='#'></img>)}
                 </section>
             </main>
         </div>

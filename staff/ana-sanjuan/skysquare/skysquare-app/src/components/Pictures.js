@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import logic from '../logic'
 import Swal from 'sweetalert2'
 import Error from './Error'
-import LoadingSpinner from './LoadingSpinner'
 
 class Pictures extends Component {
     state = { error: null, pictures: [], picture: null, previewPicture: null, showUpload: false }
@@ -86,7 +85,7 @@ class Pictures extends Component {
             </form>
             <main className='pictures__main'>
                 {this.state.error && <Error className='error__tips' containerClass='containerClass' message={this.state.error} />}
-                {this.state.pictures.map((picture, index) => <img key={index} className='picture__item' src={`${picture}`} alt='#'></img>)}
+                {this.state.pictures.map((picture, index) => <img key={index} className='picture__item' src={`${picture.replace('http:', 'https:')}`} alt='#'></img>)}
             </main>
         </div>)
     }

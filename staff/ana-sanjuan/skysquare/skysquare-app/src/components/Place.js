@@ -6,7 +6,7 @@ function Place(props) {
         <Link to={`/home/place/${props.id}`}>
             <header className='place__header'>
                 <div className='place__picture'>
-                    <img className='picture__img' src={props.picture} alt='' ></img>
+                    <img className='picture__img' src={props.picture.replace('http:', 'https:')} alt='' ></img>
                 </div>
                 <div className='place__info'>
                     <h1>{props.name}</h1>

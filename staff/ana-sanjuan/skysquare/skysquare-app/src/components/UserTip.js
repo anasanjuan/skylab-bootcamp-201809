@@ -6,7 +6,7 @@ function UserTip(props) {
         <Link to={`/home/place/${props.placeId}`}>
             <div className='tip__top'>
                 <div className='tip__top__img'>
-                    <img className='usertip__img' src={props.picture} alt='#'></img>
+                    <img className='usertip__img' src={props.picture.replace('http:', 'https:')} alt='#'></img>
                 </div>
                 <div className='tip__info'>
                     <h5 className= 'usertip__name'>{props.placeName}</h5>
