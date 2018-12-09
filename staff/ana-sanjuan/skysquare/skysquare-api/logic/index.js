@@ -6,10 +6,13 @@ const validate = require('../utils/validate')
 let cloudinary = require('cloudinary')
 const moment = require('moment')
 
+const { MY_CLOUD_NAME, MY_API_KEY, MY_APY_SECRET } = process.env
+
+
 cloudinary.config({
-    cloud_name: 'dancing890',
-    api_key: '534167988966151',
-    api_secret: 'CpjYh3OdFdUc8BVB2h1gCMyX1cE'
+    cloud_name: MY_CLOUD_NAME,
+    api_key: MY_API_KEY,
+    api_secret: MY_APY_SECRET
 })
 
 const logic = {
@@ -683,7 +686,7 @@ const logic = {
 
                 tip.picture = this._returnPlacePicture(pictures)
 
-                tip.scoring = this._returnPlaceScoring(place.voters) 
+                tip.scoring = this._returnPlaceScoring(place.voters)
 
                 tip.id = tip._id.toString()
 

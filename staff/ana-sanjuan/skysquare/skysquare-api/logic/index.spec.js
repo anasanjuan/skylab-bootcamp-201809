@@ -13,10 +13,12 @@ const moment = require('moment')
 
 let cloudinary = require('cloudinary')
 
+const { MY_CLOUD_NAME, MY_API_KEY, MY_APY_SECRET } = process.env.
+
 cloudinary.config({
-    cloud_name: 'dancing890',
-    api_key: '534167988966151',
-    api_secret: 'CpjYh3OdFdUc8BVB2h1gCMyX1cE'
+    cloud_name: MY_CLOUD_NAME,
+    api_key: MY_API_KEY,
+    api_secret: MY_APY_SECRET
 })
 
 describe('logic', () => {

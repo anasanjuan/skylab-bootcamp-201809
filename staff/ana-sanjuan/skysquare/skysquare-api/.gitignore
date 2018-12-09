@@ -1,4 +1,4 @@
-#.env
+.env
 
 data/users/**/*.png
 data/users/**/*.jpg
