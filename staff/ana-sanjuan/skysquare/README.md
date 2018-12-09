@@ -24,9 +24,12 @@ $ yarn start
 ```
 
 
-or simply click here(make sure you enable geolocation in your browser)
+or simply click here:
 
 https://skysquare.surge.sh
+
+
+Please, make sure you enable geolocation in your browser!
 
 
 ## **Author**
