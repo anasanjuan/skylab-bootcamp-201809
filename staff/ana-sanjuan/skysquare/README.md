@@ -24,6 +24,10 @@ $ yarn start
 ```
 
 
+or simply click here(make sure you enable geolocation in your browser)
+
+https://skysquare.surge.sh
+
 
 ## **Author**
 

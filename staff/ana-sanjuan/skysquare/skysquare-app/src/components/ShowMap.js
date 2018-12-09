@@ -30,7 +30,7 @@ class ShowMap extends Component {
 	render() {
 		return (
 			// Important! Always set the container height explicitly
-			<section style={{ height: '226px', width: '160px' }} >
+			<section style={{ height: '100%', width: '160px' }} >
 				<GoogleMapReact
 					defaultCenter={this.props.center}
 					center={{ lat:this.props.lat, lng: this.props.lng }}
